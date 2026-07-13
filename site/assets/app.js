@@ -43,16 +43,18 @@
       return `<a href="${pageUrl(page.href)}"${current}>${page.label}</a>`;
     }).join("");
 
+    const navigation = `<nav class="top-nav" id="top-navigation" aria-label="主要導覽">${links}</nav>
+        <button class="menu-button" type="button" aria-label="開啟導覽選單" aria-controls="top-navigation" aria-expanded="false">
+          <span class="menu-lines" aria-hidden="true"></span>
+        </button>`;
+
     header.innerHTML = `
       <div class="header-inner">
         <a class="brand" href="${pageUrl("")}" aria-label="Codex 學習中心首頁">
           <span class="brand-mark" aria-hidden="true">C</span>
           <span class="brand-text">Codex <span>學習中心</span></span>
         </a>
-        <nav class="top-nav" id="top-navigation" aria-label="主要導覽">${links}</nav>
-        <button class="menu-button" type="button" aria-label="開啟導覽選單" aria-controls="top-navigation" aria-expanded="false">
-          <span class="menu-lines" aria-hidden="true"></span>
-        </button>
+        ${navigation}
       </div>`;
   }
 
@@ -68,9 +70,8 @@
     }).join("");
 
     sidebar.innerHTML = `
-      <p class="sidebar-title">${config.title}</p>
-      <nav class="sidebar-nav" aria-label="${config.title}目錄">${links}</nav>
-      <p class="sidebar-note">這裡是共用目錄骨架。新增教材時，可直接調整 <strong>assets/app.js</strong> 的項目。</p>`;
+      <p class="sidebar-title">本頁目錄</p>
+      <nav class="sidebar-nav" aria-label="${config.title}目錄">${links}</nav>`;
 
     const title = document.querySelector("[data-placeholder-title]");
     if (title) title.textContent = `${config.items[activeIndex]} · 教材準備中`;
@@ -81,8 +82,16 @@
     if (!footer) return;
     footer.innerHTML = `
       <div class="footer-inner">
-        <span><strong>Codex 學習中心</strong> · 團隊共編教材</span>
-        <span>內容持續更新中</span>
+        <strong class="footer-brand">Codex Course</strong>
+        <div class="instructors">
+          <a class="instructor" href="mailto:roysung@cathay-ins.com.tw">
+            <span><strong>Roy</strong><small>roysung@cathay-ins.com.tw</small></span>
+          </a>
+          <span class="instructor-and" aria-hidden="true">&amp;</span>
+          <a class="instructor" href="mailto:bocheng@cathay-ins.com.tw">
+            <span><strong>Benson</strong><small>bocheng@cathay-ins.com.tw</small></span>
+          </a>
+        </div>
       </div>`;
   }
 

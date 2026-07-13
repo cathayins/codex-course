@@ -1,114 +1,82 @@
 ---
-version: alpha
-name: ChatGPT Learn
+version: beta
+name: Codex Learning Center
 description: >-
-  A clean, accessible documentation and use-case discovery platform for ChatGPT workflows. The design emphasizes
-  clarity, progressive disclosure, and task-oriented navigation through a refined minimalist aesthetic.
+  A white, technical learning site for Codex with a single glass navigation shell.
+  The content system combines a blue-lavender atmospheric home cover, crisp modular
+  cards, cool blue accents, monospace utility labels, and precise borders. Glass is
+  reserved for the top navigation; reading surfaces stay opaque and high contrast.
 logo:
-  src: https://learn.chatgpt.com/favicon.png
+  type: monogram
+  character: C
+  src: site/assets/favicon.svg
+  backgroundColor: '#e4e0ff'
+  textColor: '#4b438f'
 colors:
+  background: '#f7f9fb'
   surface: '#ffffff'
-  surface-dim: '#f9f9f9'
-  surface-bright: '#ffffff'
-  surface-container-lowest: '#f3f3f3'
-  surface-container-low: '#efefef'
-  surface-container: '#e8e8e8'
-  surface-container-high: '#e0e0e0'
-  surface-container-highest: '#d9d9d9'
-  on-surface: '#181818'
-  on-surface-variant: '#5d5d5d'
-  inverse-surface: '#1a1a1a'
-  inverse-on-surface: '#f5f5f5'
-  outline: '#8f8f8f'
-  outline-variant: '#c0c0c0'
-  surface-tint: '#339cff'
-  primary: '#339cff'
-  on-primary: '#ffffff'
-  primary-container: '#d4e8ff'
-  on-primary-container: '#003d7a'
-  inverse-primary: '#7ab8ff'
-  secondary: '#006aff'
-  on-secondary: '#ffffff'
-  secondary-container: '#cce0ff'
-  on-secondary-container: '#001d4d'
-  tertiary: '#8b6cff'
-  on-tertiary: '#ffffff'
-  tertiary-container: '#e8deff'
-  on-tertiary-container: '#2d1b5f'
-  error: '#d32f2f'
-  on-error: '#ffffff'
-  error-container: '#ffcdd2'
-  on-error-container: '#b71c1c'
-  primary-fixed: '#d4e8ff'
-  primary-fixed-dim: '#7ab8ff'
-  on-primary-fixed: '#001d4d'
-  on-primary-fixed-variant: '#003d7a'
-  secondary-fixed: '#cce0ff'
-  secondary-fixed-dim: '#7ab8ff'
-  on-secondary-fixed: '#001d4d'
-  on-secondary-fixed-variant: '#003d7a'
-  tertiary-fixed: '#e8deff'
-  tertiary-fixed-dim: '#b47af4'
-  on-tertiary-fixed: '#2d1b5f'
-  on-tertiary-fixed-variant: '#5d3fa0'
-  background: '#ffffff'
-  on-background: '#181818'
-  surface-variant: '#f0f0f0'
+  surface-subtle: '#eef3f7'
+  ink: '#09111c'
+  ink-muted: '#536577'
+  ink-faint: '#7d8d9d'
+  line: '#c9d5df'
+  line-strong: '#2b455c'
+  accent: '#1677d2'
+  accent-hover: '#0f63b3'
+  accent-soft: '#e5f3ff'
+  focus: '#1677d2'
+  error: '#b42318'
 typography:
+  fontFamily: >-
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Noto Sans TC', sans-serif
+  utilityFontFamily: >-
+    'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace
   display:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
-    fontSize: 60px
+    fontSize: clamp(48px, 7vw, 84px)
     fontWeight: '700'
-    lineHeight: 68px
-    letterSpacing: '-0.02em'
+    lineHeight: 0.98
+    letterSpacing: '-0.055em'
   headline-lg:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
-    fontSize: 40px
-    fontWeight: '600'
-    lineHeight: 48px
-    letterSpacing: '-0.01em'
+    fontSize: clamp(34px, 4vw, 48px)
+    fontWeight: '650'
+    lineHeight: 1.08
+    letterSpacing: '-0.035em'
   headline-md:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
-    fontSize: 30px
-    fontWeight: '600'
-    lineHeight: 38px
-    letterSpacing: 0em
+    fontSize: 28px
+    fontWeight: '650'
+    lineHeight: 1.2
+    letterSpacing: '-0.02em'
   title-lg:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
     fontSize: 20px
-    fontWeight: '600'
-    lineHeight: 28px
-    letterSpacing: 0.01em
+    fontWeight: '650'
+    lineHeight: 1.35
+    letterSpacing: '-0.01em'
   body-lg:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
     fontSize: 18px
     fontWeight: '400'
-    lineHeight: 28px
-    letterSpacing: 0em
+    lineHeight: 1.65
+    letterSpacing: 0
   body-md:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
     fontSize: 16px
     fontWeight: '400'
-    lineHeight: 24px
-    letterSpacing: 0em
+    lineHeight: 1.6
+    letterSpacing: 0
   label-md:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
-    fontSize: 14px
-    fontWeight: '600'
-    lineHeight: 20px
-    letterSpacing: 0.01em
+    fontSize: 13px
+    fontWeight: '650'
+    lineHeight: 1.4
+    letterSpacing: '0.05em'
   label-sm:
-    fontFamily: OpenAI Sans, ui-sans-serif, system-ui, sans-serif
     fontSize: 12px
-    fontWeight: '500'
-    lineHeight: 16px
-    letterSpacing: 0.02em
+    fontWeight: '600'
+    lineHeight: 1.4
+    letterSpacing: '0.08em'
 rounded:
-  sm: 0.25rem
-  DEFAULT: 0.5rem
-  md: 0.75rem
-  lg: 1rem
-  xl: 1.5rem
+  none: 0
+  sm: 2px
+  md: 6px
+  glass: 9999px
   full: 9999px
 spacing:
   unit: 4px
@@ -116,153 +84,241 @@ spacing:
   sm: 12px
   md: 24px
   lg: 40px
-  xl: 64px
-  gutter: 24px
-  container-max: 1280px
-elevation:
-  sm: 0 1px 2px rgba(0, 0, 0, 0.05)
-  md: 0 4px 12px rgba(0, 0, 0, 0.08)
-  lg: 0 16px 40px rgba(0, 0, 0, 0.12)
+  xl: 72px
+  xxl: 112px
+  gutter: clamp(20px, 4vw, 48px)
 layout:
   containerMaxWidth: 1280px
+  readingMaxWidth: 720px
   gridColumns: 12
+  sidebarWidth: 264px
+  headerHeight: 88px
+elevation:
+  base: none
+  glass: 0 16px 40px rgba(9, 17, 28, 0.12)
+  raised: 0 8px 24px rgba(9, 17, 28, 0.08)
+motion:
+  fast: 120ms ease-out
+  standard: 180ms cubic-bezier(0.2, 0, 0, 1)
 components:
   button-primary:
-    backgroundColor: '{colors.primary}'
-    textColor: '{colors.on-primary}'
-    typography: '{typography.label-md}'
-    rounded: '{rounded.full}'
-    padding: 8px 16px
-    height: 40px
-    border: none
+    backgroundColor: '{colors.ink}'
+    textColor: '#ffffff'
+    border: 1px solid {colors.ink}
+    rounded: '{rounded.sm}'
+    height: 44px
+    padding: 10px 18px
   button-primary-hover:
-    backgroundColor: '#2a8fd4'
-    textColor: '{colors.on-primary}'
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)
+    backgroundColor: '{colors.accent}'
+    borderColor: '{colors.accent}'
   button-secondary:
     backgroundColor: transparent
-    textColor: '{colors.primary}'
-    typography: '{typography.label-md}'
-    rounded: '{rounded.md}'
-    padding: 6px 12px
-    height: 32px
-    border: 1px solid {colors.outline-variant}
-  button-secondary-hover:
-    backgroundColor: '{colors.surface-container-high}'
-    textColor: '{colors.primary}'
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)
-  button-tag:
-    backgroundColor: '{colors.surface-container}'
-    textColor: '{colors.on-surface}'
-    typography: '{typography.label-sm}'
-    rounded: '{rounded.md}'
-    padding: 6px 12px
-    height: 32px
-    border: none
-  button-tag-hover:
-    backgroundColor: '{colors.surface-container-high}'
-    textColor: '{colors.on-surface}'
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)
-  card-collection:
-    backgroundColor: '{colors.surface-container-lowest}'
-    rounded: '{rounded.lg}'
-    padding: '{spacing.md}'
-    border: 1px solid {colors.outline-variant}
-    boxShadow: '{elevation.sm}'
-  card-collection-hover:
-    backgroundColor: '{colors.surface-container-low}'
-    boxShadow: '{elevation.md}'
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)
-  input-search:
-    backgroundColor: '{colors.surface-container-lowest}'
-    textColor: '{colors.on-surface}'
-    typography: '{typography.body-md}'
-    rounded: '{rounded.full}'
-    padding: 12px 16px
+    textColor: '{colors.ink}'
+    border: 1px solid {colors.line-strong}
+    rounded: '{rounded.sm}'
     height: 44px
-    border: 1px solid {colors.outline-variant}
-  input-search-focus:
-    borderColor: '{colors.primary}'
-    boxShadow: 0 0 0 3px rgba(51, 156, 255, 0.1)
-    transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1)
-  list-item:
-    backgroundColor: transparent
+    padding: 10px 18px
+  button-secondary-hover:
+    backgroundColor: '{colors.surface-subtle}'
+  card:
+    backgroundColor: '{colors.surface}'
+    border: 1px solid {colors.line-strong}
     rounded: '{rounded.md}'
-    padding: '{spacing.sm}'
-    textColor: '{colors.on-surface}'
-  list-item-hover:
-    backgroundColor: '{colors.surface-container-high}'
-    textColor: '{colors.primary}'
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)
-  badge-icon:
-    backgroundColor: '{colors.primary-container}'
-    rounded: '{rounded.lg}'
-    padding: 12px
-    width: 48px
-    height: 48px
-    display: flex
-    alignItems: center
-    justifyContent: center
-  badge-icon-secondary:
-    backgroundColor: '{colors.secondary-container}'
-    rounded: '{rounded.lg}'
-    padding: 12px
-    width: 48px
-    height: 48px
-  badge-icon-tertiary:
-    backgroundColor: '{colors.tertiary-container}'
-    rounded: '{rounded.lg}'
-    padding: 12px
-    width: 48px
-    height: 48px
+    padding: 28px
+    boxShadow: none
+  card-hover:
+    backgroundColor: '{colors.surface-subtle}'
+    borderColor: '{colors.accent}'
+  input-field:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    border: 1px solid {colors.line-strong}
+    rounded: '{rounded.sm}'
+    height: 44px
+    padding: 10px 12px
+  tag:
+    backgroundColor: transparent
+    textColor: '{colors.ink-muted}'
+    border: 1px solid {colors.line}
+    rounded: '{rounded.sm}'
+    padding: 5px 8px
+  header:
+    backgroundColor: rgba(238, 243, 247, 0.72)
+    border: 1px solid rgba(255, 255, 255, 0.82)
+    rounded: '{rounded.glass}'
+    backdropFilter: blur(20px) saturate(135%)
+    boxShadow: '{elevation.glass}'
+  favicon:
+    canvas: 32px square
+    backgroundColor: '{colors.ink}'
+    character: C
+    characterColor: '#ffffff'
+    fontWeight: '700'
+    rounded: 4px
+decorativeElements:
+  outline-square:
+    border: 1px solid {colors.accent}
+    fill: transparent
+    allowedCountPerSection: 2
+  solid-square:
+    backgroundColor: '{colors.ink}'
+    sizeRange: 10px-44px
+    allowedCountPerSection: 1
+  rule:
+    borderColor: '{colors.line-strong}'
+    thickness: 1px
 ---
 
-## Overview
+## Direction
 
-ChatGPT Learn is a task-oriented documentation platform that embodies 'Accessible Minimalism'—a design philosophy that prioritizes clarity, progressive disclosure, and purposeful whitespace over decorative elements. The interface serves developers, teams, and enterprises seeking structured workflows and use-case discovery. The aesthetic is deliberately restrained: a pure white canvas (#ffffff) with a vibrant blue accent (#339cff) that draws attention to actionable elements. The brand personality is precise, helpful, and non-prescriptive—it guides without overwhelming. Voice: direct, example-driven, conversational yet authoritative. Example sentence: 'Build a workflow that turns customer feedback into actionable insights in minutes.'
+Codex Learning Center uses **Technical Glass Editorial**: a white, precise visual language inspired by developer tools, technical publications, and modular knowledge libraries. The floating glass navigation introduces polish and depth; the content below remains crisp and information-led.
 
-## Colors
+The experience is calm and direct. Information hierarchy, alignment, and whitespace do most of the visual work. Blue is used like the LangChain reference—as a technical signal for links and active states. The first home panel is the one expressive exception: a soft blue-lavender atmospheric field inspired by the Codex reference. The second panel and all inner pages remain white or very pale cool gray. Do not use dot arrays, dot matrices, or persistent background grids.
 
-The color system is anchored in a high-contrast, light-mode-first approach. Primary (#339cff) is the signature accent—used exclusively on CTAs ('Try ChatGPT'), interactive links, and focus states. It conveys trust and energy without aggression. Secondary (#006aff) provides a deeper blue for emphasis in data-heavy contexts; tertiary (#8b6cff) adds a gentle purple accent for specialized UI regions (badges, highlights). The surface stack is meticulously calibrated: surface (#ffffff) is the canvas, surface-container-lowest (#f3f3f3) creates subtle depth for cards and input fields, and surface-container-high (#e0e0e0) is reserved for hover states and active selections. On-surface (#181818) is near-black for maximum readability at 16px body text. On-surface-variant (#5d5d5d) is used for secondar
+## Reference Analysis
+
+The supplied examples point to three useful ideas:
+
+- **Stripe:** strong hierarchy and technical precision are useful, but its gradients, saturated color fields, and elevated cards are too expressive for this site.
+- **Google Antigravity:** monochrome-first controls and restrained typography are useful, but pill buttons, glass headers, and soft rounded containers still read like a familiar AI-tool template.
+- **Provided screenshot:** the most relevant reference. Its appeal comes from an off-white grid canvas, oversized type, thin black outlines, rectangular information blocks, and sparse blue-violet geometry.
+- **Tenten navigation screenshot:** the reference for the top shell only—one wide, floating, translucent capsule with generous horizontal spacing and a solid action button.
+- **LangChain screenshot:** the reference for information architecture—fine cool borders, modular content cards, monospace utility labels, and blue technical accents. Translate the dark palette into a white theme and omit its dot-matrix artwork.
+- **Tenten cover screenshot:** the reference for the home-page composition—one centered statement, a supporting line, and minimal actions. Keep the Codex version white and content-led rather than introducing a dark photographic background.
+
+The resulting system combines one controlled glass moment at the top with a flat, white technical content system below. Do not apply the header treatment to cards, sidebars, or documentation panels.
+
+## Anti-AI-Look Rules
+
+Avoid the visual shortcuts most associated with generated AI landing pages:
+
+- No gradients, aurora fields, blurred color blobs, or noise overlays outside the first home panel. The home cover may use a restrained blue-lavender multi-layer gradient without animation or texture.
+- No decorative robot, sparkle, brain, orbit, mesh, or abstract 3D imagery.
+- No dot arrays, halftone fields, or full-section background grids.
+- No glass panels outside the top navigation shell.
+- No large-radius content cards. Standard cards use 4–6px corners; only the header may use a capsule radius.
+- No colored icon tiles repeated across card grids.
+- No default pill containers. Full rounding is limited to the glass header, its primary CTA, true status dots, or compact counters.
+- No hover lift, scale, or bounce. State changes use color, underline, or a border shift.
+- No shadow on ordinary cards, navigation, buttons, or inputs.
+- No blue-purple palette expansion. Use one accent only, and keep it below roughly 10% of a page's visible area.
+- No marketing-style filler labels such as “Powered by AI” when the content can state the task directly.
+
+## Color
+
+The canvas is white to very pale cool gray (`#f7f9fb`). Main content panels use white with cool blue-gray borders. Deep navy-black (`#09111c`) is the structural color for headings, primary buttons, strong borders, and geometric marks.
+
+Technical blue (`#1677d2`) is the brand accent. Use it for active navigation, text links, focus indicators, card-border hover states, and sparse line graphics. It may expand into a blue-lavender atmospheric palette only on the first home panel. Secondary text uses cool slate (`#536577`).
 
 ## Typography
 
-The type system uses OpenAI Sans exclusively, a humanist sans-serif that balances technical precision with approachability. Display (60px, 700 weight, -0.02em tracking) anchors hero sections; headline-lg (40px, 600 weight) is reserved for page titles like 'Use cases'; headline-md (30px, 600 weight) breaks major content sections. Body-lg (18px, 400 weight, 28px line-height) is used for descriptive copy and hero subtitles; body-md (16px, 400 weight, 24px line-height) is the default for all body text and ensures 1.5 line-height ratio for accessibility. Label-md (14px, 600 weight, 20px line-height, 0.01em tracking) is applied to button text and category tags; label-sm (12px, 500 weight, 16px line-height, 0.02em tracking) is used for metadata, timestamps, and helper text. All headings use -0.01
+Use the system sans-serif stack with `Noto Sans TC` fallback so Traditional Chinese remains crisp and consistent without depending on a branded webfont. Headlines are compact, bold, and tightly tracked; body copy is regular weight with generous line height.
+
+Hero headlines may combine two text colors—near-black and the single accent—to create hierarchy without graphics. Use bilingual outlined display text only as a rare campaign treatment, never for body copy or navigation. Limit paragraph width to about 720px.
+
+Use monospace selectively for navigation labels, filter-like labels, metadata, step numbers, commands, and paths. Headings and body copy remain in the sans-serif stack; the mix should feel technical without reducing Chinese readability.
 
 ## Layout
 
-The layout follows a 12-column grid with a 1280px max-width container. The page rhythm is built on a 24px gutter (md spacing) for horizontal padding and 40px (lg spacing) for vertical section separation. The left sidebar (on desktop) uses 16px padding and a fixed width of ~200px; the main content area flexes to fill remaining space. On mobile (< 768px), the sidebar collapses into a hamburger menu, and the main content takes full width with 24px horizontal padding. The search input (44px height, full rounded corners) sits prominently below the hero, with 24px margin-bottom to the filter tags. Collection cards are laid out in a responsive grid: 1 column on mobile, 2 columns at 870px, 3 columns at 1284px, and 4 columns at 1496px. Each card has 24px padding and 1.5rem (24px) gap between items.
+Use a 12-column grid inside a 1280px container. Desktop gutters scale from 24px to 48px; mobile gutters are 20px. Large landing-page sections use 72–112px vertical space, while documentation pages use a denser 40–72px rhythm.
 
-## Elevation & Depth
+Alignment should be visible and repeatable. Titles, introductory copy, cards, and rules should share column edges. Asymmetry is encouraged only when it follows the grid—for example, text occupying columns 1–7 and a small geometric composition occupying columns 10–12.
 
-Depth is conveyed through subtle shadows and surface-color shifts rather than dramatic layering. Level 1 (Base): the white canvas with no shadow. Level 2 (Cards & Inputs): 0 1px 2px rgba(0, 0, 0, 0.05) shadow, 1px solid border at outline-variant (#c0c0c0), background at surface-container-lowest (#f3f3f3). Level 3 (Hover/Active Cards): 0 4px 12px rgba(0, 0, 0, 0.08) shadow, background shifts to surface-container-low (#efefef). Level 4 (Modals/Dropdowns): 0 16px 40px rgba(0, 0, 0, 0.12) shadow, background at surface (#ffffff) with 1px border. All shadow transitions use 150ms cubic-bezier(0.4, 0,
+The home page uses two vertically anchored panels. Panel one fills the viewport with a centered cover composition on the atmospheric gradient; panel two snaps into place with a white or pale-gray learning-path surface and includes the site footer. Use mandatory scroll snap on larger screens and proximity snap on small screens so long mobile card content remains reachable. Documentation pages use whitespace and horizontal rules, not patterned backgrounds.
 
-## Shapes
+## Geometry & Decorative Material
 
-The shape philosophy is 'Functional Geometry'—rounded corners are applied strategically to signal interactivity and reduce visual harshness without sacrificing clarity. Buttons use full (9999px) border-radius to create pill-shaped CTAs that feel inviting and modern (e.g., 'Try ChatGPT' button). Secondary buttons and input fields use md (0.75rem / 12px) radius for a slightly more structured appearance. Collection cards and larger containers use lg (1rem / 16px) radius to balance softness with professionalism. Small UI elements (badges, icons) use md (0.75rem) radius. The DEFAULT radius (0.5rem
+Decorative material is optional and built from CSS or SVG primitives:
+
+- 1px horizontal and vertical rules.
+- One transparent square and one offset transparent square, with black or accent outlines.
+- One small solid near-black square used as a visual stop.
+- Large index numbers such as `01`, `02`, `03` set as plain text, not icon badges.
+
+Keep decoration sparse. Prefer no decoration on the home cover. If a later content section needs a marker, use one short rule or one small geometric element. Decorative geometry is `aria-hidden="true"` and never carries meaning.
 
 ## Components
 
-### Action Elements
-Primary buttons (#339cff background, white text, 8px 16px padding, 40px height, full radius) are used for high-intent CTAs like 'Try ChatGPT'. On hover, the background shifts to #2a8fd4 with a 150ms transition. Secondary buttons (transparent background, primary text, 1px outline-variant border, 6px 12px padding, 32px height, md radius) are used for navigation and lower-priority actions. Tag buttons (surface-container background, on-surface text, 6px 12px padding, 32px height, md radius) filter use cases by category; on hover, the background shifts to surface-container-high. All buttons use label-md typography (14px, 600 weight).
+### Header and Brand
 
-### Containers & Surfaces
-Collection cards (surface-container-lowest background, 24px padding, lg radius, 1px outline-variant border, sm shado
+The header is a floating capsule inset 8–16px from the viewport edges. It uses a translucent cool-white fill, a light inner border, `backdrop-filter: blur(20px) saturate(135%)`, and one soft shadow. The capsule overlays both the atmospheric home cover and pale inner pages. The brand mark is a simple **C** monogram: a near-black square with a white capital `C`. Do not add an orbit, notification dot, gradient, or secondary glyph.
 
-## Do's and Don'ts
+Use the same monogram for the browser favicon. Provide an SVG favicon as the default and keep a future PNG fallback at 32×32 if required. Every HTML page must include the favicon link with the correct relative path.
+
+Navigation uses text and an accent underline for the active page. Hover changes text color or underline only.
+
+The complete primary navigation remains available in the header on every page. On small screens it collapses into a borderless circular hamburger with asymmetric lines; the lines morph into a close icon when opened. The sidebar uses the neutral label “本頁目錄” and owns chapter-level navigation. On inner pages, the breadcrumb is low contrast and the page title is reduced to 28–36px with a compact summary. This keeps labels such as “學習資源” useful for orientation without letting the folder-level heading overpower the lesson content.
+
+### Footer
+
+The footer label is **Codex Course**. The right side uses the same sans-serif typography as the site and lists only two plain mail links: Roy (`roysung@cathay-ins.com.tw`) and Benson (`bocheng@cathay-ins.com.tw`), separated by a neutral `&`. Do not add avatars, role labels such as “講師”, “持續更新”, editorial status, or shared-work-model messaging.
+
+### Buttons
+
+Buttons are rectangular with a 2px radius. The primary button is near-black, becoming accent on hover. The secondary button is transparent with a 1px black border. Buttons must not move vertically on hover and must keep a visible focus outline.
+
+### Cards and Lists
+
+Cards are white modules with a 1px cool blue-gray border, 4–6px corners, and no resting shadow. Use 28px padding on desktop and 20px on mobile. On hover, change the background subtly or switch the border to accent; do not lift the card. Course cards remain typographic and do not add abstract dot or pattern headers.
+
+Card numbers are unboxed text aligned with the card grid. Avoid repeated badge tiles. Tags are small rectangular labels with neutral borders, not rounded capsules.
+
+### Documentation Shell
+
+Documentation pages remain visually quieter than the home page. The sidebar uses rules and spacing instead of a filled panel. The current item is indicated with a 2px accent line and near-black text. Reading content stays on a white or off-white flat surface without nested rounded containers.
+
+### Feedback and Motion
+
+All interactive elements need a visible `:focus-visible` state using the accent color. Motion is limited to 120–180ms color, border-color, opacity, and underline transitions. Respect `prefers-reduced-motion`; the interface must remain fully understandable with motion disabled.
+
+Each page uses a fast reading-order reveal on initial load. Labels, title, summary, and primary content appear in four short steps using opacity, a 10–14px upward translation, and a clipping reveal. Each step lasts 320–420ms; the complete sequence finishes within 650ms. Do not animate the entire page as one layer, type characters one by one, or delay navigation availability. Under `prefers-reduced-motion`, show everything immediately.
+
+## Accessibility
+
+- Maintain at least WCAG AA contrast for text and controls.
+- Never use accent color alone to communicate state; pair it with an underline, border, label, or `aria-current`.
+- Preserve a minimum 44×44px target for primary touch actions.
+- Keep the skip link, semantic heading order, and landmark labels.
+- Mark decorative line art as hidden from assistive technology.
+- Do not place essential text in an outlined font treatment.
+
+## Do / Don't
 
 **Do**
-- Do use primary (#339cff) exclusively for CTAs, focus states, and interactive affordances—never for backgrounds or body text.
-- Do maintain 24px gutter padding on all sides of the main content area; this ensures consistent breathing room and prevents text from touching viewport edges.
-- Do apply 150ms cubic-bezier(0.4, 0, 0.2, 1) transitions to all interactive state changes (hover, focus, active) for predictable, smooth feedback.
-- Do use full (9999px) border-radius only on primary buttons; use md (12px) or lg (16px) for cards and secondary elements to maintain visual hierarchy.
-- Do stack sections vertically with 40px (lg spacing) separation; use 24px (md spacing) for subsection breaks within a major section.
-- Do apply 1px solid outline-variant (#c0c0c0) borders to all input fields and cards to define boundaries without visual heaviness.
+
+- Build hierarchy with typography, columns, whitespace, and 1px rules.
+- Use the accent deliberately and in small areas.
+- Keep card edges crisp, surfaces opaque, and corner radii small.
+- Use the simple `C` consistently in the site header and browser tab.
+- Reuse a small set of line-and-square motifs across the site.
+- Keep the home cover centered and visually quiet.
+- Keep complete global navigation available while reducing the visual scale of inner-page folder headings.
+- Let course content remain the strongest visual element.
 
 **Don't**
-- Don't use secondary (#006aff) or tertiary (#8b6cff) as primary CTA colors; reserve them for supporting accents and specialized UI regions.
-- Don't apply shadows larger than 0 16px 40px rgba(0, 0, 0, 0.12); excessive shadow depth contradicts the minimalist aesthetic.
-- Don't use on-surface-variant (#5d5d5d) for body text; it's reserved for secondary labels, disabled states, and metadata.
-- Don't mix border-radius values arbitrarily; stick to the defined scale (sm, DEFAULT, md, lg, xl, full) to maintain visual consistency.
-- Don't apply background colors to body text or use text-shadow on body-md or larger; the high contrast of on-surface (#181818) on surface (#ffffff) is sufficient.
-- Don't use more than 2 accent colors (primary + secondary or primary + tertiary) in a single UI region; visual noise undermines clarity.
+
+- Extend glass or blur beyond the top navigation, or atmospheric gradients beyond the first home panel.
+- Combine blue, cyan, purple, and pink as separate brand accents.
+- put every label inside a pill or every number inside a colored tile.
+- Add shadows to compensate for weak spacing or hierarchy.
+- Use oversized rounded rectangles as the default container.
+- animate layout position on hover.
+- Use dot arrays or a persistent grid as atmosphere.
+
+## Acceptance Checklist
+
+- The home hero uses one restrained blue-lavender atmospheric gradient and no texture or dot field.
+- The interface uses one accent color and neutral surfaces.
+- Standard cards have 4–6px radius, 1px cool borders, and no resting shadow.
+- Primary and secondary buttons use 2px radius and do not lift on hover.
+- Decorative visuals are limited to sparse rules or a single small geometric marker.
+- The home cover has no grid, dot array, or floating geometric composition.
+- Header branding is a plain `C` without the existing blue dot.
+- Every page displays the `C` favicon in the browser tab.
+- The top navigation is the only translucent glass surface.
+- The page remains white or pale cool gray; it does not inherit LangChain's dark canvas.
+- Every page retains the full top navigation; inner-page folder titles are compact and subordinate to content.
+- The home page snaps between exactly two visual panels on desktop.
+- The footer reads “Codex Course” and lists Roy and Benson without update-status text.
+- The initial text reveal completes quickly and is disabled by reduced-motion.
+- Keyboard focus, mobile navigation, and reduced-motion behavior remain usable.
