@@ -1,921 +1,363 @@
-# Codex 進階：從 Codebase 理解到可治理的專業開發工作流
+# Codex 進階開發：從能力擴充、理解專案到平行修改
 
-> [!NOTE]
-> 本文件是進階能力與 Demo 的詳細素材庫，不是現行 60 分鐘課表。最新課程順序、Demo 拆分與講師分工請以 [`agenda.md`](agenda.md) 為準。
+> 本文件依 [`agenda.md`](agenda.md) 的「Codex 進階開發」重整，只保留 **Part 2｜進階能力**、**Part 3A｜理解專案**、**Part 3B｜動手修改**。三個 Part 使用同一個案例，依序完成「建立能力 → 建立證據 → 規劃與修改」。
 
-本課使用兩個彼此獨立的 Demo，避免讓學員誤以為 Codebase 理解只適用於 Databricks：
+## 課程順序與時間
 
-1. **Demo A／一般 Codebase 理解**：接手陌生的 Python API Repository，先建立有程式碼證據的系統地圖。
-2. **Demo B／Databricks 專業開發**：安裝並使用官方 [`databricks/databricks-agent-skills`](https://github.com/databricks/databricks-agent-skills)，建立 Genie Space，並完成一個以 LangChain agent 為核心的 Databricks App。
-
-課程主線改為：
-
-> **先用一般專案練習 Codebase 理解 → 將規則放入 AGENTS 與 Config → 依序認識 Skill、Plugin、MCP、Worktree、Hooks → 在隔離環境中建立 Genie Space 與 LangChain agent App → 回到選型框架**
-
-`databricks-agent-skills` 提供 `databricks-core`、`databricks-apps-python`、`databricks-apps`、`databricks-app-design` 等穩定 Skills；`databricks-genie` 目前屬 experimental。Codex Plugin 會再帶入 prompt routing、session context 與 auth-failure hints Hooks。Skills 主要透過 Databricks CLI 與相關 SDK／工具完成工作，MCP 不是使用這套 Skills 的必要前提。([Databricks Agent Skills][15])
-
-這樣才會和基礎課形成清楚差異：
-
-| 基礎課                 | 進階課                              |
-| ------------------- | ------------------- |
-| Codex 可以做什麼         | 陌生 Codebase 要怎麼先建立可信理解                 |
-| 如何下指令               | 如何把規範、權限與驗證放在正確層級                   |
-| 如何完成單次任務            | 如何建立可重複、可審查的資料開發工作流                |
-| 使用既有 Skills／Plugins | 安裝並使用官方 Databricks Skills／Plugin 建立 Genie-powered agent App |
-| 人工要求驗收              | 使用 Hooks、最小權限與工作區隔離建立確定性治理          |
-| 單一 Thread           | Worktree／平行任務與安全的非 Production Databricks 操作 |
-
----
-
-# 一、課程學習目標
-
-完成一小時課程後，學員應能：
-
-1. 先不修改程式，從 README、設定、入口與測試建立附程式碼證據的 Codebase map。
-2. 使用 `/init` 建立 `AGENTS.md`，並從初始版本改善成可維護的專案規範。
-3. 分辨全域、Repository、子目錄與 Override 層級的 `AGENTS.md`。
-4. 使用 `config.toml` 設定模型、推理強度、權限、Approval、Sandbox、功能開關與 MCP，並理解各層設定的優先順序。
-5. 安裝官方 Databricks Skills 或 Codex Plugin，理解 `databricks-core` 與產品 Skill 的父子關係。
-6. 使用 `databricks-apps-python` 與 `databricks-apps` 的 Genie workflow，在 Dev／Staging 建立 Genie Space，並將它接入 LangChain agent App。
-7. 分辨何時直接使用官方 Skill、何時以 `AGENTS.md` 補充專案規則、何時才需要 `$skill-creator` 或 `@plugin-creator` 建立團隊資產。
-8. 理解 MCP 是外部資料／工具連線層，不是 `databricks-agent-skills` 的必要依賴，並能限制其工具與 Approval 行為。
-9. 判斷何時應使用 Local、Worktree 或平行任務，並使用官方 Plugin Hooks 或 Repository Hook 執行路由、提示與確定性驗證。
-
-Codex 目前支援全域與專案層級的 `AGENTS.md`、使用者與專案層級的 `config.toml`、Skills、Plugins、MCP、Worktrees 與生命週期 Hooks；但部分功能會受客戶端版本、Workspace 管理設定與專案信任狀態影響。([Learn ChatGPT][1])
-
----
-
-# 二、建議的 60 分鐘 Agenda
-
-| 時間 | 模組 | 示範內容 | 學員帶走的能力 |
+| 時間 | Part | 主題 | 現場產出 |
 | ---: | --- | --- | --- |
-| 0–4 | **能力地圖** | 先定位 Prompt、`AGENTS.md`、Config，以及五種擴充能力 Skill、Plugin、MCP、Worktree、Hooks；暫不展開操作。 | 建立共同語言與課程路線。 |
-| 4–12 | **Demo A：一般 Codebase 理解** | 使用非 Databricks 的 Python API 專案，以 read-only Prompt 追蹤 request → service → persistence → response，附檔案證據與未知事項。 | 安全理解陌生 Repository，並發現需要長期保存的規則。 |
-| 12–18 | **AGENTS.md** | 將 Demo A 的重複規則整理成 Repository 指示、驗證命令、變更邊界與分層規範。 | 知道 Codex 在這個 Repository 應如何工作。 |
-| 18–23 | **Config** | 設定 Sandbox、Approval、Profile 與專案信任；區分 Codex Profile 和 Databricks CLI Profile。 | 知道 Codex 最多可以怎麼執行。 |
-| 23–27 | **Skill** | 說明 Skill 是可重用工作方法；檢視 `databricks-core`、`databricks-apps-python`、`databricks-apps` 的路由關係，以及 experimental `databricks-genie` 何時才需要。 | 能為產品任務選擇正確 Skill。 |
-| 27–30 | **Plugin** | 安裝官方 Databricks Plugin，理解它如何一起散布穩定 Skills 與 Hooks；Creator／Marketplace 留到後文延伸。 | 知道 Plugin 解決安裝、版本與團隊分享。 |
-| 30–33 | **MCP** | 說明 MCP 是外部資料／動作連線；Databricks Skills 主要走 CLI／SDK，內部 Catalog MCP 僅作選配案例。 | 不再混淆 Skill 的方法與 MCP 的連線。 |
-| 33–36 | **Worktree** | 建立 Demo B 專用 Worktree，說明隔離、Diff 與 Handoff。 | 在不污染 Local 的情況下進行平台開發。 |
-| 36–39 | **Hooks** | 用 `/hooks` 審查官方 Plugin Hooks，並說明 Repository Stop Hook 如何執行確定性檢查。 | 知道哪些檢查不能只靠 Prompt 記住。 |
-| 39–56 | **Demo B：Genie Space ＋ LangChain agent App** | 用官方 Skills 探索資料、建立／重用 Genie Space，Scaffold Python Databricks App，讓 LangChain agent 以 Genie Conversation API 為工具；最後在同一 Demo 內查看 Diff、測試與 Apps validation。 | 將七個模組整合成一條可觀察的 Codex 工作流。 |
-| 56–60 | **團隊化選型與 Q&A** | 判斷公司規範應放 `AGENTS.md`、subskill、Plugin、MCP 或 Hook，並回顧兩個 Demo。 | 建立可遷移的選型能力。 |
+| 12–30 | **Part 2｜進階能力** | `AGENTS.md`、Config、Skills、Plugins、MCP、Worktree、Hooks | 可供 Part 3 使用的專案規範、能力與安全邊界 |
+| 30–44 | **Part 3A｜理解專案** | 以唯讀方式理解 AI 客服工單服務，建立 codebase map 與證據 | 架構圖、request flow、DB ERD、未知事項與變更熱點 |
+| 44–57 | **Part 3B｜動手修改** | 用 Plan mode 規劃，再用兩個 Worktree 平行實作 | 兩條可審查支線、Hooks 驗證結果與整合順序 |
 
-## 為什麼採用「先案例、依序介紹、再整合」
-
-Demo B 會同時用到 Skill、Plugin、Worktree 與 Hooks，因此應放在這些能力介紹之後；但整堂課也不應從 0 分鐘開始連續講功能。建議採用 **先案例引出需求、依正文順序介紹、最後整合**：
-
-1. 開場只用 4 分鐘建立能力地圖，不在此時展開所有設定細節。
-2. Demo A 先讓學員遇到真實問題，再將重複規則依序回收到 AGENTS 與 Config。
-3. Skill、Plugin、MCP、Worktree、Hooks 各自用一個問題與一個操作介紹，順序和後續正文完全一致。
-4. Demo B 不再插入新名詞，而是把前面七個模組串成一條完整路徑。
-
-這種節奏保留完整功能內容，也避免功能介紹變成與實作分離的名詞清單。
-
-## 「驗證與交付」不保留為獨立時段
-
-驗證本身不是獨立的 Codex 擴充能力，因此不再安排一個抽離情境的「驗證與交付」模組。必要動作仍保留在 Demo B 的最後 2–3 分鐘，並明確回扣到 Codex：
-
-* `AGENTS.md`／Skill 定義應執行哪些測試與 validation。
-* Stop Hook 在 Codex 宣稱完成前確定性觸發檢查。
-* Worktree 提供隔離的 Diff，並支援 review 後再 Handoff。
-* Approval／Sandbox 決定 validation 可以做到哪裡；課堂停在 Dev validation，不 deploy。
-
-因此它是 Demo B 的閉環，不是第八個功能模組。
-
-## 時間設計原則
-
-一小時內不適合：
-
-* 同時完整示範 Genie、Databricks Apps 與 Lakeflow Jobs；本版只做 Genie-powered LangChain agent App，Jobs 不進主線。
-* 從零寫完整 MCP Server、複雜 Databricks 專案或完整 Plugin manifest。
-* 手工建立複雜 Plugin manifest，或完整講解所有 `config.toml` 欄位。
-* 實際完成大型 coding task，或對 Production Databricks 執行任何查詢、部署、寫入或刪除。
-* 深入示範十種 Hook event。
-
-因此課堂應以「預先準備好的 Repository，逐步新增設定」進行，Databricks Apps CLI／Skills 負責 Scaffold，講師把時間放在：
-
-* Codebase 結論是否能回指檔案證據，而非模型猜測。
-* 為什麼這樣設定，以及應該放在哪一層。
-* 官方 Databricks Skill 如何依序完成 Genie Space 與 Python agent App 工作流。
-* MCP 為何是選配的外部連線，而不是 Databricks Skills 的前置依賴。
-* 如何驗證設定、Skill 與安全邊界真的生效。
+講義提供完整的基礎到進階內容；18 分鐘的 Part 2 現場只示範每個模組的一個關鍵操作，其餘內容供講師備課與學員課後複習。
 
 ---
 
-# 三、兩個獨立 Demo Case
+# Part 2｜進階能力
 
-兩個 Demo 不共用情境，只共用同一套 Codex 選型框架。
+## Part 2 現場節奏
 
-## Case A：一般 Codebase 理解
+| 時間 | 模組 | 現場一定要做 |
+| ---: | --- | --- |
+| 12:00–14:30 | `AGENTS.md` | 用 `/init` 建立初稿，再補上真實命令、變更邊界與完成定義 |
+| 14:30–17:00 | Config | 設定 Approval、Sandbox、Web search 與 Hooks feature |
+| 17:00–20:00 | Skills | 說明 progressive disclosure；預裝 Mermaid 與 LangChain Skills |
+| 20:00–22:00 | Plugins | 安裝 Ponytail，檢查它帶入的 Skills 與 Hooks |
+| 22:00–24:00 | MCP | 加入文件型 MCP，示範工具白名單與逐工具 Approval |
+| 24:00–27:00 | Worktree | 從同一基準分支建立兩個隔離工作區，說明 Handoff |
+| 27:00–30:00 | Hooks | 審查與信任 Hooks；展示安全閘門與完成閘門 |
 
-使用一個小型 Python API／內部工單服務，刻意不包含 Databricks：
+## 2.1 `AGENTS.md`：Repository 內的長期工作規範
 
-```text
-support-ticket-service/
-├── AGENTS.md
-├── README.md
-├── pyproject.toml
-├── src/
-│   ├── api/routes.py
-│   ├── services/triage.py
-│   ├── repositories/tickets.py
-│   └── models/ticket.py
-└── tests/
-    ├── test_routes.py
-    └── test_triage.py
-```
+### 基礎：它解決什麼問題
 
-任務是追蹤「建立一張支援工單」的完整路徑，產生 Codebase map、檔案證據、未知事項與最小驗證計畫。Demo A 不需要 Databricks CLI、Workspace、Skill 或 MCP。
+`AGENTS.md` 用來保存 Codex 在這個 Repository 中應長期遵守的規則，例如專案結構、真實可執行的驗證命令、禁止修改的範圍與 Definition of Done。不要把一次性任務或臨時需求塞入其中；一次性限制留在當次 Prompt。
 
-## Case B：建立 Genie Space 與 LangChain agent App
+Codex 會從全域層開始，再由 Git root 往目前工作目錄尋找指示；同層優先讀 `AGENTS.override.md`，否則讀 `AGENTS.md`。較接近目前工作目錄的指示會加入後面的 instruction chain。完整 discovery 規則見 [OpenAI：Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)。
 
-Demo B 使用已準備好的 Unity Catalog 測試資料與 Dev SQL Warehouse。現場建立或重用一個 Genie Space（Databricks 新版文件亦稱 Genie Agent），再建立 Python Databricks App；App 內的 LangChain agent 將 Genie Conversation API 包成 `ask_genie` tool。Databricks Apps 可將 Genie resource 的 Space ID 注入環境變數，而 Databricks custom agents 支援 LangChain 等 Python authoring libraries。([Databricks Apps Genie resource][17])([Databricks custom agents][18]) Repository 可使用：
+### 從基礎到進階
 
-```text
-databricks-genie-agent-app/
-├── AGENTS.md
-├── README.md
-├── pyproject.toml
-├── app.yaml
-├── databricks.yml
-├── genie/
-│   └── genie_space.json
-├── agent_server/
-│   ├── agent.py
-│   └── tools/genie.py
-├── app.py
-└── tests/
-    ├── test_agent.py
-    └── test_genie_tool.py
-```
+1. **基礎層**：用 `/init` 產生初稿，確認 Codex 找得到 Repository root。
+2. **可執行層**：將「寫好程式」改成確實存在的 setup、lint、test、type-check 指令。
+3. **邊界層**：寫明不可修改的 public API、Production 資料、migration 與 secrets 規則。
+4. **分層治理**：根目錄放全專案規則；例如 `app/repositories/AGENTS.override.md` 再加入 DB 專屬限制。
+5. **驗證層**：實際詢問 Codex 載入了哪些檔案，不假設設定已生效。
 
-主 Demo 任務：
+### 課堂範例
 
-> 使用 `databricks-core`、`databricks-apps-python` 與 `databricks-apps`，在新的 Worktree 中探索指定測試表，依 Apps Skill 的 Genie workflow 建立或重用 Genie Space，再將它接入 LangChain agent App。只執行本機測試與 `databricks apps validate --profile <dev-profile>`；不得使用 Production、deploy App 或授予廣泛權限。
-
-17 分鐘的主 Demo 僅保留以下最小範圍：
-
-| 階段 | 使用 Skills | 現場成果 |
-| --- | --- | --- |
-| Genie Space | `databricks-core` → `databricks-apps` 的 Genie workflow | 探索兩個已準備好的 UC tables，建立／重用 Space，加入 2 個 sample questions 與 1 組 text instructions。 |
-| LangChain agent App | `databricks-core` → `databricks-apps-python`；平台資源與 validation 搭配 `databricks-apps` | Scaffold 最小 Python App，實作 `ask_genie` tool，透過環境變數取得 Space ID。 |
-| Codex 閉環 | AGENTS／Config／Worktree／Hooks | 查看 Diff、單元測試與 Apps validation；不 deploy。 |
-
-主 Demo 只依賴穩定 Skills。`databricks-genie` 目前屬 experimental，僅在要深入做 Space export／import、conversation testing 或進階 tuning 時顯式安裝；它不是現場成功條件。若建立 Space 失敗，就改用講師預先建立的 Dev Space，仍完成 App wiring 與 validation。需要 Genie chat UI 設計時再搭配 `databricks-app-design`。([Databricks Agent Skills][15])
-
-官方 stable Skills 已包含 Python Apps 與 App platform workflows；experimental Skills 不會被預設安裝，需顯式 opt-in。([Databricks Agent Skills Docs][16])([Databricks Agent Skills][15])
-
----
-
-# 四、Demo 1：先理解 Codebase，再決定能不能動
-
-這個 Demo 放在 4 分鐘能力地圖之後、詳細功能說明之前。先用當次 Prompt 限定 read-only 與輸出格式；完成後再帶學員判斷哪些限制應升級成 `AGENTS.md` 或 Config。
-
-## 4.1 Demo 任務與完成標準
-
-給學員的任務卡：
-
-> 「使用者建立支援工單後，優先級偶爾與預期不同。請先追蹤 HTTP request 到資料寫入與 response 的完整路徑，指出可能影響 priority 的模組、測試與目前無法證明的事項。**不要修改檔案。**」
-
-成功標準不是得到一個漂亮的架構圖，而是得到一份能讓 reviewer 查核的結果：
-
-1. Repository map：主要目錄、入口與責任。
-2. Request flow：route → validation／model → service → repository → response。
-3. 每個結論的檔案路徑與程式位置。
-4. 已確認、合理推測與需要人工確認的內容分開列示。
-5. 建議的最小驗證範圍；尚不提出修改。
-
-## 4.2 現場操作腳本
-
-先讓 Codex 建立閱讀計畫，再依它列出的順序開啟檔案；講師不要先告訴它答案。
-
-```text
-先不要修改任何檔案。
-
-請閱讀 README、AGENTS.md、pyproject.toml、src/ 與 tests/。
-針對「建立工單後 priority 偶爾不符預期」，建立 Codebase map
-並追蹤 request → validation/model → service → repository → response。
-
-輸出請包含：
-1. 建議閱讀順序與理由
-2. 主要模組、API 入口、服務層、資料存取層與測試責任
-3. request → persistence → response 的完整流程
-4. 每個結論可回指的檔案與程式位置
-5. 已確認、推測、待人工確認三類事項
-6. 最小驗證計畫；不要修改程式
-```
-
-講師在輸出後追問兩題，避免 Demo 變成單向展示：
-
-* 「哪個檔案最能證明 API route 實際呼叫哪個 service method？」
-* 「哪個結論只是從檔名推論，而不是有程式碼證據？」
-
-## 4.3 本段要帶出的工作法
-
-| 不佳做法 | 課堂示範的做法 |
-| --- | --- |
-| 一開始就說「修好 priority bug」 | 先限定不修改，建立閱讀順序與證據標準。 |
-| 只產生概念性架構圖 | 對每個節點與連線附 Repository 證據；沒有證據就標示待確認。 |
-| 看到函式名稱就猜測整條流程 | 沿著實際 import、呼叫與測試逐步追蹤。 |
-| 將長期規則都重複寫進 Prompt | 將可重複的規則在下一段整理到 `AGENTS.md` 或 Skill。 |
-
-本段結束時，收束出一份可查核的 Codebase map 即可。Demo B 會切換到另一個 Repository，刻意展示同一套 Codex 工作法如何套用到專業平台開發。
-
----
-
-# 五、模組一：`AGENTS.md` 從 `/init` 到 Best Practice
-
-## 5.1 先用 `/init` 建立初始版本
-
-Codex CLI 的 `/init` 可建立給 Codex 使用的 `AGENTS.md`；課堂重點不應停在「產生成功」，而應讓學員知道生成內容只是起點。([OpenAI Developers][2])
-
-示範順序：
+先執行：
 
 ```text
 /init
 ```
 
-接著要求 Codex：
-
-```text
-檢查目前 Repository 的 README、pyproject.toml、src、
-tests 與 CI 設定。
-
-請審查剛建立的 AGENTS.md，指出：
-
-1. 哪些指令並不存在。
-2. 哪些規範過於抽象。
-3. 哪些重要資料規則尚未包含。
-4. 哪些規則應移到子目錄。
-5. 哪些內容不應放在 AGENTS.md。
-```
-
-## 5.2 Best Practice 結構
-
-建議課堂建立以下版本：
+再將產生的內容整理成：
 
 ```markdown
 # Repository purpose
 
-This repository exposes an API for creating and triaging support tickets.
+This repository provides an AI-assisted support-ticket triage API.
 
-## Repository map
+## Setup and validation
 
-- `src/api/`: HTTP routes and request/response models
-- `src/services/`: ticket triage and business rules
-- `src/repositories/`: persistence adapters
-- `tests/`: unit and API tests
-- `output/`: generated artifacts; do not commit
-
-## Setup
-
-- Install dependencies: `uv sync`
-- Run API locally: `uv run uvicorn src.main:app --reload`
-
-## Validation commands
-
-- Unit tests: `uv run pytest`
+- Install: `uv sync`
+- Unit tests: `uv run pytest tests/unit -q`
+- Integration tests: `uv run pytest tests/integration -q`
 - Lint: `uv run ruff check .`
-- Type check: `uv run mypy src`
+- Type check: `uv run mypy app`
 
 ## Change boundaries
 
-- Do not change the public API response schema without explicit approval.
-- Do not modify production database or authentication settings.
-- Do not add dependencies unless required by the task.
-- Prefer the smallest change that satisfies the requirement.
-
-## Data rules
-
-- Never use real customer data in tests.
-- Preserve ticket audit timestamps and actor identity.
-- Priority changes must be traceable to a documented triage rule.
+- Do not access Production services or customer data.
+- Do not change the public API or database schema without an approved plan.
+- Never print `.env`, tokens, credentials, or raw ticket content.
+- Prefer deterministic test doubles over a live LLM in tests.
 
 ## Definition of done
 
-Before declaring completion:
-
-1. Report every changed file.
-2. Run relevant tests.
-3. State whether the API contract or persistence schema changed.
-4. List assumptions and remaining risks.
+- Report changed files and behavior changes.
+- Run relevant tests and state their results.
+- State API, schema, migration, security, and rollback impact.
 ```
 
-## 5.3 分層設計
-
-Codex 會從全域設定開始，再由 Repository 根目錄一路讀到目前工作目錄；較接近工作目錄的指示會排在後面並覆蓋較廣泛的規則。`AGENTS.override.md` 的優先度高於同層的 `AGENTS.md`。([Learn ChatGPT][1])
-
-課堂展示：
-
-```text
-~/.codex/AGENTS.md
-        ↓
-repo/AGENTS.md
-        ↓
-repo/src/repositories/AGENTS.override.md
-```
-
-`src/repositories/AGENTS.override.md`：
-
-```markdown
-# Repository-layer rules
-
-- Run `uv run pytest tests/test_routes.py tests/test_triage.py` after changing this directory.
-- Never execute a command against the production database.
-- Do not add or alter a database migration without explicit approval.
-```
-
-## 5.4 驗證，而不是假設已載入
+驗證 discovery：
 
 ```bash
-codex --ask-for-approval never \
-  "Summarize the active project instructions and list their source files."
+codex --ask-for-approval never "Summarize the active project instructions and list their source files."
+codex --cd app/repositories --ask-for-approval never "Show which instruction files are active."
 ```
 
-也可以從子目錄執行：
+### 常見錯誤
 
-```bash
-codex --cd src/repositories --ask-for-approval never \
-  "Show which instruction files are active."
-```
+- 寫入「follow best practices」等無法驗收的抽象文字。
+- 放入過長的框架文件，造成每次任務都消耗 context。
+- 將權限設定寫在 `AGENTS.md`，卻沒有真的設定 Sandbox 或 Approval。
+- 在子目錄建立規則後，沒有從該子目錄驗證實際載入順序。
 
-官方文件也建議用這類方式確認指示來源與覆蓋順序。([Learn ChatGPT][1])
+## 2.2 Config：決定 Codex 可以怎麼執行
 
-## 5.5 課堂要強調的反例
+### 基礎：Config 與 `AGENTS.md` 的差異
 
-不佳的 `AGENTS.md`：
+- `AGENTS.md` 回答「在這個專案應怎麼工作」。
+- `config.toml` 回答「模型、Sandbox、Approval、MCP、Hooks 等能力如何啟用」。
 
-```markdown
-- Write good code.
-- Follow best practices.
-- Make sure everything works.
-- Be careful.
-```
+使用者預設位於 `~/.codex/config.toml`；專案可使用 `.codex/config.toml`。專案設定只有在 Repository 被信任時才會載入。CLI override、專案層、profile、使用者層與系統層具有明確優先順序，見 [OpenAI：Config basics](https://learn.chatgpt.com/docs/config-file/config-basic)。
 
-改善原則：
+### 從基礎到進階
 
-* 寫出真正存在的指令。
-* 寫出不可違反的業務限制。
-* 寫出完成定義。
-* 避免放一次性任務。
-* 避免複製整份 README。
-* 子系統規則放到最接近的目錄。
+1. **基礎層**：先設定 `approval_policy` 與 `sandbox_mode`。
+2. **專案層**：只把團隊共享且適合版本控制的值放進 `.codex/config.toml`。
+3. **能力層**：選擇 web search、Hooks 與 MCP；不要一次打開所有實驗功能。
+4. **權限層**：Sandbox 決定最大可做範圍，Approval 決定何時必須請人確認，兩者不可混為一談。
+5. **管理層**：企業環境還可能由 `requirements.toml` 或管理政策限制可用設定；專案設定不能繞過上層政策。
 
----
+### 課堂範例
 
-# 六、模組二：`config.toml`
-
-## 6.1 先教「設定放在哪裡」
-
-Codex 的使用者設定位於：
-
-```text
-~/.codex/config.toml
-```
-
-Repository 設定位於：
-
-```text
-<repo>/.codex/config.toml
-```
-
-專案層級設定只有在使用者信任該專案時才會載入；設定優先序大致是 CLI override、專案設定、指定 Profile、使用者設定、系統設定及內建預設。([OpenAI Developers][3])
-
-建議課堂使用這個分類：
-
-| 設定                             | 放置位置                             |
-| ------------------------------ | -------------------------------- |
-| 個人慣用模型、UI 行為                   | `~/.codex/config.toml`           |
-| Repository 的 MCP、Hooks、Feature | `.codex/config.toml`             |
-| 深度 Review／快速修改等模式              | `~/.codex/<profile>.config.toml` |
-| 公司強制政策                         | 管理式 `requirements.toml`          |
-| 單次臨時變更                         | CLI flag 或 `--config`            |
-
-## 6.2 課堂版 `config.toml`
+`.codex/config.toml`：
 
 ```toml
-# ~/.codex/config.toml
-
-model = "gpt-5.6"
-model_reasoning_effort = "high"
-
 approval_policy = "on-request"
-default_permissions = ":workspace"
-
-web_search = "disabled"
+sandbox_mode = "workspace-write"
+web_search = "live"
 
 [features]
 hooks = true
-multi_agent = true
-remote_plugin = true
 ```
 
-目前官方範例將模型、Approval、Sandbox／Permission、Web Search、推理強度及 Feature flags 都列為 `config.toml` 可管理的項目。([OpenAI Developers][3])
+現場用三個問題檢查設定：
 
-### 必須講清楚的兩個問題
+1. Codex 可以讀哪些路徑？
+2. Codex 可以寫哪些路徑？
+3. 哪些命令或網路行為仍需 Approval？
 
-#### Approval：什麼時候要問人？
+### 進階示範重點
 
-```toml
-approval_policy = "on-request"
-```
+- Review 任務可用較保守的 profile；實作任務再改用 workspace-write。
+- 專案中不要寫入 token；MCP secrets 使用環境變數或 OAuth。
+- 啟用 live web search 後仍應將網頁視為不受信任輸入，優先使用官方與一手來源。
 
-#### Permission／Sandbox：它最多能做什麼？
+## 2.3 Skills：按需載入的可重用工作方法
 
-```toml
-default_permissions = ":workspace"
-```
+### 基礎：Skill 不是工具連線
 
-內建 Permission Profile 包括：
+Skill 是包含 `SKILL.md`、選用 scripts、references 與 assets 的工作流程。Codex 先看到名稱與 description，只有在任務符合或被明確點名時才讀取完整內容；這就是 progressive disclosure。官方說明與儲存位置見 [OpenAI：Build skills](https://learn.chatgpt.com/docs/build-skills)。
+
+典型位置：
+
+- Repository：`.agents/skills/<skill-name>/SKILL.md`
+- 使用者：`$HOME/.agents/skills/<skill-name>/SKILL.md`
+- 系統或管理層：由 Codex 或管理者提供
+
+### 從基礎到進階
+
+1. **使用既有 Skill**：讓 Codex依 task description 自動選擇，或在 Prompt 明確指定。
+2. **檢查來源**：安裝前閱讀 `SKILL.md`、scripts、工具需求與資料外送行為。
+3. **選擇 scope**：只給本專案就安裝在 Repository；多個 Worktree 都要用時可採使用者層安裝。
+4. **建立團隊 Skill**：流程穩定且會重複使用時，再用 `$skill-creator` 建立；不要為單次任務建立 Skill。
+5. **維護與測試**：description 要能正確觸發，也要寫清楚不該觸發的情況。
+
+### Part 3 前置安裝一：Mermaid Skill
+
+Part 3A 選擇 Mermaid，因為 `.mmd`／Markdown 可版控、可 review，且同一套 Skill 可產生架構圖、流程圖與 ERD。此為社群 Skill，課前必須先審查來源與 scripts：[Agents365-ai/mermaid-skill](https://github.com/Agents365-ai/mermaid-skill)。
 
 ```text
-:read-only
-:workspace
-:danger-full-access
+$skill-installer install https://github.com/Agents365-ai/mermaid-skill/tree/main/skills/mermaid-skill
 ```
 
-Permission Profile 同時管理檔案系統與網路邊界；`default_permissions` 不應與 `sandbox_mode` 或 `[sandbox_workspace_write]` 混用。([OpenAI Developers][4])
-
-課堂上可以用一句話區分：
-
-> Approval 是「要不要問」；Permission 是「就算批准了，最多能去哪裡」。
-
-## 6.3 Profile 設計
-
-不要再使用舊式的：
-
-```toml
-[profiles.review]
-```
-
-目前 Profile 採獨立檔案，例如：
-
-```text
-~/.codex/review.config.toml
-~/.codex/build.config.toml
-```
-
-官方目前的 Profile 機制是透過 `--profile` 疊加獨立 TOML 檔案。([OpenAI Developers][5])
-
-### Review Profile
-
-```toml
-# ~/.codex/review.config.toml
-
-model_reasoning_effort = "xhigh"
-default_permissions = ":read-only"
-web_search = "disabled"
-```
-
-執行：
+若要本機 render，課前安裝 Mermaid CLI 與其 headless browser；現場若只需 Markdown，保留可驗證的 Mermaid source 即可：
 
 ```bash
-codex --profile review
+npm install -g @mermaid-js/mermaid-cli
+npx puppeteer browsers install chrome-headless-shell
+mmdc --version
 ```
 
-### Build Profile
+課堂使用方式：
+
+```text
+$mermaid-skill
+請依實際程式碼證據產生目前系統的架構圖、建立工單流程圖與 DB ERD。
+先輸出 Mermaid source，驗證語法，再輸出 SVG；不要補畫程式碼中找不到的關係。
+```
+
+### Part 3 前置安裝二：LangChain Skills
+
+[LangChain 官方 Skills Repository](https://github.com/langchain-ai/langchain-skills) 提供 LangChain、LangGraph 與 Deep Agents 的建置指引；Repository 目前仍標示為 early development，因此要以版本控制與官方文件交叉驗證。為讓兩個 Worktree 都能使用，課堂環境採使用者層安裝：
+
+```bash
+npx skills add langchain-ai/langchain-skills --skill '*' --yes --global
+```
+
+Part 3B 只會使用下列相關 Skills，避免一次載入無關內容：
+
+- `ecosystem-primer`：確認 LangChain、LangGraph 或 Deep Agents 的選型。
+- `langchain-fundamentals`：核對 `create_agent`、tools 與 structured output。
+- `langchain-middleware`：規劃 human-in-the-loop 與 middleware。
+- `langchain-rag`：規劃 knowledge retrieval 與來源證據。
+
+安裝後開新 task，確認 Skills selector 中可見；若未出現，重啟 Codex。
+
+## 2.4 Plugins：把 Skills、連線與 Hooks 包成可安裝能力
+
+### 基礎：何時不只需要 Skill
+
+Skill 適合單一可重用工作法；Plugin 適合將多個 Skills、MCP-backed app／connector、MCP server 或 Hooks 一起安裝與分享。Plugin 仍受 Codex host 的 Sandbox 與 Approval 約束，且帶入的 Hooks 必須先審查與信任。見 [OpenAI：Plugins](https://learn.chatgpt.com/docs/plugins)。
+
+### 從基礎到進階
+
+1. **瀏覽與安裝**：先看 Plugin 內容、作者、權限與依賴。
+2. **重新啟動 task**：新安裝的 bundled Skills 通常在新 task／session 才會完整可用。
+3. **審查連線**：若包含 connector 或 MCP，確認資料範圍與 write actions。
+4. **審查 Hooks**：Plugin 安裝不代表自動信任 Hooks；每次定義變動都要重新 review。
+5. **團隊發佈**：只有當多個能力需要一起版本化與散布時，才建立內部 Plugin。
+
+### Part 3 前置安裝：Ponytail Plugin
+
+Ponytail 是第三方 Plugin，用「先確認是否需要、能否重用既有程式或標準函式庫，再寫最小實作」的 decision ladder 限制過度設計。它適合在 Plan review 與 Diff review 使用，不是框架 API 的權威資料來源。來源與安裝方式見 [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail)。
+
+```bash
+codex plugin marketplace add DietrichGebert/ponytail
+codex plugin add ponytail@ponytail
+```
+
+安裝後：
+
+1. 重新啟動 Codex App 或 CLI。
+2. 開啟 `/hooks`，逐一閱讀並信任 Ponytail 的兩個 lifecycle Hooks。
+3. 開新 task，確認 Ponytail Skills 可見。
+4. 規劃後使用安裝內容提供的 Ponytail review Skill 檢查是否過度抽象；以安裝後 selector 顯示的 invocation 為準。
+
+### 課堂判斷題
+
+- 只有一份固定 code-review checklist：用 Skill。
+- 同時需要 review Skill、GitHub connector 與 lifecycle Hook：用 Plugin。
+- 只需要一次性限制「這次不要新增 dependency」：放當次 Prompt。
+
+## 2.5 MCP：連接即時資料與外部動作
+
+### 基礎：MCP 與 Skill 的分工
+
+- Skill 告訴 Codex「如何做」。
+- MCP server 提供 Codex「可讀取的即時 context 或可執行的工具」。
+- Plugin 可以負責散布 Skill，也可以帶入 MCP-backed app 或 MCP server。
+
+Codex 可在 `config.toml` 設定本機 stdio 或遠端 HTTP MCP，並設定 server、enabled tools 與逐工具 approval。完整格式見 [OpenAI：Model Context Protocol](https://learn.chatgpt.com/docs/extend/mcp)。
+
+### 從基礎到進階
+
+1. **連線**：確認 command／URL、timeout 與必要環境變數。
+2. **驗證**：用 `/mcp` 或 `codex mcp list` 確認 server 與工具可見。
+3. **最小工具集**：只開啟這堂課需要的 read/search tools。
+4. **Approval**：讀取與寫入工具分開設定；不因為 server 可連線就自動批准所有動作。
+5. **Authentication**：OAuth server 使用 `codex mcp login <server-name>`；token 不寫入 Repository。
+
+### 課堂範例：查核目前的套件文件
+
+使用 OpenAI 文件中的 Context7 範例，讓 Part 3B 能在 LangChain Skill 之外查核目前套件文件：
 
 ```toml
-# ~/.codex/build.config.toml
-
-model_reasoning_effort = "high"
-default_permissions = ":workspace"
-approval_policy = "on-request"
-```
-
-執行：
-
-```bash
-codex --profile build
-```
-
-這能讓學員理解：
-
-* Review 不需要寫入權限。
-* Coding 可以寫 Workspace，但不應預設 full access。
-* 不同工作類型不該共用同一套權限。
-
-### 不要把 Codex Profile 與 Databricks CLI Profile 混為一談
-
-* `codex --profile build`：選擇 Codex 的模型、Permission、Approval 等執行設定。
-* `databricks ... --profile class-dev`：選擇 Databricks Workspace authentication profile。
-
-Demo B 必須先列出 Databricks Profiles，由講師明確指定 Dev／Staging Profile；不得讓 Agent 根據名稱自行猜選，也不要把 token 寫入 `config.toml` 或 `AGENTS.md`。([Databricks Agent Skills][15])
-
-## 6.4 Feature flags 不要全部講
-
-課堂只挑三個：
-
-```toml
-[features]
-hooks = true
-multi_agent = true
-remote_plugin = true
-```
-
-目前這些設定分別用於啟用 Hooks、多 Agent 協作工具及遠端 Plugin Catalog。([OpenAI Developers][6])
-
-其他實驗性功能只說明：
-
-> 查看當下版本的 Configuration Reference，不要把整份 Sample Config 複製到公司專案。
-
----
-
-# 七、模組三：Skill——可重用的工作方法
-
-## 7.1 先理解 Skill，再決定安裝方式
-
-Skill 定義「遇到某類任務時應依什麼順序閱讀、決策、實作與驗證」。它不是外部連線，也不是權限邊界。Databricks CLI 可只安裝 Skills：
-
-```bash
-databricks aitools install
-```
-
-Databricks CLI 會偵測 Codex 等支援的 coding agent；也可選擇特定 Skill 或使用 project scope。這條路徑適合只需要 Skills、或需要安裝 experimental Skill 的情況。([Databricks Agent Skills Docs][16])
-
-若課後要深入進行 Genie Space authoring／tuning，可另外顯式安裝 experimental Skill：
-
-```bash
-databricks aitools install databricks-genie --experimental
-```
-
-主 Demo 不依賴這個 experimental Skill；`databricks-apps` 已提供 Genie-powered App 所需的建立／重用 Space 與 resource wiring 流程。下一章再以 Codex Plugin 安裝穩定 Skills 與官方 Hooks。課前必須固定 Plugin／Skill 版本、確認 Databricks CLI 與 OAuth／Profile 可用，並準備一份無 Workspace 連線時仍可展示的預錄輸出。
-
-## 7.2 Skill 路由：先載入 `databricks-core`，再載入產品 Skill
-
-`databricks-core` 是所有 Databricks 工作的 parent／entry point，負責 CLI、authentication、profile selection 與 data exploration；產品開發再搭配對應 Skill。([Databricks Agent Skills][15])
-
-| 開發任務 | 建議 Skills | 本課用途 |
-| --- | --- | --- |
-| 驗證 CLI／Profile、探索資料 | `databricks-core` | 所有 Databricks 任務的 parent／entry point。 |
-| Python／LangChain Databricks App | `databricks-core` → `databricks-apps-python` | 建立 Python App 與 agent runtime。 |
-| Genie-powered App 與平台資源 | `databricks-core` → `databricks-apps` | 建立／重用 Space、讀取 manifest、設定 Genie resource、執行 Apps validation。 |
-| 深入 Genie authoring／tuning | experimental `databricks-genie` | 選配：Space export／import、conversation test 與進階 tuning。 |
-| Chat／Genie UI | `databricks-app-design` | 規劃 chat states、來源與錯誤呈現；非本課主要 coding 範圍。 |
-| Lakeflow Jobs | `databricks-core` → `databricks-jobs` ＋ `databricks-dabs` | 保留為產品 Skill 選型例，不進 Demo B 主線。 |
-
-Demo B 的載入順序固定為 `databricks-core` → Genie／Apps 產品 Skills，不讓 Agent 從名稱猜測 Databricks authentication profile。
-
-## 7.3 何時才需要 `$skill-creator`
-
-不要複製或改寫官方 Skill 來加入公司規範。先依範圍選擇：
-
-| 需求 | 放置位置 |
-| --- | --- |
-| 這個 Repository 永遠不得 deploy Production | `AGENTS.md`。 |
-| 本次 Demo 只能 validate、不能 deploy／run | 當次 Prompt。 |
-| 所有公司 Databricks 專案都要套用同一套 naming／cost／security review | 建立一個以官方產品 Skill 為 parent 的公司 subskill。 |
-| 公司 subskill、MCP 與驗證 Hook 要一起給團隊安裝 | 內部 Plugin。 |
-
-若真的需要公司 subskill，再使用 `$skill-creator` 建立精簡的 `company-databricks-standards`，讓它引用既有產品 Skill，而不是將上游內容整份複製。官方 repository 也建議較窄的變體以 frontmatter `parent` 宣告父 Skill，保留上游 Skill 的穩定性。([Databricks Agent Skills][15])
-
-## 7.4 安裝與建立的精確說法
-
-* Databricks CLI：可選擇個別 Skills，且能安裝 experimental Skills。
-* 官方 Databricks Codex Plugin：下一章透過 Codex Plugin Marketplace 安裝穩定 Skills 與 Hooks。
-* `$skill-creator`：建立公司或 Repository 自有 Skill。
-* `@plugin-creator`：把內部 Skills、MCP、Hooks 等封裝成團隊可安裝能力。
-
----
-
-# 八、模組四：Plugin Creator 與 Marketplace
-
-## 8.1 先示範「安裝官方 Plugin」，再講「建立內部 Plugin」
-
-Databricks Demo 的第一個 Plugin 教學點不是 Creator，而是消費一個已維護的官方能力包：
-
-```text
-codex plugin marketplace add databricks/databricks-agent-skills
-codex plugin add databricks
-```
-
-官方 Codex Plugin 會一起安裝穩定 Skills 與三個 Hooks。這一章先查看 Plugin 內容與 Skills 清單；`/hooks` 的 Trust Review 留到 Hooks 章，讓操作順序和概念順序一致。([Databricks Agent Skills][15])
-
-這讓學員先理解 Plugin 的價值在於安裝、版本與分享，再討論什麼情況值得自行封裝。
-
-## 8.2 何時從 Skill 升級成內部 Plugin
-
-| 情況                | 使用 Skill | 使用 Plugin |
-| ----------------- | -------: | --------: |
-| 單一 Repository 使用  |        ✓ |           |
-| 個人反覆使用            |        ✓ |           |
-| 多個 Skill 一起安裝     |          |         ✓ |
-| Skill 搭配 MCP      |          |         ✓ |
-| 需要生命週期 Hooks      |          |         ✓ |
-| 給整個團隊安裝           |          |         ✓ |
-| 需要版本與 Marketplace |          |         ✓ |
-
-Plugin 可以封裝 Skills、MCP-backed App、MCP Server 設定、Hooks 等可重用能力。([OpenAI Developers][9])
-
-## 8.3 使用 `@plugin-creator`
-
-提示詞：
-
-```text
-@plugin-creator
-
-Create an internal plugin named company-databricks-toolkit.
-
-Include:
-
-- A company-databricks-standards subskill that builds on the official Databricks product skills
-- A placeholder MCP configuration for the internal data catalog, not for duplicate Databricks CLI functionality
-- A Stop hook that runs the repository verification script
-- A local repository marketplace entry for testing
-
-Do not publish it publicly.
-```
-
-`@plugin-creator` 可以建立 `.codex-plugin/plugin.json`，並協助建立本地 Marketplace entry。([Learn ChatGPT][10])
-
-基本結構：
-
-```text
-plugins/company-databricks-toolkit/
-├── .codex-plugin/
-│   └── plugin.json
-├── skills/
-│   └── company-databricks-standards/
-├── hooks/
-│   └── hooks.json
-└── .mcp.json
-```
-
-## 8.4 Repository Marketplace
-
-```text
-.agents/plugins/marketplace.json
-```
-
-概念範例：
-
-```json
-{
-  "name": "company-data-platform-plugins",
-  "interface": {
-    "displayName": "Data Platform Plugins"
-  },
-  "plugins": [
-    {
-      "name": "company-databricks-toolkit",
-      "source": {
-        "source": "local",
-        "path": "./plugins/company-databricks-toolkit"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Data Engineering"
-    }
-  ]
-}
-```
-
-Repository Marketplace 與個人 Marketplace 可以將一個或多個 Plugin 組成可安裝清單；Plugin 修改後通常需要重新整理或重新啟動相關客戶端，並在新 Session 使用新增的能力。([Learn ChatGPT][10])
-
----
-
-# 九、模組五：MCP 加入與權限限制
-
-## 9.1 先說清楚：Databricks Agent Skills 不以 MCP 為必要前提
-
-本課的 Databricks Demo 以官方 Skills、Databricks CLI、Bundle／Apps tooling 為主。不要為了硬塞 MCP 而架設一個重複 Databricks CLI 功能的 Server。
-
-MCP 適合用在任務另外需要的公司系統，例如：
-
-* 讀取內部資料產品 Catalog 或 data contract。
-* 查詢 Jira／ServiceNow 變更單與核准狀態。
-* 取得公司政策、指標字典或資源 owner。
-
-## 9.2 不要只教「連得上」
-
-MCP 模組應包含四個問題：
-
-1. 這個 Server 提供哪些工具？
-2. 哪些工具真的需要開放？
-3. 哪些操作需要 Approval？
-4. Token、OAuth 或環境變數如何管理？
-
-Codex 的 MCP 設定可放在 `~/.codex/config.toml` 或可信任專案的 `.codex/config.toml`；桌面 App、CLI 與 IDE Extension 可共用該設定。([OpenAI Developers][11])
-
-## 9.3 示範加入內部 Catalog Server
-
-CLI：
-
-```bash
-# 僅使用公司核准、read-only 的 Server。
-# `company_data_catalog_mcp` 為教材佔位名稱，現場改為實際命令。
-codex mcp add data-catalog -- \
-  python -m company_data_catalog_mcp
-```
-
-檢查：
-
-```bash
-codex mcp list
-```
-
-Session 內：
-
-```text
-/mcp
-```
-
-## 9.4 `config.toml` 最小權限範例
-
-以下為概念範例；MCP 的實際工具名稱依公司 Server 而異，必須先以 `codex mcp list` 與該 Server 文件確認，不能照抄未驗證的工具名稱。
-
-```toml
-[mcp_servers.data_catalog]
-command = "python"
-args = ["-m", "company_data_catalog_mcp"]
-enabled = true
-required = false
-
-enabled_tools = [
-  "search_data_products",
-  "get_data_contract",
-  "get_metric_definition",
-  "get_resource_owner"
-]
-
-disabled_tools = [
-  "update_metadata",
-  "delete_data_product",
-  "change_permissions"
-]
-
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
 default_tools_approval_mode = "prompt"
-startup_timeout_sec = 10
-tool_timeout_sec = 60
+startup_timeout_sec = 20
+tool_timeout_sec = 45
+enabled = true
 ```
 
-MCP 設定目前可限制 `enabled_tools`、`disabled_tools`，並設定 Server 或單一工具的 Approval mode。([OpenAI Developers][6])
-
-課程要強調：
-
-> 「MCP 已驗證」不代表「所有 MCP 工具都應自動批准」。
-
-課堂 MCP 範例應優先使用：
-
-* Data product 搜尋。
-* Data contract、owner 與指標定義讀取。
-* Read-only metadata。
-
-不要在一小時課程中直接示範：
-
-* Production SQL 查詢或寫入。
-* 更新 metadata、刪除資料產品或變更權限。
-* 將 Token 寫死在設定檔。
-
----
-
-# 十、模組六：Git Worktree
-
-## 10.1 為什麼數據開發需要 Worktree
-
-適合情境：
-
-* 同時嘗試兩種 agent／tool wiring 實作。
-* 一邊修 Bug，一邊產生測試。
-* Codex 在背景修改，使用者繼續本機工作。
-* 平行執行文件更新、測試補強與主要實作。
-* Databricks App scaffold 不應碰到尚未完成的本機修改。
-
-Git Worktree 讓同一 Repository 同時 Checkout 多個工作目錄；Codex 桌面版可建立隔離的 Worktree，並支援將工作在 Local 與 Worktree 間 Handoff。([Git][12])
-
-## 10.2 課堂 Demo
-
-主流程只建立一個 Databricks Demo Worktree；第二個方案用口頭說明平行工作的可能性即可：
-
-### Worktree A
+現場 Prompt：
 
 ```text
-Build or update a Genie Space from the instructor-approved Unity Catalog tables.
-Create the LangChain agent Databricks App and wire the Space as a tool.
-Run local tests and Apps validation for dev only. Do not deploy.
+請只使用 Context7 的 read/search 類工具，查核目前 LangChain Python 中
+structured output、middleware 與 human-in-the-loop 的官方用法。
+列出來源、版本假設與仍無法確認的事項；不要修改檔案。
 ```
 
-### Worktree B
+若 MCP 無法使用，改查 LangChain 官方文件或 GitHub Repository；不以模型記憶補齊可能已變動的 API。
+
+## 2.6 Worktree：讓多條修改支線彼此隔離
+
+### 基礎：何時使用 Worktree
+
+Worktree 是同一個 Git Repository 的另一份 checkout。每個 Worktree 有獨立檔案與 index，但共享 Git metadata，因此可以平行處理多條 branch，而不互相覆蓋工作目錄。
+
+Codex-managed Worktree 與 Handoff 是 ChatGPT desktop app 的 Codex 能力；IDE-only 情境可使用原生 `git worktree`，但不會自動得到 App 的 task Handoff。官方行為、detached HEAD 與清理規則見 [OpenAI：Worktrees](https://learn.chatgpt.com/docs/environments/git-worktrees)。
+
+### 從基礎到進階
+
+1. **基礎層**：從乾淨且相同的 base commit 建立 Worktree task。
+2. **分支層**：Worktree 預設可能是 detached HEAD；修改確定要保留時再使用 **Create branch here**。
+3. **隔離層**：同一個 branch 不能同時 checkout 在兩個 Worktree。
+4. **環境層**：每個 Worktree 都要有可重現的 setup script；不要假設 dependency 已存在。
+5. **檔案層**：ignored files 不會自動進入 managed Worktree；只將安全、必要的本機檔案列入 `.worktreeinclude`。
+6. **交付層**：用 Diff review 與 Handoff 將 task／code 移回 Local；不要讓兩個 Worktree 同時修改未分配的 shared files。
+
+### 課堂示範
+
+Part 2 只先建立兩個空白 Worktree task，真正的 branch contract 在 Part 3B Plan mode 核准後才填入：
 
 ```text
-Try a different LangChain tool schema or chat UI without modifying Worktree A.
-Stop after local tests; do not create a second Workspace resource.
+Base: main at the same clean commit
+Worktree A: human-review gate
+Worktree B: decision citations
 ```
 
-展示：
+`.worktreeinclude` 只列入無 Production secret 的本機測試設定：
 
-* 兩者修改不同工作目錄。
-* 可以各自查看 Diff。
-* 某個方案失敗時可直接捨棄 Worktree。
-* 完成後才建立 Branch、Commit 或 Handoff 到 Local；Handoff 不等於 deploy Databricks。
+```gitignore
+.env.test
+```
 
-## 10.3 Local Environment Setup
-
-新 Worktree 常缺少：
-
-* 未被 Git 追蹤的 `.env`。
-* Dependencies。
-* Build artifacts。
-* Virtual environment。
-
-因此可設定 Worktree Setup Script，例如：
+課前 local environment setup：
 
 ```bash
 uv sync
-cp .env.example .env
-uv run pytest --collect-only
+uv run pytest tests/unit -q
 ```
 
-Databricks CLI 的 profile 選擇、Genie Space 建立與 `databricks apps validate` 留在 Demo 中由講師明確核准，不放進自動 Setup Script。
+## 2.7 Hooks：在 agent lifecycle 中執行確定性規則
 
-Codex 的 Local Environment 可以為新 Worktree 自動執行 Setup Script，並定義常用 Run／Test actions。([OpenAI Developers][13])
+### 基礎：Codex Hooks 不是 Git Hooks
 
----
+Git Hooks 綁定 Git 動作；Codex Hooks 綁定 agent lifecycle，例如 `SessionStart`、`PreToolUse`、`PermissionRequest`、`PostToolUse` 與 `Stop`。適合把「不能只靠 Prompt 記得」的安全政策與驗證變成確定性程式。官方事件、輸入輸出與 trust 機制見 [OpenAI：Hooks](https://learn.chatgpt.com/docs/hooks)。
 
-# 十一、模組七：Hooks
+### 從基礎到進階
 
-這裡必須先區分兩種東西。
+1. **觀察**：先用 Hook 記錄或顯示狀態，不直接阻擋。
+2. **提醒**：用 `PostToolUse` 回饋格式或 lint 問題。
+3. **阻擋**：用 `PreToolUse` 對特定 Bash／MCP tool 給 deny 決策。
+4. **完成閘門**：用 `Stop` 執行快速測試；失敗時回傳 `continue: false` 與原因，讓 Codex繼續修正。
+5. **信任與治理**：專案 Hooks 只在 trusted project 載入；新定義或內容 hash 改變後必須重新 review。
 
-## Git Hooks
+### Part 3 使用的兩個 Repository Hooks
 
-由 Git 操作觸發，例如：
-
-* `pre-commit`
-* `commit-msg`
-* `pre-push`
-* `post-merge`
-
-適合確保所有開發者都遵守 Git 流程。
-
-## Codex Hooks
-
-由 Codex Agent 生命週期觸發，例如：
-
-* `UserPromptSubmit`
-* `PreToolUse`
-* `PermissionRequest`
-* `PostToolUse`
-* `PreCompact`
-* `PostCompact`
-* `SessionStart`
-* `SubagentStart`
-* `SubagentStop`
-* `Stop`
-
-適合在 Codex Agent loop 中加入確定性檢查。([OpenAI Developers][14])
-
-## 11.1 選擇方式
-
-| 需求                          | 使用                          |
-| --------------------------- | --------------------------- |
-| Commit 前一定要跑 lint           | Git pre-commit hook         |
-| Push 前一定要跑測試                | Git pre-push hook           |
-| Codex 收到 Prompt 時掃描 API key | Codex UserPromptSubmit Hook |
-| Codex 執行工具前檢查高風險命令          | Codex PreToolUse Hook       |
-| Codex 說完成前執行驗證              | Codex Stop Hook             |
-| 紀錄 Codex 的工具活動              | Codex PostToolUse Hook      |
-
-## 11.2 Databricks Plugin Hooks 與 Repository Hook 分兩層展示
-
-官方 Databricks Codex Plugin 已帶入三個 fail-open Hooks：
-
-| Plugin Hook | 課堂觀察點 |
-| --- | --- |
-| Prompt router／`UserPromptSubmit` | Databricks 類 Prompt 會被導向 `databricks-core` 與相符的產品 Skill。 |
-| Context primer／`SessionStart` | 提供本機 CLI 版本、profiles 等 session context，不帶出 token。 |
-| Auth-failure hint／`PostToolUse` | CLI 出現 authentication 類錯誤時提供修復提示，不自動改寫或重試命令。 |
-
-安裝或更新 Plugin 後，講師用 `/hooks` 展示 Trust Review；這一段不需要自己重寫相同的 routing Hook。([Databricks Agent Skills][15])
-
-Repository 仍可另外提供一個確定性 Stop Hook：
-
-最適合數據部的是 Stop Hook：
-
-```text
-Codex 宣稱完成
-        ↓
-Stop Hook 執行 verify_changes.sh
-        ↓
-檢查測試、App resource 與敏感資料
-        ↓
-輸出結果供最終驗收
-```
-
-`.codex/hooks.json` 概念：
+`.codex/hooks.json`：
 
 ```json
 {
   "hooks": {
-    "Stop": [
+    "PreToolUse": [
       {
-        "matcher": "*",
+        "matcher": "^Bash$",
         "hooks": [
           {
             "type": "command",
-            "command": "./scripts/verify_changes.sh"
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking command safety"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/stop_quality_gate.py\"",
+            "timeout": 120,
+            "statusMessage": "Running completion checks"
           }
         ]
       }
@@ -924,141 +366,430 @@ Stop Hook 執行 verify_changes.sh
 }
 ```
 
-講師應展示 Hook 首次執行前的 Trust Review。非管理式 Command Hook 需要使用者審查與信任；若 Hook 內容改變，會再次被標記為需要審查。([OpenAI Developers][14])
+兩個 script 的責任要保持單一：
+
+- `pre_tool_use_policy.py`：解析 stdin JSON，只阻擋已明確列入政策的危險行為，例如 `rm -rf`、對非 localhost／test DB 執行 migration、輸出 `.env`；其他情況交回正常 Approval 流程。
+- `stop_quality_gate.py`：在 `stop_hook_active` 為 false 時執行 `uv run ruff check .` 與 `uv run pytest -q`；失敗回傳 `continue: false` 與精簡錯誤，已進入第二次 Stop 時避免無限迴圈。
+
+### Hooks 現場驗證
+
+1. 開啟 `/hooks`，指出 Repository Hook 與 Ponytail Plugin Hook 的不同來源。
+2. Review command、matcher、script 與資料流後才信任。
+3. 送出一個安全命令，確認不會被誤擋。
+4. 用測試 fixture 觸發一個禁止命令，確認 PreToolUse deny。
+5. 暫時保留一個 failing test，確認 Stop Hook 不讓 task 宣稱完成；修正後再通過。
 
 ---
 
-# 十二、Demo B：Genie Space ＋ LangChain agent Databricks App
+# Part 3A｜理解專案
 
-Demo B 放在七個模組介紹之後，不再加入新名詞；它的任務是讓學員看見每個 Codex 能力如何在同一條工作流中出現。
+## 3A.1 專案案例：SupportFlow AI
 
-## 12.1 課前固定條件
+SupportFlow AI 是一個 FastAPI 模組化單體服務。客戶建立工單後，系統使用 LangChain triage agent 讀取知識庫片段，產生 category、priority 與 rationale，再寫入 PostgreSQL。測試使用 deterministic fake model，不需要現場呼叫付費或 Production LLM。
 
-為了在 17 分鐘內完成，講師需事先準備：
+目前產品問題：
 
-* 兩個小型、無敏感資料的 Unity Catalog tables，以及一個 Dev SQL Warehouse。
-* 一個明確指定的 Databricks Dev profile；不讓 Agent 自動選 Profile。
-* 一個已存在的 Dev model endpoint 名稱，供 LangChain agent 呼叫；本課不建立 Model Serving endpoint。
-* 一份可建立 Genie Space 的本機 `genie/genie_space.json` 骨架。
-* 一個預先建立的 fallback Genie Space；Workspace 連線或 Space 建立失敗時改用它。
-* 可在本機執行的 unit tests，外部 SDK 呼叫以 mock 隔離。
+- 模型判斷沒有 confidence，低可信結果仍直接套用。
+- 知識庫片段有被查詢，但沒有把來源證據保存到 decision。
+- timeout 只回 503，Reviewer 很難從資料庫確認發生過什麼。
 
-本 Demo 不需要公司 MCP。刻意「不使用 MCP」也是選型結果：Databricks 平台工作由官方 Skills 搭配 CLI／SDK 完成；MCP 只在另需內部 Catalog、Jira 或政策資料時加入。
+Part 3A 不先提出解法，而是確認這些問題是否能從 code、migration 與 test 得到證據。
 
-## 12.2 七個模組在 Demo 中的角色
-
-| 能力 | Demo B 中可觀察的行為 |
-| --- | --- |
-| `AGENTS.md` | 指定 Dev-only、禁止 hard-code token、必要測試與 Apps validation。 |
-| Config | 以 Sandbox／Approval 限制外部操作，並區分 Codex Profile 與 Databricks CLI Profile。 |
-| Skill | `databricks-core` 先處理 auth／profile／data discovery，再路由到 Genie 與 Apps Skills。 |
-| Plugin | 一次提供主 Demo 所需的穩定 Databricks Skills 與官方 Hooks。 |
-| MCP | 本次不啟用；藉此示範 MCP 不是 Databricks Agent Skills 的必要依賴。 |
-| Worktree | App scaffold、Space JSON 與測試都留在隔離工作目錄，可獨立查看 Diff。 |
-| Hooks | Plugin Hook 協助 Skill routing／auth 提示；Repository Stop Hook 執行最後檢查。 |
-
-## 12.3 現場提示詞
+## 3A.2 預先準備的 Codebase
 
 ```text
-Use databricks-core, databricks-apps-python, and databricks-apps for this task.
-
-Work only in the current Worktree and use the instructor-selected Dev profile.
-Do not use Production, deploy the app, create a model endpoint, broaden permissions,
-write tokens to files, or destroy resources.
-
-Task:
-1. Read AGENTS.md, app.yaml, databricks.yml, genie/genie_space.json,
-   agent_server/, app.py, and tests/. Confirm the active constraints.
-2. Inspect only the two instructor-approved Unity Catalog tables and propose a plan.
-3. Ask whether to reuse the fallback Genie Space or create a Dev Space.
-   If creating, update genie/genie_space.json with the two tables,
-   two sample questions, and one text instruction. Ask for approval before creation.
-4. Build the minimal Python Databricks App. Implement a LangChain agent with an
-   ask_genie tool that calls the Genie Conversation API. Read GENIE_SPACE_ID and
-   the provided model endpoint name from injected configuration; do not hard-code IDs.
-5. Bind only the selected Genie resource with CAN_RUN permission.
-6. Run mocked unit tests and `databricks apps validate --profile <dev-profile>`.
-7. Return the changed-file summary, Diff highlights, validation evidence,
-   assumptions, and remaining deployment risks. Stop before deploy.
+supportflow-ai/
+├── AGENTS.md
+├── .codex/
+│   ├── config.toml
+│   ├── hooks.json
+│   └── hooks/
+│       ├── pre_tool_use_policy.py
+│       └── stop_quality_gate.py
+├── .worktreeinclude
+├── README.md
+├── pyproject.toml
+├── app/
+│   ├── main.py
+│   ├── api/routes/tickets.py
+│   ├── schemas/ticket.py
+│   ├── services/ticket_service.py
+│   ├── agents/triage_agent.py
+│   ├── agents/prompts.py
+│   ├── tools/knowledge_search.py
+│   ├── policies/escalation.py
+│   ├── repositories/tickets.py
+│   ├── repositories/triage_decisions.py
+│   ├── db/models.py
+│   └── db/session.py
+├── migrations/versions/
+├── tests/unit/
+└── tests/integration/
 ```
 
-## 12.4 17 分鐘操作節奏
+## 3A.3 理解順序
 
-| 時間 | 現場操作 | 教學觀察點 |
-| ---: | --- | --- |
-| 39–42 | Hook routing、載入 Skills、確認 `AGENTS.md` 與 Dev profile | Codex 先取得方法、規則與權限邊界。 |
-| 42–46 | 探索兩個 tables；建立或選擇 Genie Space | Workspace mutation 前出現 Approval；失敗時使用預建 Space。 |
-| 46–52 | Scaffold Python App，建立 LangChain agent 與 `ask_genie` tool | Skill 決定實作順序；Space ID 由 App resource 注入。 |
-| 52–54 | 檢查 `app.yaml`／`databricks.yml` 與最小權限 | 不把 Token、Space ID 或 Production 設定寫死。 |
-| 54–56 | 跑 unit tests、Apps validation、Stop Hook，查看 Worktree Diff | 驗證是 Codex 工作流的閉環，不是額外功能。 |
+1. 讀 `README.md`、`pyproject.toml`、`AGENTS.md`，確認啟動與驗證方式。
+2. 從 `app/main.py` 找 route registration，而不是從檔名猜入口。
+3. 由 `POST /tickets` 追蹤 schema → service → agent／tool → repository → response。
+4. 讀 ORM model 與 migration，確認 DB 現況；若兩者不一致要列為風險。
+5. 讀 unit／integration tests，確認哪些 error path 有可執行證據。
+6. 將每個 diagram edge 連回檔案與 symbol；沒有證據的關係不得畫成已確認。
+7. 最後才允許 Mermaid Skill 建立 `docs/codebase-map/` 下的三張圖。
 
-## 12.5 為什麼驗證留在 Demo 裡
+## 3A.4 第一階段 Prompt：嚴格唯讀調查
 
-| 證據 | 對應的 Codex 能力 |
-| --- | --- |
-| 要跑哪些 unit tests／validation | `AGENTS.md` 與產品 Skill。 |
-| 檢查是否必定被執行 | Repository Stop Hook。 |
-| 允許連哪個 Workspace、是否可 deploy | Config、Approval 與當次 Prompt。 |
-| 修改是否能獨立 review／捨棄 | Worktree Diff 與 Handoff。 |
+```text
+先不要修改任何程式、設定、migration 或測試。
 
-Demo 在 Diff 與 validation evidence 完成後停止。Commit、Handoff 或真正 deploy 是後續人工決策，不占用另一個課程模組。
+請閱讀 README、pyproject.toml、AGENTS.md、app/、migrations/ 與 tests/，
+追蹤 POST /tickets 從 request 到 PostgreSQL 與 response 的完整路徑。
+
+輸出：
+1. 建議閱讀順序與理由。
+2. 模組責任與主要 symbols。
+3. request → service → agent/tool → persistence → response 流程。
+4. DB entities 與 migration 證據。
+5. 每個結論的檔案路徑與行號／symbol。
+6. 已確認、合理推測、待人工確認三類事項。
+7. 目前測試覆蓋與最小重現步驟。
+8. 可能的變更熱點；此時不要提出實作方案。
+```
+
+證據表至少包含：
+
+| 結論 | 程式碼證據 | 狀態 |
+| --- | --- | --- |
+| `POST /tickets` 呼叫 `TicketService.create_and_triage` | route path、function call 與 integration test | 已確認 |
+| agent 會查詢 knowledge chunks | tool binding、repository query 與 fake model test | 已確認 |
+| decision 沒有保存 chunk IDs | ORM、migration、response schema | 已確認 |
+| confidence threshold 應為 0.7 | 無產品規格或程式碼依據 | 待人工確認 |
+
+## 3A.5 第二階段 Prompt：使用 Mermaid Skill 產生三張圖
+
+在唯讀調查完成後，只開放寫入分析 artifact：
+
+```text
+$mermaid-skill
+
+依剛才確認的程式碼證據，建立下列 current-state diagrams：
+1. docs/codebase-map/architecture.mmd：codebase 架構圖。
+2. docs/codebase-map/create-ticket-flow.mmd：POST /tickets 流程圖。
+3. docs/codebase-map/database-erd.mmd：目前 DB ERD。
+
+限制：
+- 只可新增或修改 docs/codebase-map/。
+- 每個 node／edge 必須能回指證據表。
+- 推測關係用註解或待確認清單表示，不可畫成既有事實。
+- 先驗證 Mermaid syntax，再 render 成 SVG。
+- render 後檢查 label、方向與可讀性，最多修正兩輪。
+```
+
+## 3A.6 講師基準圖一：Current-state Codebase Architecture
+
+```mermaid
+flowchart LR
+    Client["Web / Mobile Client"] --> Route["FastAPI tickets route"]
+    Route --> Schema["Request / Response schemas"]
+    Route --> Service["TicketService"]
+
+    Service --> TicketRepo["TicketRepository"]
+    Service --> Agent["LangChain Triage Agent"]
+    Agent --> Prompt["Triage prompt + structured output"]
+    Agent --> SearchTool["knowledge_search tool"]
+    Agent --> ChatModel["Chat model<br/>fake in tests"]
+    SearchTool --> KnowledgeRepo["Knowledge repository"]
+    Service --> DecisionRepo["TriageDecisionRepository"]
+
+    TicketRepo --> DB[(PostgreSQL)]
+    KnowledgeRepo --> DB
+    DecisionRepo --> DB
+    DB --> Service
+    Service --> Route
+    Route --> Client
+```
+
+圖旁必須附證據，例如 route registration、service call、tool binding、repository query 與 integration test；架構圖本身不能取代證據表。
+
+## 3A.7 講師基準圖二：Current-state Create Ticket Flow
+
+```mermaid
+sequenceDiagram
+    actor Customer
+    participant API as POST /tickets
+    participant Service as TicketService
+    participant TicketRepo as TicketRepository
+    participant Agent as Triage Agent
+    participant KB as Knowledge Search
+    participant DecisionRepo as DecisionRepository
+    participant DB as PostgreSQL
+
+    Customer->>API: subject + description
+    API->>API: validate request schema
+    alt invalid request
+        API-->>Customer: 422 validation error
+    else valid request
+        API->>Service: create_and_triage(command)
+        Service->>TicketRepo: create(ticket)
+        TicketRepo->>DB: INSERT ticket(status=new)
+        Service->>Agent: classify(ticket)
+        Agent->>KB: search(relevant query)
+        KB->>DB: SELECT knowledge chunks
+        DB-->>KB: chunks
+        KB-->>Agent: chunk text and ids
+        Agent-->>Service: category, priority, rationale
+        Service->>DecisionRepo: save(decision)
+        DecisionRepo->>DB: INSERT triage_decision
+        Service-->>API: ticket + decision
+        API-->>Customer: 201 created
+    end
+```
+
+本圖刻意顯示 current state：agent 雖然取得 chunk IDs，但 decision insert 與 response 沒有來源欄位；這是 Part 3B 的候選 gap，不在 3A 先決定解法。
+
+## 3A.8 講師基準圖三：Current-state DB ERD
+
+```mermaid
+erDiagram
+    CUSTOMER ||--o{ TICKET : creates
+    TICKET ||--|{ TICKET_MESSAGE : contains
+    TICKET ||--o| TRIAGE_DECISION : receives
+    KNOWLEDGE_ARTICLE ||--|{ KNOWLEDGE_CHUNK : splits_into
+
+    CUSTOMER {
+        uuid id PK
+        string email
+        datetime created_at
+    }
+
+    TICKET {
+        uuid id PK
+        uuid customer_id FK
+        string subject
+        string status
+        string priority
+        datetime created_at
+    }
+
+    TICKET_MESSAGE {
+        uuid id PK
+        uuid ticket_id FK
+        string role
+        text content
+        datetime created_at
+    }
+
+    TRIAGE_DECISION {
+        uuid id PK
+        uuid ticket_id FK
+        string category
+        string priority
+        text rationale
+        string model_name
+        datetime created_at
+    }
+
+    KNOWLEDGE_ARTICLE {
+        uuid id PK
+        string title
+        string source_url
+        datetime updated_at
+    }
+
+    KNOWLEDGE_CHUNK {
+        uuid id PK
+        uuid article_id FK
+        text content
+        string embedding_ref
+    }
+```
+
+ERD 應明確揭露兩個 schema gap：目前沒有 confidence 欄位，也沒有 `TRIAGE_DECISION` 到 `KNOWLEDGE_CHUNK` 的持久化關聯。這只是現況結論；是否新增欄位與 join table 要留給 Part 3B 的 Plan mode。
+
+## 3A.9 完成標準與銜接
+
+Part 3A 完成時必須有：
+
+- 三張通過 syntax validation 的 Mermaid current-state diagrams。
+- 每張圖的 edge-to-evidence 對照表。
+- 已確認、推測、待確認的分離清單。
+- 目前 API、DB、agent、tool 與 test contract。
+- 兩個候選變更熱點，但尚未修改 source code。
+
+Part 3B 只接受這些 artifact 與證據作為 planning input；若圖與程式碼衝突，以可重現的程式碼與測試為準並先修正圖。
 
 ---
 
-# 十三、貫穿全課的「該放在哪裡」互動題
+# Part 3B｜動手修改
 
-| 需求                            | 正確位置                             |
-| ----------------------------- | -------------------------------- |
-| 接手陌生 Repository 時，先列出 request flow、證據與未知事項 | 當次 Discover Prompt；若流程重複出現，再考慮 Codebase Explorer Skill |
-| 每次修改 SQL 都要使用 `sqlfluff lint` | `AGENTS.md`；需要強制執行時再加 Hook／CI    |
-| Review 任務預設只能讀檔               | `config.toml` Permission Profile |
-| 建立 Genie Space 並接入 LangChain agent App | `databricks-core`＋`databricks-apps-python`＋`databricks-apps`；進階 Space tuning 才加 experimental `databricks-genie` |
-| 所有公司專案都要套用相同的 Databricks naming／cost review | 以官方 Skill 為 parent 的公司 subskill |
-| 將公司 subskill、資料目錄 MCP、Stop Hook 一起給團隊安裝 | 內部 Plugin |
-| 讓 Codex 查詢內部 Catalog 的 data contract／owner | MCP |
-| 同時嘗試兩種資料模型設計                  | Worktree                         |
-| Codex 送出結果前一定要跑 Schema Check  | Codex Stop Hook                  |
-| 所有人 Commit 前都必須通過格式檢查         | Git Hook 或 CI                    |
-| 單次要求不要修改某個檔案                  | 當次 Prompt，不要寫進全域 Config          |
+## 3B.1 修改目標
 
+延續 Part 3A 的兩個已確認 gap，這一段實際完成兩條小型支線：
 
-[1]: https://learn.chatgpt.com/codex/agent-configuration/agents-md "
-  Custom instructions with AGENTS.md | ChatGPT Learn
-"
-[2]: https://developers.openai.com/codex/cli/features?utm_source=chatgpt.com "Codex CLI features"
-[3]: https://developers.openai.com/codex/config-basic "
-  Config basics | ChatGPT Learn
-"
-[4]: https://developers.openai.com/codex/permissions?utm_source=chatgpt.com "Permissions | ChatGPT Learn - OpenAI Developers"
-[5]: https://developers.openai.com/codex/config-advanced "
-  Advanced Configuration | ChatGPT Learn
-"
-[6]: https://developers.openai.com/codex/config-reference "
-  Configuration Reference | ChatGPT Learn
-"
-[7]: https://learn.chatgpt.com/docs/build-skills "
-  Build skills | ChatGPT Learn
-"
-[8]: https://developers.openai.com/codex/skills "
-  Build skills | ChatGPT Learn
-"
-[9]: https://developers.openai.com/codex/plugins "
-  Plugins | ChatGPT Learn
-"
-[10]: https://learn.chatgpt.com/docs/build-plugins "
-  Build plugins | ChatGPT Learn
-"
-[11]: https://developers.openai.com/codex/mcp "
-  Model Context Protocol | ChatGPT Learn
-"
-[12]: https://git-scm.com/docs/git-worktree "Git - git-worktree Documentation"
-[13]: https://developers.openai.com/codex/environments/local-environment "
-  Local environments | ChatGPT Learn
-"
-[14]: https://developers.openai.com/codex/hooks "
-  Hooks | ChatGPT Learn
-"
-[15]: https://github.com/databricks/databricks-agent-skills "Databricks Agent Skills"
-[16]: https://docs.databricks.com/aws/en/agent-skills/ "Agent skills for AI coding assistants | Databricks"
-[17]: https://docs.databricks.com/aws/en/dev-tools/databricks-apps/genie "Add a Genie Agent resource to a Databricks app | Databricks"
-[18]: https://docs.databricks.com/aws/en/agents/agent-framework/build-agents "Use agents on Databricks | Databricks"
+1. **Human-review gate**：agent structured output 增加 confidence；低於設定 threshold 時，不自動套用 priority，而將 ticket 標為 `pending_review`。
+2. **Decision citations**：保存 decision 使用的 knowledge chunk IDs，並在 response 回傳最小來源資訊。
+
+不在本段處理 UI、Production deployment、完整 queue 重構、向量資料庫替換或模型評測平台；這些都不屬於 13 分鐘修改範圍。
+
+## 3B.2 先驗證 Part 2 能力
+
+若 Part 2 已預裝，這裡只做驗證；若未完成，先依 Part 2 指令安裝：
+
+```bash
+# LangChain Skills
+npx skills add langchain-ai/langchain-skills --skill '*' --yes --global
+
+# Ponytail Plugin
+codex plugin marketplace add DietrichGebert/ponytail
+codex plugin add ponytail@ponytail
+```
+
+驗證清單：
+
+- 新 task 可看到 `langchain-fundamentals`、`langchain-middleware`、`langchain-rag`。
+- `/hooks` 可看到並已審查 Ponytail 的 lifecycle Hooks。
+- Context7 MCP 可用；不可用時已準備 LangChain 官方文件 fallback。
+- Repository 是 trusted，`.codex/config.toml` 與 `.codex/hooks.json` 已載入。
+- `git status` 乾淨，兩個 Worktree 將從同一個 base commit 建立。
+
+## 3B.3 使用 Codex Plan mode，不先寫程式
+
+Plan mode 適合多步驟規劃；Codex 的 `/plan` 可切換此模式，見 [OpenAI：Slash commands](https://learn.chatgpt.com/docs/reference/slash-commands#available-slash-commands)。先輸入：
+
+```text
+/plan
+```
+
+接著貼入規劃任務：
+
+```text
+先不要修改檔案。使用 Part 3A 的架構圖、流程圖、ERD 與 evidence table，
+規劃以下兩項修改：
+
+A. agent output 增加 confidence；低可信 decision 進入 pending_review。
+B. 保存 knowledge chunk citations，並在 API response 回傳最小來源資訊。
+
+規劃前：
+- 使用 LangChain Skills 查核 structured output、middleware／human-in-the-loop 與 RAG provenance。
+- 使用 Context7 或 LangChain 官方文件驗證可能已變動的 API，不靠模型記憶。
+- 使用 Ponytail 對方案做一次必要性與過度設計檢查，優先重用既有 schema、repository 與 policy。
+
+輸出必須包含：
+1. 現況證據與問題定義。
+2. scope、non-goals、assumptions 與待產品確認事項。
+3. API 與 DB migration 影響，以及 backward compatibility。
+4. 兩個 Worktree 的 branch contract、檔案 ownership 與禁止交叉修改的 shared files。
+5. 每條支線的測試、rollback 與完成標準。
+6. merge 順序、預期 conflict 與整合驗證。
+7. 需要人工核准的決策；在核准前維持 read-only。
+```
+
+### Plan 核准閘門
+
+講師只在下列條件都滿足時批准實作：
+
+- threshold 沒有規格時明確列為產品決策，不由 Codex 猜一個數字。
+- migration 有 downgrade／rollback 設計。
+- API 新欄位採 additive change，未任意破壞既有 client。
+- fake model 與 fixture 可以 deterministic 驗證低／高 confidence。
+- 兩條 branch 的檔案 ownership 清楚；shared schema conflict 已先指定 merge 順序。
+- Ponytail review 沒有發現為了兩個欄位建立不必要 framework 或 service。
+
+## 3B.4 使用兩個 Worktree 開啟平行支線
+
+兩個 task 都從同一個乾淨 base commit 建立。Codex App 預設 managed Worktree 可能是 detached HEAD；確定要保留修改後，分別用 **Create branch here** 建立：
+
+| Worktree | Branch | 主要責任 | 主要 Skills | 不可修改 |
+| --- | --- | --- | --- | --- |
+| A | `codex/human-review-gate` | confidence contract、review policy、status transition、migration 與 tests | `langchain-fundamentals`、`langchain-middleware` | citation response 與 source persistence |
+| B | `codex/decision-citations` | retrieval provenance、decision sources、additive response 與 tests | `langchain-rag` | confidence threshold 與 review policy |
+
+### Worktree A Prompt
+
+```text
+依已核准 Plan 實作 human-review gate。
+
+限制：
+- 只修改 branch contract 分配給 Worktree A 的檔案。
+- 使用 LangChain structured output 的目前官方做法；API 不確定時先查 Skill 與官方文件。
+- threshold 從設定注入；不要硬編碼未核准的產品數值。
+- 測試使用 fake model，覆蓋 high-confidence、low-confidence 與 invalid output。
+- migration 必須可 downgrade。
+- 完成前執行 Ponytail diff review，再執行相關 unit／integration tests。
+```
+
+### Worktree B Prompt
+
+```text
+依已核准 Plan 實作 decision citations。
+
+限制：
+- 只修改 branch contract 分配給 Worktree B 的檔案。
+- 重用 knowledge_search 已回傳的 chunk IDs，不新增第二套 retrieval abstraction。
+- 新增最小持久化關聯與 additive response；不要回傳完整 chunk content。
+- 測試 citation order、去重、找不到 article 的行為與既有 client compatibility。
+- migration 必須可 downgrade。
+- 完成前執行 Ponytail diff review，再執行相關 unit／integration tests。
+```
+
+### 平行修改時的講師觀察點
+
+- Codex 是否真的遵守 branch ownership，而不是看到相關檔案就全改。
+- Skills 是否只在相關任務載入，沒有把整個 LangChain 生態塞入 context。
+- 查到的 API 是否能回指官方文件或 primary repository。
+- Ponytail 是否讓方案更小，而不是刪掉必要 validation、security 或 error handling。
+- 每個 Worktree 是否有獨立 setup、test result 與可審查 Diff。
+
+## 3B.5 Hooks 在本段的實際角色
+
+### Hook 1：PreToolUse Safety Gate
+
+在 Codex 執行 Bash 前檢查：
+
+- 阻擋 `rm -rf` 等明確 destructive pattern。
+- 阻擋對非 localhost／test `DATABASE_URL` 執行 Alembic upgrade／downgrade。
+- 阻擋 `cat .env`、`printenv` 搭配敏感 key 等 secrets exposure。
+- 對未列入 deny policy 的命令不擅自 approve，仍交給正常 Sandbox／Approval。
+
+現場只用 fixture payload 測試 Hook，不真的送出危險命令。
+
+### Hook 2：Stop Quality Gate
+
+Codex 準備結束 turn 時：
+
+1. 先執行 `uv run ruff check .`。
+2. 再執行 `uv run pytest -q`。
+3. 任一失敗就回傳 `continue: false` 與最小錯誤摘要，讓 Codex繼續修正。
+4. 讀取 `stop_hook_active` 防止失敗後無限重入。
+5. 兩項通過才允許 task 宣告完成。
+
+### Ponytail Plugin Hooks
+
+Ponytail 自帶的 lifecycle Hooks 用來維持它的最小實作規則；Repository Hooks 負責安全與驗證。兩者來源與責任必須在 `/hooks` 中分開說明，不把第三方 Plugin Hook 當成專案安全政策的替代品。
+
+## 3B.6 13 分鐘現場節奏
+
+| 時間 | 動作 | 產出 |
+| ---: | --- | --- |
+| 44–46 | 驗證 Skills、Plugin、MCP、Hooks 與 clean base | 可重現的執行環境 |
+| 46–49 | `/plan` 產生方案，使用 LangChain 資料與 Ponytail critique，人工核准 | 兩條 branch contract、migration／test／rollback plan |
+| 49–51 | 從同一 base 建立 Worktree A、B 與對應 branches | 兩個隔離 task |
+| 51–55 | 兩條支線平行修改；講師切換查看 Diff 與證據 | 實際 code、migration 與 tests |
+| 55–57 | 觸發 Stop Hook、查看測試、執行 Ponytail diff review，決定 merge 順序 | 通過閘門的支線與整合清單 |
+
+為了讓現場穩定，兩個 Worktree 的 dependency cache、fake model fixtures 與 base tests 要在課前完成；現場仍由 Codex 產生實際 Diff，不播放預錄結果。
+
+## 3B.7 整合順序與完成標準
+
+建議先整合 Worktree A，再 rebase／更新 Worktree B，因為 A 先定義 `TRIAGE_DECISION` 的 confidence 與 ticket status contract；B 再加入 `DECISION_SOURCE` 關聯與 response sources。若兩條 migration 形成 multiple heads，必須顯式處理，不可隱藏。
+
+每條支線完成時必須具備：
+
+- 只修改 branch contract 允許的檔案，任何例外都有理由。
+- Diff 可回指 Part 3A 的 gap 與已核准 Plan。
+- LangChain 用法有 Skill 加官方／primary source 的交叉驗證。
+- Ponytail review 已執行，且沒有以「少寫程式」為由移除必要安全與錯誤處理。
+- Migration upgrade／downgrade、unit tests、integration tests 與 lint 通過。
+- Stop Hook 實際通過，不是只在回覆中宣稱已測試。
+- 說明 API／DB 相容性、剩餘風險、rollback 與 merge 順序。
+- 不 deploy、不連 Production、不使用真實客戶資料。
