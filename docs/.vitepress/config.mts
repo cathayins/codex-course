@@ -23,10 +23,56 @@ export default defineConfig({
     siteTitle: 'Codex Course',
     nav: [
       { text: '首頁', link: '/' },
-      { text: '快速上手', link: '/quick-start/' },
-      { text: '進階課程', link: '/advanced/' },
-      { text: '實戰案例', link: '/cases/' },
-      { text: '學習資源', link: '/resources/' }
+      {
+        text: '快速上手',
+        activeMatch: '^/quick-start/',
+        items: [
+          { text: '課程導覽', link: '/quick-start/' },
+          { text: '認識 Codex', link: '/quick-start/what-is-codex' },
+          { text: 'Codex App 介面', link: '/quick-start/app-interface' },
+          { text: '建立第一個專案', link: '/quick-start/first-project' },
+          { text: '完成第一個任務', link: '/quick-start/first-task' },
+          { text: '成果檢查與交付', link: '/quick-start/validation-delivery' }
+        ]
+      },
+      {
+        text: '進階課程',
+        activeMatch: '^/advanced/',
+        items: [
+          { text: '學習路線', link: '/advanced/' },
+          { text: '理解陌生 Codebase', link: '/advanced/codebase' },
+          { text: 'AGENTS.md', link: '/advanced/agents-md' },
+          { text: 'Skills 與 Plugins', link: '/advanced/skills-plugins' },
+          { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
+          { text: '權限、沙盒與審批', link: '/advanced/permissions' },
+          { text: '團隊工作流', link: '/advanced/team-workflow' }
+        ]
+      },
+      {
+        text: '實戰案例',
+        activeMatch: '^/cases/',
+        items: [
+          { text: '案例總覽', link: '/cases/' },
+          { text: '素材轉簡報', link: '/cases/presentation' },
+          { text: 'Marketing 數據分析', link: '/cases/marketing-data' },
+          { text: 'Codebase 理解 Demo', link: '/cases/codebase-review' },
+          { text: '建立系統架構圖', link: '/cases/architecture-diagram' },
+          { text: '驗證與 PR 交付', link: '/cases/pr-delivery' }
+        ]
+      },
+      {
+        text: '學習資源',
+        activeMatch: '^/resources/',
+        items: [
+          { text: '資源總覽', link: '/resources/' },
+          { text: 'Prompt 範本', link: '/resources/prompt-template' },
+          { text: 'AGENTS.md 範本', link: '/resources/agents-template' },
+          { text: 'Skill Starter', link: '/resources/skill-starter' },
+          { text: '驗收清單', link: '/resources/checklist' },
+          { text: '官方文件', link: '/resources/official-docs' },
+          { text: '課後練習', link: '/resources/practice' }
+        ]
+      }
     ],
     sidebar: {
       '/quick-start/': [
