@@ -1,5 +1,8 @@
 # User defined ignore rules
 .DS_Store
+node_modules/
+site/
+docs/.vitepress/cache/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
