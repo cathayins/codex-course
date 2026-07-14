@@ -1,5 +1,8 @@
 # Codex 進階：從 Codebase 理解到可治理的專業開發工作流
 
+> [!NOTE]
+> 本文件是進階能力與 Demo 的詳細素材庫，不是現行 60 分鐘課表。最新課程順序、Demo 拆分與講師分工請以 [`agenda.md`](agenda.md) 為準。
+
 本課使用兩個彼此獨立的 Demo，避免讓學員誤以為 Codebase 理解只適用於 Databricks：
 
 1. **Demo A／一般 Codebase 理解**：接手陌生的 Python API Repository，先建立有程式碼證據的系統地圖。

@@ -63,7 +63,15 @@ export default defineConfig({
             { text: '案例總覽', link: '/cases/' },
             { text: '素材轉簡報', link: '/cases/presentation' },
             { text: 'Marketing 數據分析', link: '/cases/marketing-data' },
-            { text: 'Codebase 理解', link: '/cases/codebase-review' },
+            {
+              text: 'Codebase 理解 Demo',
+              link: '/cases/codebase-review',
+              collapsed: false,
+              items: [
+                { text: 'Part 1｜理解專案', link: '/cases/codebase-review/understand-project' },
+                { text: 'Part 2｜動手修改', link: '/cases/codebase-review/modify-project' }
+              ]
+            },
             { text: '建立系統架構圖', link: '/cases/architecture-diagram' },
             { text: '驗證與 PR 交付', link: '/cases/pr-delivery' }
           ]
