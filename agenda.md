@@ -16,7 +16,7 @@
 | 時間 | Part | 內容 | 負責人 |
 |---:|---|---|---|
 | 0–15 | **QuickStart** | Codex 定位、App 介面、建立專案與基本操作 | Benson |
-| 15–30 | **進階能力** | Skills、Plugins、MCP／Connector 與使用邊界 | Roy |
+| 15–30 | **進階能力** | Skills、Plugins、Automation | Roy |
 | 30–42 | **Demo 1** | 素材整理與簡報製作 | Roy |
 | 42–54 | **Demo 2** | Marketing 資料分析 | Benson |
 | 54–60 | **收束與 Q&A** | 回顧使用原則與課後方向 | Benson、Roy |
