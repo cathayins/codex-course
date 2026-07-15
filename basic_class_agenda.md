@@ -254,7 +254,8 @@ Demo 不從「幫我做一份簡報」開始，而是依序完成：
 - [`agenda.md`](agenda.md)：課程定位、對象與時間。
 - [`docs/quick-start/what-is-codex.md`](docs/quick-start/what-is-codex.md)：Codex 的定位、適用工作與人的責任。
 - [`docs/quick-start/app-interface.md`](docs/quick-start/app-interface.md)：App 的 task、workspace、terminal 與 diff。
-- [`docs/advanced/skills-plugins.md`](docs/advanced/skills-plugins.md)：Skill 與 Plugin 的基礎分工。
+- [`docs/advanced/skills.md`](docs/advanced/skills.md)：Skill 的基本使用與選用時機。
+- [`docs/advanced/plugins.md`](docs/advanced/plugins.md)：Plugin 的基本安裝、連線與分工。
 - [`docs/cases/presentation.md`](docs/cases/presentation.md)：素材轉簡報的流程與驗收重點。
 
 其中 `presentation.md` 主要提供「怎麼製作與驗收」的規則，不必硬塞成觀眾會看到的一頁內容。這也示範參考文件可以有不同角色：有些提供事實，有些提供製作規範。
@@ -323,7 +324,7 @@ Demo 不從「幫我做一份簡報」開始，而是依序完成：
 | 2 | 好任務先說清楚目標、限制、素材與驗收方式 | 說明如何交代第一個任務 | `what-is-codex.md` |
 | 3 | 人決定目標與風險，Codex 負責在工作區執行與驗證 | 建立正確的人機分工 | `what-is-codex.md` |
 | 4 | Task、workspace、terminal 與 diff 讓工作過程可追蹤 | 認識 App 的基本操作面 | `app-interface.md` |
-| 5 | Skill 固化做法，Plugin 把做法與工具包成可安裝能力 | 從基本使用進入能力擴充 | `skills-plugins.md` |
+| 5 | Skill 固化做法，Plugin 把做法與工具包成可安裝能力 | 從基本使用進入能力擴充 | `skills.md`、`plugins.md` |
 | 6 | 從一個範圍小、可驗收的任務開始，再逐步重用成熟流程 | 收束並給出下一步 | `agenda.md`、其餘來源綜合 |
 
 ## Step 2｜用內建 `presentations` skill 製作簡報
