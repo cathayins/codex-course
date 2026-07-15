@@ -40,12 +40,14 @@ export default defineConfig({
         activeMatch: '^/advanced/',
         items: [
           { text: '學習路線', link: '/advanced/' },
-          { text: '理解陌生 Codebase', link: '/advanced/codebase' },
           { text: 'AGENTS.md', link: '/advanced/agents-md' },
-          { text: 'Skills 與 Plugins', link: '/advanced/skills-plugins' },
+          { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
+          { text: 'Skills', link: '/advanced/skills' },
+          { text: 'Plugins', link: '/advanced/plugins' },
           { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
-          { text: '權限、沙盒與審批', link: '/advanced/permissions' },
-          { text: '團隊工作流', link: '/advanced/team-workflow' }
+          { text: 'Scheduled tasks', link: '/advanced/automation' },
+          { text: 'Worktrees', link: '/advanced/worktrees' },
+          { text: 'Hooks', link: '/advanced/hooks' }
         ]
       },
       {
@@ -93,12 +95,14 @@ export default defineConfig({
           text: '進階課程',
           items: [
             { text: '學習路線', link: '/advanced/' },
-            { text: '理解陌生 Codebase', link: '/advanced/codebase' },
             { text: 'AGENTS.md', link: '/advanced/agents-md' },
-            { text: 'Skills 與 Plugins', link: '/advanced/skills-plugins' },
+            { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
+            { text: 'Skills', link: '/advanced/skills' },
+            { text: 'Plugins', link: '/advanced/plugins' },
             { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
-            { text: '權限、沙盒與審批', link: '/advanced/permissions' },
-            { text: '團隊工作流', link: '/advanced/team-workflow' }
+            { text: 'Scheduled tasks', link: '/advanced/automation' },
+            { text: 'Worktrees', link: '/advanced/worktrees' },
+            { text: 'Hooks', link: '/advanced/hooks' }
           ]
         }
       ],
