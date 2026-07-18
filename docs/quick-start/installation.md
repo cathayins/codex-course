@@ -19,7 +19,7 @@ pageClass: quickstart-story
       label: 'Codex App',
       title: '首選推薦，整合在桌面版 ChatGPT',
       description: 'Codex App 整合在 ChatGPT desktop app。到官方下載頁選擇 macOS 或 Windows，安裝後登入，再從產品選單切換到 Codex。QuickStart 會先從這個入口開始。',
-      image: '/images/quick-start/install-chatgpt-desktop-download.png',
+      image: '/images/quick-start/install-chatgpt-desktop-download.webp',
       alt: 'ChatGPT 官方下載頁，桌面版提供 macOS 與 Windows 按鈕，並說明可以在桌面版開啟 Codex',
       links: [
         { label: '下載 ChatGPT desktop app', href: 'https://chatgpt.com/download/' }
@@ -39,7 +39,7 @@ pageClass: quickstart-story
         image: '/images/quick-start/vscode.svg',
         alt: 'Visual Studio Code 圖示'
       },
-      image: '/images/quick-start/install-codex-extension-vscode.png',
+      image: '/images/quick-start/install-codex-extension-vscode.webp',
       alt: 'Visual Studio Code Extensions 頁面中的 OpenAI 官方 Codex Extension，顯示已驗證的 OpenAI 發行者與 openai.chatgpt 識別碼',
       links: [
         { label: '下載 Visual Studio Code', href: 'https://code.visualstudio.com/' },

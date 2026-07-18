@@ -86,7 +86,7 @@ codex-quickstart-demo/
 <div class="instruction-showcase">
   <div class="refined-media refined-media--square">
     <div class="refined-media__window">
-      <img src="/images/quick-start/at-menu.png" alt="Codex 輸入框輸入 @ 後，顯示檔案與 Plugin 的清單">
+      <img src="/images/quick-start/at-menu.webp" alt="Codex 輸入框輸入 @ 後，顯示檔案與 Plugin 的清單">
     </div>
   </div>
   <div>
