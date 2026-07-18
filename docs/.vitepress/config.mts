@@ -27,12 +27,22 @@ export default defineConfig({
         text: '快速上手',
         activeMatch: '^/quick-start/',
         items: [
-          { text: '課程導覽', link: '/quick-start/' },
-          { text: '認識 Codex', link: '/quick-start/what-is-codex' },
-          { text: 'Codex App 介面', link: '/quick-start/app-interface' },
-          { text: '建立第一個專案', link: '/quick-start/first-project' },
-          { text: '完成第一個任務', link: '/quick-start/first-task' },
-          { text: '成果檢查與交付', link: '/quick-start/validation-delivery' }
+          {
+            text: 'What Is Codex',
+            items: [
+              { text: 'ChatGPT vs Codex', link: '/quick-start/' },
+              { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineers' }
+            ]
+          },
+          { text: '安裝 Codex', link: '/quick-start/installation' },
+          {
+            text: '介面介紹',
+            items: [
+              { text: 'Codex App', link: '/quick-start/app-interface' },
+              { text: 'Codex IDE', link: '/quick-start/ide-interface' }
+            ]
+          },
+          { text: '快速開始使用', link: '/quick-start/first-project' }
         ]
       },
       {
@@ -67,6 +77,7 @@ export default defineConfig({
         activeMatch: '^/resources/',
         items: [
           { text: '資源總覽', link: '/resources/' },
+          { text: 'QuickStart 術語表', link: '/resources/glossary' },
           { text: 'Prompt 範本', link: '/resources/prompt-template' },
           { text: 'AGENTS.md 範本', link: '/resources/agents-template' },
           { text: 'Skill Starter', link: '/resources/skill-starter' },
@@ -81,12 +92,24 @@ export default defineConfig({
         {
           text: '快速上手',
           items: [
-            { text: '課程導覽', link: '/quick-start/' },
-            { text: '認識 Codex', link: '/quick-start/what-is-codex' },
-            { text: 'Codex App 介面', link: '/quick-start/app-interface' },
-            { text: '建立第一個專案', link: '/quick-start/first-project' },
-            { text: '完成第一個任務', link: '/quick-start/first-task' },
-            { text: '成果檢查與交付', link: '/quick-start/validation-delivery' }
+            {
+              text: 'What Is Codex',
+              collapsed: false,
+              items: [
+                { text: 'ChatGPT vs Codex', link: '/quick-start/' },
+                { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineers' }
+              ]
+            },
+            { text: '安裝 Codex', link: '/quick-start/installation' },
+            {
+              text: '介面介紹',
+              collapsed: false,
+              items: [
+                { text: 'Codex App', link: '/quick-start/app-interface' },
+                { text: 'Codex IDE', link: '/quick-start/ide-interface' }
+              ]
+            },
+            { text: '快速開始使用', link: '/quick-start/first-project' }
           ]
         }
       ],
@@ -132,6 +155,7 @@ export default defineConfig({
           text: '學習資源',
           items: [
             { text: '資源總覽', link: '/resources/' },
+            { text: 'QuickStart 術語表', link: '/resources/glossary' },
             { text: 'Prompt 範本', link: '/resources/prompt-template' },
             { text: 'AGENTS.md 範本', link: '/resources/agents-template' },
             { text: 'Skill Starter', link: '/resources/skill-starter' },

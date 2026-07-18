@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "human-tone": {
+      "source": "Varnan-Tech/opendirectory",
+      "sourceType": "github",
+      "skillPath": "skills/human-tone/SKILL.md",
+      "computedHash": "d6cfe1772805171af22e72c0bed87596f6f679b03e186a6d6779682aebea6634"
+    }
+  }
+}
