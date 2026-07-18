@@ -22,7 +22,7 @@ features:
       width: '1200'
       height: '675'
     title: 快速上手
-    details: 先分清 ChatGPT 與 Codex，再認識 App、IDE、CLI，最後從一個本機資料夾完成第一個跨檔任務。適合第一次使用 Codex 的學習者。
+    details: 先分清 ChatGPT 與 Codex，再認識 App、IDE、CLI，最後從一個本機資料夾完成第一個跨檔任務。第一次使用 Codex 可以從這裡開始。
     link: /quick-start/
     linkText: 進入課程
   - icon:
