@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, useId } from 'vue'
+import { computed, nextTick, onMounted, ref, useId } from 'vue'
 import { withBase } from 'vitepress'
 
 type MediaTab = {
@@ -50,8 +50,10 @@ const props = defineProps<{
 
 const instanceId = useId()
 const rootElement = ref<HTMLElement | null>(null)
+const activeImageElement = ref<HTMLImageElement | null>(null)
 const activeIndex = ref(0)
 const activePlatformIndex = ref(0)
+let imagePreloadScheduled = false
 const activeItem = computed(() => props.items[activeIndex.value] ?? props.items[0])
 const activePlatform = computed(() =>
   activeItem.value?.platforms?.[activePlatformIndex.value] ?? activeItem.value?.platforms?.[0],
@@ -108,6 +110,45 @@ function onPlatformKeydown(event: KeyboardEvent, index: number) {
     .parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]
   target?.focus()
 }
+
+function preloadInactiveImages() {
+  const currentSource = activeItem.value?.image
+  const sources = [
+    ...new Set(
+      props.items
+        .map((item) => item.image)
+        .filter((source): source is string => Boolean(source)),
+    ),
+  ]
+
+  for (const source of sources) {
+    if (source === currentSource) continue
+
+    const preload = document.createElement('link')
+    preload.rel = 'preload'
+    preload.as = 'image'
+    preload.href = withBase(source)
+    document.head.append(preload)
+  }
+}
+
+function scheduleInactiveImagePreload() {
+  if (imagePreloadScheduled) return
+  imagePreloadScheduled = true
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(preloadInactiveImages, { timeout: 1800 })
+    return
+  }
+
+  window.setTimeout(preloadInactiveImages, 500)
+}
+
+onMounted(() => {
+  if (!activeImageElement.value || activeImageElement.value.complete) {
+    scheduleInactiveImagePreload()
+  }
+})
 </script>
 
 <template>
@@ -150,8 +191,13 @@ function onPlatformKeydown(event: KeyboardEvent, index: number) {
         <div class="media-tabs__glow" aria-hidden="true"></div>
         <div class="media-tabs__window">
           <img
+            ref="activeImageElement"
             :src="withBase(activeItem.image)"
             :alt="activeItem.alt || activeItem.title"
+            loading="eager"
+            decoding="async"
+            @load="scheduleInactiveImagePreload"
+            @error="scheduleInactiveImagePreload"
           >
         </div>
       </div>
