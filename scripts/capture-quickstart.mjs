@@ -6,11 +6,15 @@ const outputDir = process.argv[3] ?? '/private/tmp/quickstart-qa'
 
 const routes = [
   ['01-what-is-codex', '/quick-start/'],
-  ['02-codex-for-engineer', '/quick-start/codex-for-engineers'],
-  ['03-installation', '/quick-start/installation'],
-  ['04-app', '/quick-start/app-interface'],
-  ['05-ide', '/quick-start/ide-interface'],
-  ['06-first-project', '/quick-start/first-project']
+  ['02-installation', '/quick-start/installation'],
+  ['03-app', '/quick-start/app-interface'],
+  ['04-ide', '/quick-start/ide-interface'],
+  ['05-first-project', '/quick-start/first-project'],
+  ['06-using-at', '/quick-start/using-at'],
+  ['07-using-slash', '/quick-start/using-slash'],
+  ['08-follow-up', '/quick-start/follow-up'],
+  ['09-goals', '/quick-start/goals'],
+  ['10-demo', '/quick-start/demo']
 ]
 
 await mkdir(outputDir, { recursive: true })
@@ -40,7 +44,7 @@ for (const [name, route] of routes) {
 }
 
 const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 })
-for (const [name, route] of [routes[0], routes[2], routes[3], routes[5]]) {
+for (const [name, route] of routes) {
   const page = await mobile.newPage()
   await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle' })
   await page.screenshot({ path: `${outputDir}/${name}-mobile.png`, fullPage: true })

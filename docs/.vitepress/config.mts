@@ -27,13 +27,7 @@ export default defineConfig({
         text: '快速上手',
         activeMatch: '^/quick-start/',
         items: [
-          {
-            text: 'What Is Codex',
-            items: [
-              { text: 'ChatGPT vs Codex', link: '/quick-start/' },
-              { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineers' }
-            ]
-          },
+          { text: 'What Is Codex', link: '/quick-start/' },
           { text: '安裝 Codex', link: '/quick-start/installation' },
           {
             text: '介面介紹',
@@ -42,7 +36,17 @@ export default defineConfig({
               { text: 'Codex IDE', link: '/quick-start/ide-interface' }
             ]
           },
-          { text: '快速開始使用', link: '/quick-start/first-project' }
+          {
+            text: '快速使用',
+            items: [
+              { text: '開始第一個任務', link: '/quick-start/first-project' },
+              { text: '用 @ 指定檔案與 Plugin', link: '/quick-start/using-at' },
+              { text: '用 / 查看狀態與模型', link: '/quick-start/using-slash' },
+              { text: '分派與調整工作', link: '/quick-start/follow-up' },
+              { text: 'Using Goals in Codex', link: '/quick-start/goals' },
+              { text: '全流程 Demo', link: '/quick-start/demo' }
+            ]
+          }
         ]
       },
       {
@@ -92,14 +96,7 @@ export default defineConfig({
         {
           text: '快速上手',
           items: [
-            {
-              text: 'What Is Codex',
-              collapsed: false,
-              items: [
-                { text: 'ChatGPT vs Codex', link: '/quick-start/' },
-                { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineers' }
-              ]
-            },
+            { text: 'What Is Codex', link: '/quick-start/' },
             { text: '安裝 Codex', link: '/quick-start/installation' },
             {
               text: '介面介紹',
@@ -109,7 +106,18 @@ export default defineConfig({
                 { text: 'Codex IDE', link: '/quick-start/ide-interface' }
               ]
             },
-            { text: '快速開始使用', link: '/quick-start/first-project' }
+            {
+              text: '快速使用',
+              collapsed: false,
+              items: [
+                { text: '開始第一個任務', link: '/quick-start/first-project' },
+                { text: '用 @ 指定檔案與 Plugin', link: '/quick-start/using-at' },
+                { text: '用 / 查看狀態與模型', link: '/quick-start/using-slash' },
+                { text: '分派與調整工作', link: '/quick-start/follow-up' },
+                { text: 'Using Goals in Codex', link: '/quick-start/goals' },
+                { text: '全流程 Demo', link: '/quick-start/demo' }
+              ]
+            }
           ]
         }
       ],
