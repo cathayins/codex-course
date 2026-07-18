@@ -14,7 +14,7 @@ pageClass: quickstart-story
 
 <div class="refined-media refined-media--wide refined-media--standalone">
   <div class="refined-media__window">
-    <img src="/images/quick-start/slash-menu.png" alt="Codex 斜線指令選單，包含模型、推理與規劃模式">
+    <img src="/images/quick-start/slash-menu.webp" alt="Codex 斜線指令選單，包含模型、推理與規劃模式">
   </div>
 </div>
 
