@@ -28,23 +28,24 @@ export default defineConfig({
         activeMatch: '^/quick-start/',
         items: [
           { text: 'What Is Codex', link: '/quick-start/' },
-          { text: '安裝 Codex', link: '/quick-start/installation' },
+          { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineer' },
+          { text: 'Installation', link: '/quick-start/installation' },
           {
-            text: '介面介紹',
+            text: 'Overview',
             items: [
               { text: 'Codex App', link: '/quick-start/app-interface' },
               { text: 'Codex IDE', link: '/quick-start/ide-interface' }
             ]
           },
           {
-            text: '快速使用',
+            text: 'Quick Start',
             items: [
-              { text: '開始第一個任務', link: '/quick-start/first-project' },
-              { text: '用 @ 指定檔案與 Plugin', link: '/quick-start/using-at' },
-              { text: '用 / 查看狀態與模型', link: '/quick-start/using-slash' },
-              { text: '分派與調整工作', link: '/quick-start/follow-up' },
-              { text: 'Using Goals in Codex', link: '/quick-start/goals' },
-              { text: '全流程 Demo', link: '/quick-start/demo' }
+              { text: 'First Project', link: '/quick-start/first-project' },
+              { text: 'Models', link: '/quick-start/models' },
+              { text: 'Prompting', link: '/quick-start/prompting' },
+              { text: 'Slash Commands', link: '/quick-start/using-slash' },
+              { text: 'Follow Up', link: '/quick-start/follow-up' },
+              { text: 'Using Goals in Codex', link: '/quick-start/goals' }
             ]
           }
         ]
@@ -97,9 +98,10 @@ export default defineConfig({
           text: '快速上手',
           items: [
             { text: 'What Is Codex', link: '/quick-start/' },
-            { text: '安裝 Codex', link: '/quick-start/installation' },
+            { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineer' },
+            { text: 'Installation', link: '/quick-start/installation' },
             {
-              text: '介面介紹',
+              text: 'Overview',
               collapsed: false,
               items: [
                 { text: 'Codex App', link: '/quick-start/app-interface' },
@@ -107,15 +109,15 @@ export default defineConfig({
               ]
             },
             {
-              text: '快速使用',
+              text: 'Quick Start',
               collapsed: false,
               items: [
-                { text: '開始第一個任務', link: '/quick-start/first-project' },
-                { text: '用 @ 指定檔案與 Plugin', link: '/quick-start/using-at' },
-                { text: '用 / 查看狀態與模型', link: '/quick-start/using-slash' },
-                { text: '分派與調整工作', link: '/quick-start/follow-up' },
-                { text: 'Using Goals in Codex', link: '/quick-start/goals' },
-                { text: '全流程 Demo', link: '/quick-start/demo' }
+                { text: 'First Project', link: '/quick-start/first-project' },
+                { text: 'Models', link: '/quick-start/models' },
+                { text: 'Prompting', link: '/quick-start/prompting' },
+                { text: 'Slash Commands', link: '/quick-start/using-slash' },
+                { text: 'Follow Up', link: '/quick-start/follow-up' },
+                { text: 'Using Goals in Codex', link: '/quick-start/goals' }
               ]
             }
           ]
