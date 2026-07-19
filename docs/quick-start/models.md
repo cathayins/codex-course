@@ -24,7 +24,7 @@ pageClass: quickstart-story
 <div class="recommended-models" aria-label="OpenAI 官方推薦模型比較">
   <article class="recommended-model">
     <div class="recommended-model__visual">
-      <img src="/images/quick-start/gpt-5.6-sol.webp" alt="太陽與星空，代表 5.6 Sol" loading="eager" fetchpriority="high" decoding="async">
+      <img src="/images/quick-start/gpt-5.6-sol.webp" width="696" height="360" alt="太陽與星空，代表 5.6 Sol" loading="eager" fetchpriority="high" decoding="async">
       <strong>5.6 Sol</strong>
     </div>
     <div class="recommended-model__body">
@@ -42,7 +42,7 @@ pageClass: quickstart-story
 
   <article class="recommended-model">
     <div class="recommended-model__visual">
-      <img src="/images/quick-start/gpt-5.6-terra.webp" alt="地球與星空，代表 5.6 Terra" loading="lazy" decoding="async">
+      <img src="/images/quick-start/gpt-5.6-terra.webp" width="696" height="360" alt="地球與星空，代表 5.6 Terra" loading="lazy" decoding="async">
       <strong>5.6 Terra</strong>
     </div>
     <div class="recommended-model__body">
@@ -60,7 +60,7 @@ pageClass: quickstart-story
 
   <article class="recommended-model">
     <div class="recommended-model__visual">
-      <img src="/images/quick-start/gpt-5.6-luna.webp" alt="月球與星空，代表 5.6 Luna" loading="lazy" decoding="async">
+      <img src="/images/quick-start/gpt-5.6-luna.webp" width="696" height="360" alt="月球與星空，代表 5.6 Luna" loading="lazy" decoding="async">
       <strong>5.6 Luna</strong>
     </div>
     <div class="recommended-model__body">
