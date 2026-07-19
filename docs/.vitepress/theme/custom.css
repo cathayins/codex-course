@@ -859,6 +859,689 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Token efficiency story */
+.credit-savings-page .vp-doc {
+  --credit-ink: #11130d;
+  --credit-muted: #5d6254;
+  --credit-cream: #fbfdec;
+  --credit-lime: #dcffa0;
+  --credit-lime-soft: #f0ffd2;
+  --credit-peach-soft: #fff0e9;
+  color: var(--credit-ink);
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", var(--vp-font-family-base);
+}
+
+.credit-savings-page .vp-doc h1,
+.credit-savings-page .vp-doc h2,
+.credit-savings-page .vp-doc h3,
+.credit-savings-page .vp-doc strong,
+.credit-savings-page .vp-doc b {
+  color: var(--credit-ink);
+}
+
+.credit-savings-page .lesson-lead {
+  max-width: 920px;
+  color: var(--credit-muted) !important;
+}
+
+.credit-savings-hero {
+  margin: 30px 0 42px;
+  padding: 34px;
+  border: 1px solid #e7e9d8;
+  border-radius: 20px;
+  background: var(--credit-cream);
+  box-shadow: 0 18px 42px rgb(81 91 45 / 8%);
+}
+
+.credit-savings-hero__heading {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.credit-savings-hero__heading > span,
+.credit-savings-card__label,
+.credit-savings-routing__copy > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  color: #25350e;
+  background: var(--credit-lime);
+  font-family: var(--vp-font-family-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .055em;
+  line-height: 1.3;
+}
+
+.credit-savings-hero__heading h2 {
+  margin: 13px 0 0;
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.22;
+  letter-spacing: -.035em;
+}
+
+.credit-savings-hero__heading p {
+  max-width: 760px;
+  margin: 14px auto 0;
+  color: var(--credit-muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.credit-savings-factors {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.credit-savings-factors section {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid #e8eadc;
+  border-radius: 13px;
+  background: rgb(255 255 255 / 82%);
+}
+
+.credit-savings-factors b {
+  display: block;
+  color: #77a72c;
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+.credit-savings-factors strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 17px;
+}
+
+.credit-savings-factors p {
+  margin: 7px 0 0;
+  color: var(--credit-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.credit-savings-routing {
+  display: grid;
+  gap: 15px;
+  margin: 26px 0 40px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.credit-savings-routing__panel {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+  grid-template-columns: 64px minmax(0, 1fr);
+  margin: 0;
+  padding: 28px;
+  border: 1px solid #e7e9d8;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.credit-savings-routing__panel--chatgpt {
+  background: var(--credit-peach-soft);
+}
+
+.credit-savings-routing__panel--codex {
+  background: var(--credit-lime-soft);
+}
+
+.credit-savings-routing__icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 75%);
+  box-shadow: 0 10px 20px rgb(71 84 35 / 9%);
+}
+
+.credit-savings-routing__panel--codex .credit-savings-routing__icon {
+  background: rgb(246 255 227 / 88%);
+}
+
+.credit-savings-routing__icon img {
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  object-fit: contain;
+}
+
+.credit-savings-routing__copy > span {
+  padding: 0;
+  color: #66852a;
+  background: transparent;
+  font-size: 10px;
+}
+
+.credit-savings-routing__panel h3 {
+  margin: 12px 0 0;
+  font-size: 25px;
+}
+
+.credit-savings-routing__panel ul {
+  margin: 15px 0 0;
+  padding-left: 20px;
+}
+
+.credit-savings-routing__panel li {
+  color: var(--credit-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.credit-savings-page .media-tabs {
+  margin: 28px 0 44px;
+}
+
+.credit-savings-page .media-tabs__sticky {
+  margin: 0 0 16px;
+  padding: 7px;
+  border-color: #dfe9c9;
+  background: rgb(249 255 231 / 94%);
+  box-shadow: 0 12px 30px rgb(75 99 33 / 9%);
+}
+
+.credit-savings-page .media-tabs__nav {
+  gap: 6px;
+  scrollbar-color: #b8d86c transparent;
+}
+
+.credit-savings-page .media-tabs__nav button {
+  min-height: 44px;
+  border-color: #dfe7d0;
+  color: var(--credit-muted);
+  background: #fff;
+  font-size: 13px;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.credit-savings-page .media-tabs__nav button:hover {
+  border-color: #a6d453;
+  color: #385014;
+  background: #f5ffdf;
+  transform: translateY(-1px);
+}
+
+.credit-savings-page .media-tabs__nav button[aria-selected="true"] {
+  border-color: #9bce4d;
+  color: #25350e;
+  background: #cfff82;
+  box-shadow: 0 5px 14px rgb(119 167 44 / 18%);
+}
+
+.credit-savings-page .media-tabs__nav button:focus-visible {
+  outline-color: #80b72d !important;
+}
+
+.credit-savings-page .media-tabs__panel {
+  border-color: #e0e8d2;
+  box-shadow: 0 18px 48px rgb(79 89 50 / 9%);
+  animation: credit-tab-reveal 280ms cubic-bezier(.2, .75, .25, 1) both;
+}
+
+.credit-savings-page .media-tabs__panel.has-visual {
+  display: grid;
+  min-height: 420px;
+  grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
+}
+
+.credit-savings-page .media-tabs__visual {
+  position: relative;
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  overflow: hidden;
+  border-right: 1px solid #e4edd7;
+  background:
+    radial-gradient(circle at 24% 25%, rgb(220 255 160 / 74%), transparent 28%),
+    radial-gradient(circle at 78% 76%, rgb(255 224 213 / 80%), transparent 34%),
+    #fbfdec;
+}
+
+.credit-savings-page .media-tabs__visual::before,
+.credit-savings-page .media-tabs__visual::after {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border: 1px solid rgb(166 212 83 / 28%);
+  border-radius: 50%;
+  content: '';
+}
+
+.credit-savings-page .media-tabs__visual::before {
+  transform: rotate(28deg) scaleX(1.4);
+}
+
+.credit-savings-page .media-tabs__visual::after {
+  transform: rotate(-34deg) scaleY(.52);
+}
+
+.credit-savings-page .media-tabs__visual-number {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  z-index: 2;
+  color: #86ad3d;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.credit-savings-page .media-tabs__visual-core,
+.credit-savings-page .media-tabs__visual-orbit,
+.credit-savings-page .media-tabs__visual-spark {
+  position: absolute;
+  z-index: 1;
+  display: block;
+}
+
+.credit-savings-page .media-tabs__visual-core {
+  width: 116px;
+  height: 116px;
+  border: 10px solid #fff;
+  border-radius: 50%;
+  background: #d5ff8e;
+  box-shadow: 0 16px 32px rgb(86 116 31 / 18%);
+}
+
+.credit-savings-page .media-tabs__visual-orbit {
+  width: 220px;
+  height: 108px;
+  border: 1px solid rgb(117 167 44 / 48%);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
+
+.credit-savings-page .media-tabs__visual-orbit--two {
+  width: 148px;
+  height: 246px;
+  border-color: rgb(236 167 139 / 58%);
+  transform: rotate(32deg);
+}
+
+.credit-savings-page .media-tabs__visual-spark {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f0ae93;
+  box-shadow: 0 0 0 5px rgb(240 174 147 / 17%);
+}
+
+.credit-savings-page .media-tabs__visual-spark--one {
+  top: 28%;
+  right: 22%;
+}
+
+.credit-savings-page .media-tabs__visual-spark--two {
+  bottom: 25%;
+  left: 25%;
+  background: #94c64b;
+}
+
+.credit-savings-page .media-tabs__visual-spark--three {
+  right: 18%;
+  bottom: 30%;
+  width: 6px;
+  height: 6px;
+  background: #9f85db;
+}
+
+.credit-savings-page .media-tabs__copy {
+  padding: clamp(28px, 4vw, 46px);
+}
+
+.credit-savings-page .media-tabs__panel.has-visual .media-tabs__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.credit-savings-page .media-tabs__eyebrow {
+  color: #719d2a !important;
+  font-size: 11px;
+}
+
+.credit-savings-page .media-tabs__copy h3 {
+  font-size: clamp(28px, 3vw, 38px);
+  letter-spacing: -.035em;
+}
+
+.credit-savings-page .media-tabs__copy > p:not(.media-tabs__eyebrow, .media-tabs__note) {
+  max-width: 580px;
+  color: var(--credit-muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.credit-savings-page .media-tabs__steps {
+  margin-top: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.credit-savings-page .media-tabs__steps section {
+  border-color: #e4edda;
+  border-radius: 12px;
+  background: #fbfdec;
+}
+
+.credit-savings-page .media-tabs__steps span {
+  color: #78a52d;
+}
+
+.credit-savings-page .media-tabs__steps b {
+  color: var(--credit-ink);
+}
+
+.credit-savings-page .media-tabs__steps p {
+  color: var(--credit-muted);
+}
+
+.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:first-child {
+  border-color: #c5e875;
+  background: #efffd0;
+}
+
+.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:first-child span {
+  color: #6d9823;
+}
+
+.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:last-child {
+  border-color: #f4c1ac;
+  background: #fff0e9;
+}
+
+.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:last-child span {
+  color: #b56f59;
+}
+
+.credit-savings-page .media-tabs__note {
+  border-top-color: #e4edda;
+  color: #6b745f !important;
+}
+
+@keyframes credit-tab-reveal {
+  from {
+    opacity: .45;
+    transform: translateY(9px) scale(.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes credit-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+}
+
+@keyframes credit-orbit {
+  to {
+    transform: rotate(342deg) rotate(-18deg);
+  }
+}
+
+@keyframes credit-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgb(119 167 44 / 22%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 18px rgb(119 167 44 / 0%);
+  }
+}
+
+@keyframes credit-scan {
+  0%, 100% {
+    transform: translateX(-18px);
+    opacity: .35;
+  }
+
+  50% {
+    transform: translateX(18px);
+    opacity: 1;
+  }
+}
+
+@keyframes credit-focus {
+  0%, 100% {
+    transform: scale(.9) rotate(30deg);
+    opacity: .5;
+  }
+
+  50% {
+    transform: scale(1.08) rotate(30deg);
+    opacity: 1;
+  }
+}
+
+@keyframes credit-compress {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+
+  50% {
+    transform: scaleX(.62);
+  }
+}
+
+@keyframes credit-stack {
+  0%, 100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+
+  50% {
+    transform: translateY(-9px) rotate(2deg);
+  }
+}
+
+@keyframes credit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.credit-savings-page .media-tabs__visual.is-model .media-tabs__visual-core {
+  animation: credit-float 3.4s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-model .media-tabs__visual-orbit--one {
+  animation: credit-orbit 8s linear infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-prompt .media-tabs__visual-core {
+  width: 170px;
+  height: 86px;
+  border: 5px solid #fff;
+  border-radius: 18px;
+  background: #e5ffb2;
+}
+
+.credit-savings-page .media-tabs__visual.is-prompt .media-tabs__visual-orbit {
+  width: 180px;
+  height: 2px;
+  border: 0;
+  border-radius: 0;
+  background: #a6d453;
+  transform: rotate(0);
+  animation: credit-scan 2.2s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-prompt .media-tabs__visual-orbit--two {
+  width: 120px;
+  background: #f0ae93;
+  animation-delay: .35s;
+}
+
+.credit-savings-page .media-tabs__visual.is-context .media-tabs__visual-core {
+  border: 2px solid #91bf48;
+  background: transparent;
+  animation: credit-pulse 2.6s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-context .media-tabs__visual-orbit {
+  border-style: dashed;
+  animation: credit-focus 3.2s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-output .media-tabs__visual-core,
+.credit-savings-page .media-tabs__visual.is-output .media-tabs__visual-orbit {
+  width: 190px;
+  height: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #b9e86b;
+  transform: translateX(-18px);
+  animation: credit-scan 2s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-output .media-tabs__visual-orbit--one {
+  width: 145px;
+  margin-top: 54px;
+  background: #f4bd9f;
+  animation-delay: .2s;
+}
+
+.credit-savings-page .media-tabs__visual.is-output .media-tabs__visual-orbit--two {
+  width: 110px;
+  margin-top: 108px;
+  background: #9e8bd4;
+  animation-delay: .42s;
+}
+
+.credit-savings-page .media-tabs__visual.is-session .media-tabs__visual-core {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background: #a7d458;
+  animation: credit-pulse 2.4s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-session .media-tabs__visual-orbit {
+  width: 220px;
+  height: 220px;
+  border-style: dotted;
+  animation: credit-spin 12s linear infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-session .media-tabs__visual-orbit--two {
+  width: 150px;
+  height: 150px;
+  animation-direction: reverse;
+}
+
+.credit-savings-page .media-tabs__visual.is-session .media-tabs__visual-spark {
+  animation: credit-float 2.2s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-compact .media-tabs__visual-core {
+  width: 172px;
+  height: 106px;
+  border: 0;
+  border-radius: 16px;
+  background: repeating-linear-gradient(0deg, #bde96e 0 10px, #dfff9d 10px 20px);
+  animation: credit-compress 2.8s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-compact .media-tabs__visual-orbit {
+  width: 205px;
+  height: 2px;
+  border: 0;
+  border-radius: 0;
+  background: #eeaf91;
+  transform: rotate(0) translateY(-74px);
+}
+
+.credit-savings-page .media-tabs__visual.is-compact .media-tabs__visual-orbit--two {
+  transform: rotate(0) translateY(74px);
+  animation: credit-compress 2.8s ease-in-out infinite reverse;
+}
+
+.credit-savings-page .media-tabs__visual.is-agents .media-tabs__visual-core {
+  width: 170px;
+  height: 110px;
+  border: 0;
+  border-radius: 12px;
+  background: #e7ffb6;
+  box-shadow: 0 14px 0 #c8ee83, 0 28px 0 #a9d95c, 0 40px 30px rgb(86 116 31 / 14%);
+  animation: credit-stack 3s ease-in-out infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-agents .media-tabs__visual-orbit {
+  display: none;
+}
+
+.credit-savings-page .media-tabs__visual.is-rework .media-tabs__visual-core {
+  width: 132px;
+  height: 132px;
+  border: 14px solid #bce76c;
+  border-right-color: #f0af92;
+  border-bottom-color: #9f8bd5;
+  background: transparent;
+  animation: credit-spin 4.5s linear infinite;
+}
+
+.credit-savings-page .media-tabs__visual.is-rework .media-tabs__visual-orbit {
+  width: 190px;
+  height: 190px;
+  border-style: dashed;
+  animation: credit-spin 8s linear infinite reverse;
+}
+
+@media (max-width: 960px) {
+  .credit-savings-page .media-tabs__panel.has-visual {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-savings-page .media-tabs__visual {
+    min-height: 260px;
+    border-right: 0;
+    border-bottom: 1px solid #e4edd7;
+  }
+}
+
+@media (max-width: 640px) {
+  .credit-savings-page .media-tabs__panel.has-visual {
+    min-height: 0;
+  }
+
+  .credit-savings-page .media-tabs__visual {
+    min-height: 220px;
+  }
+
+  .credit-savings-page .media-tabs__copy {
+    padding: 24px 22px 26px;
+  }
+
+  .credit-savings-page .media-tabs__steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .credit-savings-page .media-tabs__panel,
+  .credit-savings-page .media-tabs__visual * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 .course-visual,
 .interface-figure {
   margin: 32px 0 42px;
@@ -3196,6 +3879,10 @@ html:not(.dark) .vp-doc .vp-code span {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .credit-savings-factors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .recommended-models {
     grid-template-columns: 1fr;
   }
@@ -3283,7 +3970,12 @@ html:not(.dark) .vp-doc .vp-code span {
   .model-grid,
   .review-flow,
   .reasoning-scale,
-  .follow-up-demo {
+  .follow-up-demo,
+  .credit-savings-routing {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-savings-factors {
     grid-template-columns: 1fr;
   }
 
@@ -3397,6 +4089,29 @@ html:not(.dark) .vp-doc .vp-code span {
   .quickstart-story .vp-doc h2 {
     margin-top: 48px;
     font-size: 25px;
+  }
+
+  .credit-savings-hero {
+    padding: 24px 18px;
+  }
+
+  .credit-savings-routing__panel {
+    padding: 22px;
+  }
+
+  .credit-savings-routing__panel {
+    gap: 14px;
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .credit-savings-routing__icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .credit-savings-routing__icon img {
+    width: 42px;
+    height: 42px;
   }
 
   .course-visual,
