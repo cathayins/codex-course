@@ -1,23 +1,22 @@
 ---
 title: 案例總覽
-description: 觀察完整任務如何從需求走到驗證與交付。
+description: 用一個 5 分鐘的 Marketing 數據分析案例，完成 Excel 與 HTML Dashboard。
 ---
 
 # 案例總覽
 
-案例不是展示單一 prompt，而是呈現完整的工作脈絡：需求如何整理、工具如何選擇、成果如何驗證，以及最後如何交付。
+這個案例示範如何從 GitHub 下載一份包含三張原始 sheet 的 Marketing Excel，先完成 Excel insight，再交付一個可以直接打開的互動 HTML Dashboard。
 
-## 案例閱讀方式
+## 5 分鐘 Demo
 
-每個案例都會包含四個部分：
+你會完成兩個連續任務：
 
-1. 任務背景與輸入素材。
-2. 執行策略與關鍵決策。
-3. 驗證方式與修正過程。
-4. 可複用的做法與注意事項。
+1. **Task 1**：在 Excel 新增公式與水平圖表，回答一個需要數據 insight 的平台效率問題。
+2. **Task 2**：用同一份 Excel 建立可篩選、可離線開啟的 HTML Dashboard。
 
-## Codebase 理解 Demo
+## 你會拿到什麼
 
-Codebase 案例拆成兩個可獨立維護的 Part：先由 Benson 帶領學員理解專案，再由 Roy 承接同一份 Codebase map 進行小型修改與驗證。
+- `Marketing_Campaign_Data_Task1.xlsx`：原始三張 sheet、公式分析區、ROAS 水平圖表與 insight。
+- `marketing_dashboard.html`：可以離線打開的互動 Dashboard，呈現 KPI、趨勢、平台比較與洞察。
 
-[查看 Codebase 理解 Demo →](/cases/codebase-review)
+[開始 Marketing 數據分析 Demo →](/cases/marketing-data)
