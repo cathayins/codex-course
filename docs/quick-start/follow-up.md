@@ -88,7 +88,7 @@ Codex 能修改檔案，也能建立新檔。兩種都合理，但 Prompt 要說
 任務完成後，先看 Codex 的回覆列出了哪些 Created、Edited 或檔案連結，再開右側面板確認。
 
 <figure class="interface-figure">
-  <img src="/images/quick-start/codex-app-data-result.webp" alt="Codex App 完成資料分析後，同時顯示回覆與建立的檔案">
+  <img src="/images/quick-start/codex-app-data-result.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Codex App 完成資料分析後，同時顯示回覆與建立的檔案">
   <figcaption>右側面板可以直接打開新建立的檔案；Git 專案也能從「檢閱」查看變更內容。</figcaption>
 </figure>
 

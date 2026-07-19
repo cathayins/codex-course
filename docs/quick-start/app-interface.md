@@ -9,7 +9,7 @@ pageClass: quickstart-story
 # Codex App
 
 <figure class="interface-figure interface-figure--hero">
-  <img src="/images/quick-start/codex-app-interface.webp" alt="Codex App 完整介面，左側是專案與任務，中間是對話，右側顯示檔案變更">
+  <img src="/images/quick-start/codex-app-interface.webp" width="1800" height="885" loading="eager" fetchpriority="high" decoding="async" alt="Codex App 完整介面，左側是專案與任務，中間是對話，右側顯示檔案變更">
 </figure>
 
 ## 介面的三大區塊
@@ -25,7 +25,7 @@ pageClass: quickstart-story
 <div class="sidebar-guide">
   <div class="refined-media refined-media--tall refined-media--sidebar-compact">
     <div class="refined-media__window">
-      <img src="/images/quick-start/app-left-sidebar.png" alt="Codex App 左側欄，包含新增任務、網站、已排程、外掛程式、專案與任務">
+      <img src="/images/quick-start/app-left-sidebar.png" width="241" height="342" loading="lazy" decoding="async" alt="Codex App 左側欄，包含新增任務、網站、已排程、外掛程式、專案與任務">
     </div>
   </div>
   <div class="sidebar-guide__copy">

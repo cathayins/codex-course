@@ -30,11 +30,11 @@ pageClass: quickstart-story chatgpt-vs-codex
 
 <div class="outcome-examples">
   <section>
-    <div class="outcome-example__icon" aria-hidden="true"><svg viewBox="0 0 72 72" role="img"><path d="M15 15h42a7 7 0 0 1 7 7v24a7 7 0 0 1-7 7H33L20 63V53h-5a7 7 0 0 1-7-7V22a7 7 0 0 1 7-7Z" /><path d="M22 29h28M22 39h19" /></svg></div>
+    <div class="outcome-example__icon outcome-example__icon--chatgpt" aria-hidden="true"><img src="/images/quick-start/chatgpt-icon.webp" width="256" height="256" decoding="async" alt=""></div>
     <div><span>CHATGPT｜從知識與對話開始</span><h3>研究、理解與整理</h3><p>例如顧問要調研市場、比較多方觀點、整理訪談，或和 AI 一起推敲策略。資料主要來自提問、網路與已連接的知識來源。</p><b>常見交付：分析、觀點、摘要與決策建議</b></div>
   </section>
   <section>
-    <div class="outcome-example__icon" aria-hidden="true"><svg viewBox="0 0 72 72" role="img"><path d="M8 23a6 6 0 0 1 6-6h16l7 8h21a6 6 0 0 1 6 6v25a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6V23Z" /><path d="M22 34h13v18H22zM39 34h13v18H39zM26 39h5M26 44h5M43 39h5M43 44h5" /></svg></div>
+    <div class="outcome-example__icon outcome-example__icon--codex" aria-hidden="true"><img src="/images/quick-start/codex-icon.webp" width="256" height="256" decoding="async" alt=""></div>
     <div><span>CODEX｜從本機工作環境開始</span><h3>讀檔案、做出成品</h3><p>工作任務主要在各專案資料夾裡，包含 PDF、Excel、CSV、簡報、圖片、逐字稿或程式碼；你希望 AI 批次整理、修改並留下檔案。</p><b>常見交付：整理後的文件、Web App 或自動化工作流</b></div>
   </section>
 </div>
@@ -47,15 +47,15 @@ pageClass: quickstart-story chatgpt-vs-codex
 
 <div class="codex-use-case-gallery">
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/daily-work-brief" target="_blank" rel="noreferrer">
-    <figure><img src="/images/quick-start/use-cases/work-brief.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方每日工作摘要案例畫面"></figure>
+    <figure><img src="/images/quick-start/use-cases/work-brief.webp" width="1200" height="566" loading="lazy" decoding="async" alt="OpenAI 官方每日工作摘要案例畫面"></figure>
     <div><span>工作管理｜USE CASE</span><h3>把一天整理成可執行清單</h3><p>整合行事曆、訊息、Email 與專案脈絡，找出今天的優先事項、待回覆內容與會議準備。</p><b>Create a daily work brief ↗</b></div>
   </a>
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/generate-slide-decks" target="_blank" rel="noreferrer">
-    <figure><img src="/images/quick-start/use-cases/slide-decks.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方自動製作簡報案例畫面"></figure>
+    <figure><img src="/images/quick-start/use-cases/slide-decks.webp" width="1200" height="566" loading="lazy" decoding="async" alt="OpenAI 官方自動製作簡報案例畫面"></figure>
     <div><span>簡報製作｜USE CASE</span><h3>從資料直接做出簡報</h3><p>讀取內容與既有範本，操作 PowerPoint 檔案並產生需要的視覺，最後留下可繼續編輯的簡報。</p><b>Generate slide decks ↗</b></div>
   </a>
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/deploy-app-or-website" target="_blank" rel="noreferrer">
-    <figure><img src="/images/quick-start/use-cases/web-app.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方建立並部署 Web App 案例畫面"></figure>
+    <figure><img src="/images/quick-start/use-cases/web-app.webp" width="1200" height="566" loading="lazy" decoding="async" alt="OpenAI 官方建立並部署 Web App 案例畫面"></figure>
     <div><span>想法落地｜USE CASE</span><h3>建立 Web App 並部署預覽</h3><p>把需求、參考畫面與資料交給 Codex，完成可操作的網站或工具，再產生網址讓其他人試用。</p><b>Deploy an app or website ↗</b></div>
   </a>
   <a class="codex-use-case-card" href="https://developers.openai.com/showcase/procedural-city-generator" target="_blank" rel="noreferrer">
@@ -67,7 +67,7 @@ pageClass: quickstart-story chatgpt-vs-codex
     <div><span>影音創作｜SHOWCASE</span><h3>建立自己的影音素材工具</h3><p>Waveform Studio 把本機音訊轉成可調整的視覺波形，示範 Codex 如何協助做出服務創作流程的專用工具。</p><b>Waveform Studio ↗</b></div>
   </a>
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/datasets-and-reports" target="_blank" rel="noreferrer">
-    <figure><img src="/images/quick-start/use-cases/data-reports.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方資料分析與報告案例畫面"></figure>
+    <figure><img src="/images/quick-start/use-cases/data-reports.webp" width="1200" height="566" loading="lazy" decoding="async" alt="OpenAI 官方資料分析與報告案例畫面"></figure>
     <div><span>數據分析｜USE CASE</span><h3>把雜亂資料變成分析報告</h3><p>清理資料、計算指標、建立視覺化，再把方法與結論整理成可重跑、可分享的報告。</p><b>Analyze datasets and ship reports ↗</b></div>
   </a>
 </div>

@@ -49,7 +49,7 @@ pageClass: quickstart-story ide-official-page
   <section><span>3</span><h3>開始第一段對話</h3><p>開啟專案後，先請 Codex 說明程式、做一個聚焦修改，或協助追查錯誤。</p></section>
 </div>
 
-<figure class="ide-install-shot"><img src="/images/quick-start/install-codex-extension-vscode.webp" alt="VS Code Marketplace 中的 Codex extension 安裝頁面" loading="lazy" decoding="async"><figcaption>VS Code Marketplace 中的官方 Codex extension；安裝後重新啟用 extension，即可從側邊欄開啟。</figcaption></figure>
+<figure class="ide-install-shot"><img src="/images/quick-start/install-codex-extension-vscode.webp" width="1672" height="941" alt="VS Code Marketplace 中的 Codex extension 安裝頁面" loading="lazy" decoding="async"><figcaption>VS Code Marketplace 中的官方 Codex extension；安裝後重新啟用 extension，即可從側邊欄開啟。</figcaption></figure>
 
 ::: tip 先留下 Git checkpoint
 開始修改前先確認工作區狀態；完成後再查看 Diff。這樣更容易比較、保留或還原變更。
@@ -66,7 +66,7 @@ pageClass: quickstart-story ide-official-page
 
 <div class="ide-story-grid ide-story-grid--review">
   <div class="ide-story-copy"><p>Codex 完成工作後，先讀摘要，再查看實際改動的行。來源、修改原因與後續對話放在同一個畫面，比只看「完成」訊息更容易判斷結果是否符合需求。</p><ol><li><b>摘要：</b>確認任務目的、修改檔案與驗證結果。</li><li><b>Diff：</b>逐行檢查新增與刪除，留意是否超出範圍。</li><li><b>追問：</b>方向正確但細節不對時，留在同一段對話補充條件。</li></ol><p>需要檢查目前 Git 變更時，也可以輸入 <code>/review</code>。</p></div>
-  <figure class="ide-review-shot"><img src="/images/quick-start/codex-ide-official.webp" alt="Codex IDE 顯示程式碼 Diff、修改摘要與 Review 按鈕" loading="eager" fetchpriority="high" decoding="async"><figcaption>官方示意：摘要、Diff、修改檔案與後續輸入框都留在 IDE 裡。</figcaption></figure>
+  <figure class="ide-review-shot"><img src="/images/quick-start/codex-ide-official.webp" width="1600" height="900" alt="Codex IDE 顯示程式碼 Diff、修改摘要與 Review 按鈕" loading="lazy" decoding="async"><figcaption>官方示意：摘要、Diff、修改檔案與後續輸入框都留在 IDE 裡。</figcaption></figure>
 </div>
 
 ## 03｜任務變大時再交出去

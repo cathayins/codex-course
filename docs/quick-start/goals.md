@@ -11,7 +11,7 @@ pageClass: quickstart-story
 一般 Prompt 是請 Codex 做下一件事；Goal 則是把「做到什麼才算完成」留在目前的任務裡。只要 Goal 還在進行，Codex 就會根據每一輪得到的結果，判斷下一步該做什麼，直到有證據能確認完成，或遇到必須停下來的阻礙。
 
 <figure class="goal-figure">
-  <img src="/images/quick-start/goals-loop.webp" alt="一般 Prompt 與 Active Goal 的工作方式比較：Prompt 完成一次回覆後等待，Goal 會反覆工作、檢查並決定下一步或完成">
+  <img src="/images/quick-start/goals-loop.webp" width="1800" height="1013" loading="eager" fetchpriority="high" decoding="async" alt="一般 Prompt 與 Active Goal 的工作方式比較：Prompt 完成一次回覆後等待，Goal 會反覆工作、檢查並決定下一步或完成">
   <figcaption>一般 Prompt 處理完這次要求就會等待；Active Goal 會在每輪結果之後，繼續檢查完成條件。</figcaption>
 </figure>
 
@@ -66,7 +66,7 @@ Goals 從 Codex `0.128.0` 開始提供。如果看不到 `/goal`，先更新 Cod
 ## 把 Goal 寫成一條清楚的完成線
 
 <figure class="goal-figure">
-  <img src="/images/quick-start/goals-strong.webp" alt="弱 Goal 與強 Goal 的比較，以及強 Goal 需要包含的完成結果、驗證方式、限制、範圍與不確定性處理方式">
+  <img src="/images/quick-start/goals-strong.webp" width="1800" height="1013" loading="lazy" decoding="async" alt="弱 Goal 與強 Goal 的比較，以及強 Goal 需要包含的完成結果、驗證方式、限制、範圍與不確定性處理方式">
   <figcaption>好的 Goal 不只寫方向，也交代如何證明完成，以及過程中不能破壞什麼。</figcaption>
 </figure>
 
@@ -125,7 +125,7 @@ Goals 從 Codex `0.128.0` 開始提供。如果看不到 `/goal`，先更新 Cod
 ## Codex 什麼時候會自動繼續
 
 <figure class="goal-figure">
-  <img src="/images/quick-start/goals-continuation.webp" alt="Goal 的持續執行條件與生命週期：Active、Paused、Completed、Cleared，以及預算與使用者輸入等執行閘門">
+  <img src="/images/quick-start/goals-continuation.webp" width="1800" height="1013" loading="lazy" decoding="async" alt="Goal 的持續執行條件與生命週期：Active、Paused、Completed、Cleared，以及預算與使用者輸入等執行閘門">
   <figcaption>Goal 只有在任務閒置、沒有新的使用者訊息，而且仍在允許的預算內，才會繼續下一輪。</figcaption>
 </figure>
 

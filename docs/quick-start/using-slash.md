@@ -14,7 +14,7 @@ pageClass: quickstart-story
 
 <div class="refined-media refined-media--wide refined-media--standalone refined-media--slash">
   <div class="refined-media__window">
-    <img src="/images/quick-start/slash-commands-illustration.webp" alt="輸入斜線後開啟 Commands 選單，可選擇 Plan、Compact、Review 與 Side" loading="eager" fetchpriority="high" decoding="async">
+    <img src="/images/quick-start/slash-commands-illustration.webp" width="1536" height="1024" alt="輸入斜線後開啟 Commands 選單，可選擇 Plan、Compact、Review 與 Side" loading="eager" fetchpriority="high" decoding="async">
   </div>
 </div>
 
