@@ -64,7 +64,7 @@ Context 不是越多越好。把真正會改變答案的來源加進來，並說
 </div>
 
 <figure class="interface-figure interface-figure--hero">
-  <img src="/images/quick-start/artifact-viewer-light.webp" alt="Codex App 中的生成檔案預覽，右側顯示簡報內容與註記區" loading="lazy" decoding="async">
+  <img src="/images/quick-start/artifact-viewer-light.webp" width="1920" height="1300" alt="Codex App 中的生成檔案預覽，右側顯示簡報內容與註記區" loading="lazy" decoding="async">
 </figure>
 
 把來源與用途放在同一個 Prompt，不要只丟附件：
