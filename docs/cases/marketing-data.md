@@ -151,7 +151,9 @@ Kaggle 仍保留作為原始資料 reference：[Marketing Campaign Dataset](http
 - 有一張 ROAS 水平長條圖，能快速看出平台排名。
 - 圖表旁有「資料事實／解讀／下一步」的 insight，且保留資料期間與限制。
 
-> Task 1 結果截圖預留區：完成 Excel 後，貼上 `Task1_Analysis` 與水平圖表截圖。
+![Task 1 Excel 分析結果](/images/cases/marketing-task1-result.png)
+
+圖 1：Task 1 完成結果（Excel `Task1_Analysis`、公式欄、ROAS 水平長條圖與 insight）。
 
 ## Task 2 說明
 
@@ -192,4 +194,6 @@ Dashboard 至少要有：
 - Dashboard 使用同一份 Excel 的數據，與 Task 1 的 ROAS 定義一致。
 - 版面在桌機與手機寬度都可讀，且標示資料來源、日期範圍、幣別與資料限制。
 
-> Task 2 結果截圖預留區：完成 HTML Dashboard 後，貼上桌機或手機版截圖。
+![Task 2 Dashboard 結果](/images/cases/marketing-task2-dashboard.png)
+
+圖 2：Task 2 完成結果（可在地端開啟的互動 Dashboard）。
