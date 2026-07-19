@@ -26,6 +26,7 @@ type MediaTab = {
     label: string
     code: string
   }[]
+  visual?: string
   platforms?: {
     label: string
     title: string
@@ -180,6 +181,10 @@ onMounted(() => {
       :id="`${instanceId}-panel-${activeIndex}`"
       :key="activeIndex"
       class="media-tabs__panel"
+      :class="[
+        activeItem.visual ? 'has-visual' : '',
+        activeItem.visual ? `visual-${activeItem.visual}` : ''
+      ]"
       role="tabpanel"
       :aria-labelledby="`${instanceId}-tab-${activeIndex}`"
     >
@@ -200,6 +205,21 @@ onMounted(() => {
             @error="scheduleInactiveImagePreload"
           >
         </div>
+      </div>
+
+      <div
+        v-if="activeItem.visual"
+        class="media-tabs__visual"
+        :class="`is-${activeItem.visual}`"
+        aria-hidden="true"
+      >
+        <span class="media-tabs__visual-number">{{ String(activeIndex + 1).padStart(2, '0') }}</span>
+        <span class="media-tabs__visual-core"></span>
+        <span class="media-tabs__visual-orbit media-tabs__visual-orbit--one"></span>
+        <span class="media-tabs__visual-orbit media-tabs__visual-orbit--two"></span>
+        <span class="media-tabs__visual-spark media-tabs__visual-spark--one"></span>
+        <span class="media-tabs__visual-spark media-tabs__visual-spark--two"></span>
+        <span class="media-tabs__visual-spark media-tabs__visual-spark--three"></span>
       </div>
 
       <div class="media-tabs__copy">
