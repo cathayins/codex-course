@@ -65,10 +65,6 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
                   <a href="mailto:bocheng@cathay-ins.com.tw">bocheng@cathay-ins.com.tw</a>
                 </li>
               </ul>
-              <a
-                class="course-footer__report"
-                href="mailto:roysung@cathay-ins.com.tw?cc=bocheng@cathay-ins.com.tw&amp;subject=Codex%20Course%20教材問題"
-              >回報教材問題</a>
             </section>
           </div>
         </div>
