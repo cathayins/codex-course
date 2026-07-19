@@ -65,10 +65,6 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
                   <a href="mailto:contact@example.invalid">contact@example.invalid</a>
                 </li>
               </ul>
-              <a
-                class="course-footer__report"
-                href="mailto:contact@example.invalid?cc=contact@example.invalid&amp;subject=Codex%20Course%20教材問題"
-              >回報教材問題</a>
             </section>
           </div>
         </div>
