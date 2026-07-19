@@ -89,7 +89,7 @@ pageClass: quickstart-story
 ## 登入方式
 
 <div class="auth-grid">
-  <section><span>課堂使用</span><h3>Sign in with ChatGPT</h3><p>沿用 ChatGPT 的方案、Workspace 權限與 Credits。Enterprise 帳號通常選這個。</p></section>
+  <section><span>一般首選</span><h3>Sign in with ChatGPT</h3><p>沿用 ChatGPT 的方案、Workspace 權限與 Credits。Enterprise 帳號通常選這個。</p></section>
   <section><span>另外計費</span><h3>API key</h3><p>適合 CLI、SDK、CI/CD 或需要獨立 API 帳務的工作，不會沿用 ChatGPT 方案額度。</p></section>
 </div>
 

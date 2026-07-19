@@ -12,15 +12,15 @@ pageClass: quickstart-story
   <img src="/images/quick-start/codex-app-interface.webp" alt="Codex App 完整介面，左側是專案與任務，中間是對話，右側顯示檔案變更">
 </figure>
 
-## 畫面分成三個部分
+## 介面的三大區塊
 
 <div class="screen-zones">
-  <section><span>左側</span><h3>找專案與任務</h3><p>建立新任務、回到之前的工作，或打開 Plugin 與設定。</p></section>
+  <section><span>左側</span><h3>開始任務</h3><p>建立新任務、回到之前的工作，或打開 Plugin 與設定。</p></section>
   <section><span>中央</span><h3>和 Codex 說明工作</h3><p>交代目標、補充檔案，也在這裡看它目前做到哪裡。</p></section>
-  <section><span>右側</span><h3>打開工作成果</h3><p>看檔案、終端機、網站預覽與本次修改的差異。</p></section>
+  <section><span>右側</span><h3>工作站台</h3><p>看檔案、終端機、網站預覽與本次修改的差異。</p></section>
 </div>
 
-## 左側：專案與任務都在這裡
+## 左側：開始任務
 
 <div class="sidebar-guide">
   <div class="refined-media refined-media--tall refined-media--sidebar-compact">
@@ -29,13 +29,13 @@ pageClass: quickstart-story
     </div>
   </div>
   <div class="sidebar-guide__copy">
-    <h3>看工作需不需要一個資料夾</h3>
-    <p><strong>專案</strong>會連到一個工作資料夾。Codex 可以讀取、建立或修改裡面的檔案，適合網站、報告、資料整理等需要持續留下成果的工作。</p>
-    <p><strong>任務</strong>比較像臨時對話，不一定先指定資料夾。適合先問問題、整理想法或做一次性的內容；確定要動到本機檔案時，再從專案開始會比較清楚。</p>
+    <h3>專案 vs 任務｜長期工作或是臨時任務</h3>
+    <p><strong>專案</strong> <br> 專案下的對話都屬於一個特定的資料夾。Codex 可以讀取、建立或修改裡面的檔案，適合網站、報告、資料整理等需要持續留下成果的工作。</p>
+    <p><strong>任務</strong> <br> 任務像是臨時對話，不用指定資料夾。適合先問問題、整理想法或做一次性的內容；確定要動到本機檔案時，再從專案開始會比較清楚。</p>
   </div>
 </div>
 
-## 右側：需要核對成果時再打開
+## 右側：工作站
 
 按右上角的側邊面板圖示，就能叫出這組工具。macOS 畫面顯示的快捷鍵是 <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>B</kbd>；若你改過快捷鍵，以自己 App 裡顯示的為準。
 

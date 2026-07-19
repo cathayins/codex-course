@@ -1,16 +1,16 @@
 ---
-title: 分派與調整工作
+title: Working with files
 description: 同時建立多個任務，並用 Steer 或 Queue 調整正在進行的工作。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story
 ---
 
-# 分派與調整工作
+# Follow Up｜分派與調整工作
 
 <p class="lesson-lead">Codex 還在工作時，你仍然可以補充要求。先判斷這是不是同一件工作：無關的事情另外開任務；同一件工作的修正或下一步，再交給 Steer 或 Queue。</p>
 
-## 是否要開新的 Session｜先判斷是否為同一件任務
+## 先判斷是否為同一件任務
 
 <div class="work-while-running">
   <section><span>不同任務與脈絡</span><h3>另開 Session 新增任務</h3><p>例如行銷分析還在跑，但你想整理另一場會議的筆記。開新任務，兩邊各自保留自己的檔案、對話與進度。</p></section>

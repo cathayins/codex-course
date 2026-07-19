@@ -1,6 +1,6 @@
 ---
 title: What Is Codex
-description: 先分清 ChatGPT 與 Codex，再看 Codex 如何改變工程工作方式。
+description: 從工作環境與交付方式理解 ChatGPT、Codex，以及 Codex 為何不再只屬於工程師。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story chatgpt-vs-codex
@@ -8,104 +8,82 @@ pageClass: quickstart-story chatgpt-vs-codex
 
 # ChatGPT vs Codex
 
-<p class="lesson-lead">ChatGPT 很像一位隨時可以討論的顧問。Codex 更像一位能進入工作環境的同事：它可以打開資料夾、讀取檔案、使用工具，最後把結果留在真正的檔案裡。</p>
+<p class="lesson-lead">Codex 剛推出時，我們很容易這樣分：開發程式用 Codex，整理知識用 ChatGPT。這個說法曾經好懂，但現在已經不夠準確。</p>
 
-## 顧問與同事
+## 別在用是不是工程師區分
 
 <div class="story-contrast story-contrast--projector">
-  <section><span>CHATGPT</span><h3>先把問題想清楚</h3><p>你提出問題，它幫你整理資訊、比較選項、發想，或寫出第一版內容。</p><b>適合：快速問答、腦力激盪、單次分析</b></section>
-  <section><span>CODEX</span><h3>進入工作環境完成任務</h3><p>你指定資料夾與目標，它讀取多個檔案、使用工具、建立或修改成果，再回來說明做了什麼。</p><b>適合：多檔案、需要落地、會持續修改的工作</b></section>
+  <section><span>THEN｜以前</span><h3>用職稱分工具</h3><p>工程師寫程式，所以去用 Codex；顧問、企劃或研究人員整理知識，所以留在 ChatGPT。</p><b>好記，卻把兩邊的能力切得太窄。</b></section>
+  <section><span>NOW｜現在</span><h3>用工作環境分入口</h3><p>ChatGPT 能連接檔案與工具；Codex 也能處理文件、資料、圖片與研究工作。重點不再是你會不會寫程式。</p><b>先看工作從哪裡開始，以及結果要留在哪裡。</b></section>
 </div>
 
-兩邊的能力會重疊。ChatGPT 也能處理檔案，Codex 也會先和你討論。這裡先用一個簡單的問題判斷：**最後要的是一個回答，還是一份做進工作資料夾的成果？**
+現在 ChatGPT 與 Codex 都能使用檔案、搜尋資料，也能透過 Plugin 連接 GitHub、Figma 或 Atlassian／Jira 這類工作工具；實際可用項目會依安裝、帳號與 Workspace 權限而定。兩邊不再是互斥選項，差別更像是：**哪一個工作空間最接近你手上的任務？**
 
-## 看最後要交付什麼
+## 顧問 vs 能進工作環境的同事
+
+顧問可以先在 ChatGPT 做調研與推演，再把方法交給 Codex 做成可重複產生報告的小工具；產品經理也可以先討論需求，再讓 Codex 把截圖、規格與資料做成能操作的 Web App。
+
+一個簡單的選法是：
+
+- 主要在問問題、整理知識、比較觀點：**先從 ChatGPT 開始**。
+- 主要在處理本機檔案、專案資料夾或需要執行工具：**先從 Codex 開始**。
 
 <div class="outcome-examples">
   <section>
     <div class="outcome-example__icon" aria-hidden="true"><svg viewBox="0 0 72 72" role="img"><path d="M15 15h42a7 7 0 0 1 7 7v24a7 7 0 0 1-7 7H33L20 63V53h-5a7 7 0 0 1-7-7V22a7 7 0 0 1 7-7Z" /><path d="M22 29h28M22 39h19" /></svg></div>
-    <div><span>用 ChatGPT｜比較兩份活動提案</span><h3>答案就是成果</h3><p>你想知道兩個方案的預算差異、風險和適合客群。整理完成後，看著回答就能做決定。</p><b>交付：一段分析與建議</b></div>
+    <div><span>CHATGPT｜從知識與對話開始</span><h3>研究、理解與整理</h3><p>例如顧問要調研市場、比較多方觀點、整理訪談，或和 AI 一起推敲策略。資料主要來自提問、網路與已連接的知識來源。</p><b>常見交付：分析、觀點、摘要與決策建議</b></div>
   </section>
   <section>
     <div class="outcome-example__icon" aria-hidden="true"><svg viewBox="0 0 72 72" role="img"><path d="M8 23a6 6 0 0 1 6-6h16l7 8h21a6 6 0 0 1 6 6v25a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6V23Z" /><path d="M22 34h13v18H22zM39 34h13v18H39zM26 39h5M26 44h5M43 39h5M43 44h5" /></svg></div>
-    <div><span>用 Codex｜整理 12 份 CSV 與 3 份 Excel</span><h3>檔案就是成果</h3><p>你要合併欄位、找出重複資料、核對總額，並把整理結果留在原本的工作資料夾。</p><b>交付：整理後的試算表與摘要檔</b></div>
+    <div><span>CODEX｜從本機工作環境開始</span><h3>讀檔案、做出成品</h3><p>工作任務主要在各專案資料夾裡，包含 PDF、Excel、CSV、簡報、圖片、逐字稿或程式碼；你希望 AI 批次整理、修改並留下檔案。</p><b>常見交付：整理後的文件、Web App 或自動化工作流</b></div>
   </section>
 </div>
 
-## Codex 可以做什麼
 
-<figure class="course-visual course-visual--wide"><img src="/images/quick-start/codex-work-examples.webp" alt="Q 版角色把本機 PDF、收據與票券整理成資料夾，再建立個人知識庫、網站與小工具"></figure>
 
-<div class="use-case-grid">
-  <section><span>本機文件</span><h3>整理 PDF、收據與票券</h3><p>批次分類、重新命名、找出重複內容，再整理成清單或試算表。</p></section>
-  <section><span>個人資料</span><h3>建立本機 AI Wiki</h3><p>把散落的筆記與文件整理成可搜尋、可持續更新的知識庫。</p></section>
-  <section><span>想法落地</span><h3>建立網站或小工具</h3><p>從需求、畫面到可執行版本，一路留在同一個專案資料夾。</p></section>
+## Codex for (Almost) Everything
+
+最容易理解 Codex 的方式，不是背功能，而是看它最後能交出什麼。以下案例選自 OpenAI 官方的 [Use cases](https://learn.chatgpt.com/use-cases) 與 [Showcase](https://developers.openai.com/showcase)：前者示範一般工作怎麼做，後者展示能做成什麼樣的成品。
+
+<div class="codex-use-case-gallery">
+  <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/daily-work-brief" target="_blank" rel="noreferrer">
+    <figure><img src="/images/quick-start/use-cases/work-brief.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方每日工作摘要案例畫面"></figure>
+    <div><span>工作管理｜USE CASE</span><h3>把一天整理成可執行清單</h3><p>整合行事曆、訊息、Email 與專案脈絡，找出今天的優先事項、待回覆內容與會議準備。</p><b>Create a daily work brief ↗</b></div>
+  </a>
+  <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/generate-slide-decks" target="_blank" rel="noreferrer">
+    <figure><img src="/images/quick-start/use-cases/slide-decks.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方自動製作簡報案例畫面"></figure>
+    <div><span>簡報製作｜USE CASE</span><h3>從資料直接做出簡報</h3><p>讀取內容與既有範本，操作 PowerPoint 檔案並產生需要的視覺，最後留下可繼續編輯的簡報。</p><b>Generate slide decks ↗</b></div>
+  </a>
+  <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/deploy-app-or-website" target="_blank" rel="noreferrer">
+    <figure><img src="/images/quick-start/use-cases/web-app.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方建立並部署 Web App 案例畫面"></figure>
+    <div><span>想法落地｜USE CASE</span><h3>建立 Web App 並部署預覽</h3><p>把需求、參考畫面與資料交給 Codex，完成可操作的網站或工具，再產生網址讓其他人試用。</p><b>Deploy an app or website ↗</b></div>
+  </a>
+  <a class="codex-use-case-card" href="https://developers.openai.com/showcase/procedural-city-generator" target="_blank" rel="noreferrer">
+    <figure><img src="/images/quick-start/use-cases/3d-city.webp" width="1285" height="800" loading="lazy" decoding="async" alt="OpenAI Showcase 的瀏覽器 3D 城市產生器"></figure>
+    <div><span>3D 創作｜SHOWCASE</span><h3>做出互動式 3D 城市</h3><p>把一個點子做成能在瀏覽器操作的程序化城市產生器，調整建築、街道與場景，而不只停在概念圖。</p><b>Procedural City Generator ↗</b></div>
+  </a>
+  <a class="codex-use-case-card" href="https://developers.openai.com/showcase/waveform-studio" target="_blank" rel="noreferrer">
+    <figure><img src="/images/quick-start/use-cases/waveform-studio.webp" width="1200" height="760" loading="lazy" decoding="async" alt="OpenAI Showcase 的音訊波形視覺工具"></figure>
+    <div><span>影音創作｜SHOWCASE</span><h3>建立自己的影音素材工具</h3><p>Waveform Studio 把本機音訊轉成可調整的視覺波形，示範 Codex 如何協助做出服務創作流程的專用工具。</p><b>Waveform Studio ↗</b></div>
+  </a>
+  <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/datasets-and-reports" target="_blank" rel="noreferrer">
+    <figure><img src="/images/quick-start/use-cases/data-reports.webp" width="1600" height="755" loading="lazy" decoding="async" alt="OpenAI 官方資料分析與報告案例畫面"></figure>
+    <div><span>數據分析｜USE CASE</span><h3>把雜亂資料變成分析報告</h3><p>清理資料、計算指標、建立視覺化，再把方法與結論整理成可重跑、可分享的報告。</p><b>Analyze datasets and ship reports ↗</b></div>
+  </a>
 </div>
 
-Codex 不只用來寫程式。只要工作需要讀取多份本機資料、使用電腦上的工具，或把結果留下來，都可以先想想是否適合交給 Codex。
-
-## 交辦前先說清楚
-
-<div class="brief-grid">
-  <section><span>01</span><b>要完成什麼</b><p>不要只說「幫我看一下」，說清楚最後要得到什麼。</p></section>
-  <section><span>02</span><b>資料在哪裡</b><p>指定資料夾、檔案、選取內容，或必要的外部來源。</p></section>
-  <section><span>03</span><b>哪些不能碰</b><p>例如不要改原始檔、不要寄出、不要連外，或先不要執行。</p></section>
-  <section><span>04</span><b>回來時要帶什麼</b><p>一份整理後的檔案、一個可執行版本，或一段說明。</p></section>
-</div>
-
-# Codex for Engineer
-
-<p class="lesson-lead">這一段先看工程工作方式怎麼變。程式碼、測試、Review 與交付的細節，會留到進階課程。</p>
-
-## 工程協作的三個階段
-
-<figure class="course-visual"><img src="/images/quick-start/engineering-evolution.webp" alt="從複製貼上、程式碼補全到委派完整任務的三階段 Q 版視覺"></figure>
-
-<div class="evolution-labels evolution-labels--large" aria-label="工程協作三階段">
-  <section><span>01｜Q&amp;A</span><h3>Ctrl C、Ctrl V</h3><p>以前去論壇找答案，後來改問 ChatGPT；最後仍要把答案貼回 IDE，再自己整合。</p></section>
-  <section><span>02｜CODE COMPLETION</span><h3>Tab、Tab、Tab</h3><p>AI 猜下一段程式，人一邊看、一邊接受補全，仍然控制每一步。</p></section>
-  <section><span>03｜AGENTIC DELEGATION</span><h3>說清楚，按 Enter</h3><p>交代目標與邊界，Codex 自己探索、修改、執行工具，再帶結果回來。</p></section>
-</div>
-
-到了第三個階段，工作單位不再只是一行程式，而是一個可以回來檢查的任務。
-
-```text
-幫我補完這個函式
-        ↓
-跟我一起找出這個 bug
-        ↓
-找出問題、完成最小修正、跑相關測試，再整理變更
-```
-
-## 從工具切換到任務
-
-<figure class="course-visual course-visual--wide"><img src="/images/quick-start/one-workspace-v2.webp" alt="Q 版工程師從多個散落畫面切換到一個統整任務、檔案與狀態的工作台"></figure>
-
-需求在文件、討論在訊息、程式在 IDE、命令在 Terminal、結果在瀏覽器，最後還要回到 GitHub 看 Diff。每切一次畫面，都要重新找回剛才的脈絡。
-
-Codex App 把任務放在中間。它可以使用檔案、終端機、瀏覽器與其他工具；你回來時看進度、改動，以及下一個需要決定的地方。
-
-## AI-Native Teams：Plan、Build、Test、Ship
-
-<div class="lifecycle-grid">
-  <section><span>PLAN</span><h3>整理需求</h3><p>Codex 讀規格、Ticket 與依賴；團隊決定優先順序。</p></section>
-  <section><span>DESIGN</span><h3>搭出骨架</h3><p>Codex 建立初始元件；團隊調整 UX、架構與限制。</p></section>
-  <section><span>BUILD</span><h3>完成實作</h3><p>Codex 編輯檔案、接線與修 bug；團隊說清楚行為與取捨。</p></section>
-  <section><span>TEST</span><h3>執行檢查</h3><p>Codex 從規格與程式提出測試；團隊確認邊界與意圖。</p></section>
-  <section><span>REVIEW</span><h3>檢查變更</h3><p>Codex 找出風險與不一致；團隊做最後的合併判斷。</p></section>
-  <section><span>DOCUMENT</span><h3>更新文件</h3><p>Codex 整理摘要、文件與 release notes；團隊決定怎麼說。</p></section>
-  <section><span>SHIP &amp; MAINTAIN</span><h3>部署與維護</h3><p>Codex 協助整理 log、alert 與可疑 commit；團隊處理高風險決策。</p></section>
-</div>
-
-QuickStart 先建立這個全貌。進階課程再練習如何拆任務、寫專案規範、驗證結果，以及把變更安全地交付出去。
+這些案例的共同點，是 Codex 不只回答問題，而是讀取素材、操作工具，最後留下可以使用或繼續修改的成果。你不需要先會寫程式；先從一個真實工作問題，以及你想拿到的成品開始就好。
 
 ## 參考資料
 
+- [Codex for (almost) everything｜OpenAI](https://openai.com/index/codex-for-almost-everything/)
 - [Codex：How to get started](https://openai.com/academy/codex-how-to-start/)
 - [Codex best practices](https://learn.chatgpt.com/guides/best-practices)
 - [Codex IDE extension](https://learn.chatgpt.com/docs/codex/ide)
+- [Codex Use cases](https://learn.chatgpt.com/use-cases)
+- [OpenAI Showcase](https://developers.openai.com/showcase)
 - [Codex 完整新手教學｜Frank Chiu](https://frankchiu.io/ai-chatgpt-codex-intro/)
 - [零基礎 30 分鐘學會 Codex｜李厂长来了](https://www.youtube.com/watch?v=dMiV7Yx9yk4)
 - [Codex - Full Course for Beginners｜Tech With Tim](https://www.youtube.com/watch?v=ZXkeWiWB4xg)
 
-<p class="source-note">「顧問／能進入工作環境的同事」是本課使用的比喻。產品功能依 2026-07-18 OpenAI 官方文件核對；兩張 Q 版配圖為本課生成素材。</p>
+<p class="source-note">ChatGPT／Codex 的選擇框架是本課為了教學整理的判斷方式，不是官方的產品界線。產品定位依 2026-07-19 OpenAI 官方資料核對；案例 Gallery 使用 OpenAI 官方原圖，其餘插圖為本課生成素材。</p>
