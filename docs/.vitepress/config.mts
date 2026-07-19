@@ -45,7 +45,8 @@ export default defineConfig({
               { text: 'Prompting', link: '/quick-start/prompting' },
               { text: 'Slash Commands', link: '/quick-start/using-slash' },
               { text: 'Follow Up', link: '/quick-start/follow-up' },
-              { text: 'Using Goals in Codex', link: '/quick-start/goals' }
+              { text: 'Using Goals in Codex', link: '/quick-start/goals' },
+              { text: 'Credits 精打細算', link: '/quick-start/token-efficiency' }
             ]
           }
         ]
@@ -70,25 +71,7 @@ export default defineConfig({
         activeMatch: '^/cases/',
         items: [
           { text: '案例總覽', link: '/cases/' },
-          { text: '素材轉簡報', link: '/cases/presentation' },
-          { text: 'Marketing 數據分析', link: '/cases/marketing-data' },
-          { text: 'Codebase 理解 Demo', link: '/cases/codebase-review' },
-          { text: '建立系統架構圖', link: '/cases/architecture-diagram' },
-          { text: '驗證與 PR 交付', link: '/cases/pr-delivery' }
-        ]
-      },
-      {
-        text: '學習資源',
-        activeMatch: '^/resources/',
-        items: [
-          { text: '資源總覽', link: '/resources/' },
-          { text: 'QuickStart 術語表', link: '/resources/glossary' },
-          { text: 'Prompt 範本', link: '/resources/prompt-template' },
-          { text: 'AGENTS.md 範本', link: '/resources/agents-template' },
-          { text: 'Skill Starter', link: '/resources/skill-starter' },
-          { text: '驗收清單', link: '/resources/checklist' },
-          { text: '官方文件', link: '/resources/official-docs' },
-          { text: '課後練習', link: '/resources/practice' }
+          { text: 'Marketing 數據分析', link: '/cases/marketing-data' }
         ]
       }
     ],
@@ -117,7 +100,8 @@ export default defineConfig({
                 { text: 'Prompting', link: '/quick-start/prompting' },
                 { text: 'Slash Commands', link: '/quick-start/using-slash' },
                 { text: 'Follow Up', link: '/quick-start/follow-up' },
-                { text: 'Using Goals in Codex', link: '/quick-start/goals' }
+                { text: 'Using Goals in Codex', link: '/quick-start/goals' },
+                { text: 'Credits 精打細算', link: '/quick-start/token-efficiency' }
               ]
             }
           ]
@@ -144,34 +128,7 @@ export default defineConfig({
           text: '實戰案例',
           items: [
             { text: '案例總覽', link: '/cases/' },
-            { text: '素材轉簡報', link: '/cases/presentation' },
-            { text: 'Marketing 數據分析', link: '/cases/marketing-data' },
-            {
-              text: 'Codebase 理解 Demo',
-              link: '/cases/codebase-review',
-              collapsed: false,
-              items: [
-                { text: 'Part 1｜理解專案', link: '/cases/codebase-review/understand-project' },
-                { text: 'Part 2｜動手修改', link: '/cases/codebase-review/modify-project' }
-              ]
-            },
-            { text: '建立系統架構圖', link: '/cases/architecture-diagram' },
-            { text: '驗證與 PR 交付', link: '/cases/pr-delivery' }
-          ]
-        }
-      ],
-      '/resources/': [
-        {
-          text: '學習資源',
-          items: [
-            { text: '資源總覽', link: '/resources/' },
-            { text: 'QuickStart 術語表', link: '/resources/glossary' },
-            { text: 'Prompt 範本', link: '/resources/prompt-template' },
-            { text: 'AGENTS.md 範本', link: '/resources/agents-template' },
-            { text: 'Skill Starter', link: '/resources/skill-starter' },
-            { text: '驗收清單', link: '/resources/checklist' },
-            { text: '官方文件', link: '/resources/official-docs' },
-            { text: '課後練習', link: '/resources/practice' }
+            { text: 'Marketing 數據分析', link: '/cases/marketing-data' }
           ]
         }
       ]
