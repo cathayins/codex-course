@@ -217,14 +217,14 @@ Auto-review 會評估符合條件的 Approval，但不會擴大 Sandbox、不會
 `approvals_reviewer` 通常搭配 `approval_policy = "on-request"` 或 granular approval policy。若使用 `approval_policy = "never"`，不會產生互動式 Approval，也就沒有請 Reviewer 判斷的流程。組織管理者也可以用 `allowed_approvals_reviewers` 限制可選值。
 :::
 
-<figure class="course-visual permissions-course-visual" aria-labelledby="permissions-shot-skill-title">
+<figure class="course-visual permissions-course-visual" aria-labelledby="permissions-shot-approval-title">
   <div class="media-tabs__stage is-compact">
     <div class="media-tabs__glow" aria-hidden="true"></div>
     <div class="media-tabs__window">
-      <img src="/images/skills/use_skills.png" width="1530" height="892" alt="Codex Desktop App 的 composer，底部顯示 Approve for me 權限選項，輸入區也可選擇 Skill" loading="lazy" decoding="async">
+      <img src="/images/permissions/permission_selection.png" width="802" height="386" alt="Codex Desktop App 的 Approval 模式選單，列出 Ask for approval、Approve for me、Full access 與 Custom (config.toml)" loading="lazy" decoding="async">
     </div>
   </div>
-  <figcaption id="permissions-shot-skill-title">App 的 composer 會把 Skill 選用與 Approval 控制放在同一個工作入口；送出前先確認底部的 Approval 模式，再依 <code>approval_policy</code> 與 <code>approvals_reviewer</code> 理解誰會做最後決定。</figcaption>
+  <figcaption id="permissions-shot-approval-title">App 會在送出任務前提供 Approval 模式選擇：可要求每次詢問、由 App 代為核准、開啟 Full access，或用 Custom (<code>config.toml</code>) 套用設定。選擇後，再用 <code>approval_policy</code> 與 <code>approvals_reviewer</code> 核對實際的詢問與審查行為。</figcaption>
 </figure>
 
 ## 4｜第三步：用 Sandbox 畫出技術邊界

@@ -71,37 +71,3 @@ outline: [2, 3]
 ### 8. [Hooks：最後加入確定性閘門](/advanced/hooks)
 
 Hooks 會執行 command，應放在最後學習。只有規範、權限與驗證方式都已清楚，才把少數關鍵政策提升為 `PreToolUse` 或 `Stop` 閘門。
-
-## 一張表快速選擇
-
-| 需求 | 建議 |
-| --- | --- |
-| 這次修改不要新增 dependency | 寫在本次 Prompt |
-| 每次修改都要執行相同測試 | 寫入 `AGENTS.md` |
-| 限制可寫目錄、網路與審批時機 | 設定 Config／Permissions |
-| 每次會議紀錄都整理成相同格式 | 使用或建立 Skill |
-| 同時安裝文件流程、公司模板與雲端連線 | 使用 Plugin |
-| 查詢目前套件文件或外部設計稿 | 連接 MCP／App connector |
-| 每週一產生文件變更摘要 | 建立 Scheduled task |
-| 同時從安全、測試與維護性審查 PR | 派出唯讀 Subagents，由主 task 彙整 |
-| 同時探索多個互不相依的問題 | 派出有清楚邊界的 Subagents |
-| 每次結束前強制執行快速測試 | 建立 `Stop` Hook |
-
-## 開始前準備
-
-- 已完成[快速上手](/quick-start/)，知道如何選擇專案、下達任務與檢查 Diff。
-- 使用可安全練習的 Git Repository，不直接連接 Production 資料。
-- 知道專案真正可執行的 setup、lint、test 與 build 指令。
-- 第一次安裝第三方 Skill、Plugin、MCP 或 Hook 前，先閱讀來源、scripts、權限與資料流向。
-
-::: warning 介面與清單會更新
-Skills、Plugins、Scheduled 與權限控制的名稱或位置可能隨 App 版本、帳號與 Workspace 政策改變。課程重點是責任與判斷順序；操作時以目前畫面與官方文件為準。
-:::
-
-## 本章完成標準
-
-- [ ] 能用一句話說明九種任務與能力表面的責任。
-- [ ] 能指出哪些是文字規範、技術邊界、工具連線與 lifecycle 閘門。
-- [ ] 能說明為何 Skill 應在 Plugin 之前、Subagents 應在 Hook 之前理解。
-- [ ] 能為背景工作設計停止條件、最小權限與隔離方式。
-- [ ] 能說明如何驗證每項設定實際生效。
