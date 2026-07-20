@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, ref, useId } from 'vue'
 import { withBase } from 'vitepress'
 import FollowUpDemo from './FollowUpDemo.vue'
+import SettingsActionDemo from './SettingsActionDemo.vue'
 
 type MediaTab = {
   label: string
@@ -29,6 +30,7 @@ type MediaTab = {
   }[]
   visual?: string
   demo?: 'steer' | 'queue'
+  settingsDemo?: 'general' | 'memory'
   platforms?: {
     label: string
     title: string
@@ -228,7 +230,7 @@ onMounted(() => {
 
       <div class="media-tabs__copy">
         <p class="media-tabs__eyebrow">{{ activeItem.label }}</p>
-        <div class="media-tabs__title-row">
+        <div class="media-tabs__title-row" :class="{ 'has-settings-demo': activeItem.settingsDemo }">
           <img
             v-if="activeItem.icon"
             class="media-tabs__icon"
@@ -236,6 +238,7 @@ onMounted(() => {
             :alt="activeItem.icon.alt"
           >
           <h3>{{ activeItem.title }}</h3>
+          <SettingsActionDemo v-if="activeItem.settingsDemo" :mode="activeItem.settingsDemo" />
         </div>
         <p>{{ activeItem.description }}</p>
         <div v-if="activeItem.links?.length" class="media-tabs__links">
