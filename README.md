@@ -83,3 +83,7 @@ gh pr merge --squash --delete-branch
 ```
 
 若要自訂中文 PR 內容，可用 `gh pr create --base main --title "標題" --body "修改與測試說明"`。
+
+## 開源資源
+
+本專案整理繁體中文內容時，使用了 [speak-human-tw](https://github.com/Raymondhou0917/speak-human-tw) skill。這是 Raymond Hou 以 MIT License 開源的專案，特此致謝。
