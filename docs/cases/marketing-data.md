@@ -3,6 +3,31 @@ title: Marketing 數據分析｜Excel → HTML Dashboard
 description: 從 GitHub 下載 Marketing Excel，完成 Excel insight 與可互動的本地 HTML Dashboard。
 ---
 
+<script setup>
+import { withBase } from 'vitepress'
+
+const task1OutputUrl = 'https://raw.githubusercontent.com/example/codex-course-demo-cases/main/data-analyst/Marketing_Campaign_Data-example-output.xlsx'
+const dashboardOutputUrl = 'https://raw.githubusercontent.com/example/codex-course-demo-cases/main/data-analyst/marketing_dashboard.html'
+
+async function downloadFromGitHub(url, filename) {
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`Download failed: ${response.status}`)
+
+    const objectUrl = URL.createObjectURL(await response.blob())
+    const link = document.createElement('a')
+    link.href = objectUrl
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
+  } catch {
+    window.alert('下載失敗，請稍後再試。')
+  }
+}
+</script>
+
 # Marketing 數據分析：打造自己的數據分析 Agent
 
 ## 任務 Summary
@@ -157,6 +182,14 @@ description: 從 GitHub 下載 Marketing Excel，完成 Excel insight 與可互�
 - 有一張 ROAS 水平長條圖，能快速看出平台排名。
 - 圖表旁有「資料事實／解讀／下一步」的 insight，且保留資料期間與限制。
 
+<div class="case-output-actions">
+  <a
+    :href="task1OutputUrl"
+    download="Marketing_Campaign_Data-example-output.xlsx"
+    @click.prevent="downloadFromGitHub(task1OutputUrl, 'Marketing_Campaign_Data-example-output.xlsx')"
+  >下載 Task 1 Excel 完成範例</a>
+</div>
+
 ![Task 1 Excel 分析結果](/images/cases/marketing-task1-result.png)
 
 圖 1：Task 1 完成結果（Excel `Task1_Analysis`、公式欄、ROAS 水平長條圖與 insight）。
@@ -196,6 +229,11 @@ Dashboard 請包含：
 - Dashboard 使用同一份 Excel 的數據，與 Task 1 的 ROAS 定義一致。
 - 版面在桌機與手機寬度都可讀，且標示資料來源、日期範圍、幣別與資料限制。
 
-![Task 2 Dashboard 結果](/images/cases/marketing-task2-dashboard.png)
-
-圖 2：Task 2 完成結果（可在地端開啟的互動 Dashboard）。
+<div class="case-output-actions">
+  <a :href="withBase('/demo-assets/data-analyst/marketing_dashboard.html')" target="_blank" rel="noreferrer">打開範例 Dashboard 結果</a>
+  <a
+    :href="dashboardOutputUrl"
+    download="marketing_dashboard.html"
+    @click.prevent="downloadFromGitHub(dashboardOutputUrl, 'marketing_dashboard.html')"
+  >下載 HTML 完成範例</a>
+</div>
