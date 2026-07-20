@@ -14,11 +14,11 @@ outline: [2, 3]
   <div class="lesson-goals__intro">
     <span class="lesson-eyebrow">LEARNING GOALS</span>
     <strong id="permissions-goals-title" class="lesson-goals__title">完成本章後，你可以</strong>
-    <p>知道設定應放在哪一層，能從任務需求選擇模型、Approval 與 Sandbox，並讀懂一份日常使用的 <code>config.toml</code>。</p>
+    <p>知道設定應放在哪一層，能保存常用的模型選擇、設定 Approval 與 Sandbox，並讀懂一份日常使用的 <code>config.toml</code>。</p>
   </div>
   <div class="lesson-goals__grid">
     <article><strong>找到正確設定層</strong><span>分辨專案、使用者與 System config 的用途。</span></article>
-    <article><strong>設定模型行為</strong><span>理解 model 與 reasoning effort 影響品質、速度與成本。</span></article>
+    <article><strong>保存模型選擇</strong><span>把快速上手選好的 model 與 reasoning effort 寫入 Config。</span></article>
     <article><strong>設定權限決策</strong><span>用 Approval policy 與 Reviewer 決定何時詢問、由誰判斷。</span></article>
     <article><strong>設定技術邊界</strong><span>用 Sandbox、writable roots 與網路設定限制實際能力。</span></article>
   </div>
@@ -26,7 +26,7 @@ outline: [2, 3]
 
 <nav class="lesson-flow permissions-lesson-flow" aria-label="本章學習流程">
   <span><b>01</b> 找到 Config</span>
-  <span><b>02</b> 選擇 Model</span>
+  <span><b>02</b> 保存 Model</span>
   <span><b>03</b> 設定 Permission</span>
   <span><b>04</b> 定義 Sandbox</span>
   <span><b>05</b> 組成工作模式</span>
@@ -111,22 +111,17 @@ outline: [2, 3]
 不受信任的 Repository 不能用自己的 `.codex/config.toml`、hooks 或 rules 改變 Codex 行為。若設定看似正確卻沒有生效，先檢查目前目錄、設定優先順序與 Repository 是否受信任。
 :::
 
-## 2｜第一步：先設定 Model
+## 2｜第一步：保存 Model 選擇
 
-先從最容易觀察的兩個欄位開始：選擇模型，以及設定模型願意投入多少推理量。
+[Models｜選擇模型](/quick-start/models) 已說明如何依能力、速度與任務難度選擇模型。本章只處理下一步：需要固定行為時，把已選好的模型與 reasoning effort 寫進 Config。
 
 ```toml
 # ~/.codex/config.toml
-model = "gpt-5.6"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 ```
 
-| 欄位 | 控制什麼 | 不控制什麼 |
-| --- | --- | --- |
-| `model` | 預設使用的模型與該模型支援的能力 | 不會改變檔案或網路權限 |
-| `model_reasoning_effort` | 支援模型的推理投入量；較高通常更適合複雜規劃與分析 | 不保證結果正確，也不會繞過 Approval |
-
-官方文件會隨產品版本更新模型範例，帳號與工作區可用模型也可能不同。如果上例的模型 ID 在你的環境不可用，請從目前的模型選擇器或官方模型文件確認可用值，再修改 `model`。
+`model` 與 `model_reasoning_effort` 影響能力、速度與成本，不會改變檔案、網路或 Approval 權限。模型 ID 與可用選項可能依帳號和 Workspace 不同，請以目前選擇器顯示的值為準。
 
 ::: tip 什麼時候不必固定 model？
 如果希望 Codex 自動採用目前的預設模型，可以省略 `model`。只有在課程示範、團隊驗證或工作流程需要可重現行為時，才需要明確固定模型與 reasoning effort。
@@ -134,17 +129,7 @@ model_reasoning_effort = "high"
 
 ### 透過 LiteLLM Proxy 選擇模型
 
-如果團隊使用 LiteLLM 作為 LLM Gateway，可以把 Codex 指向 LiteLLM 的 OpenAI-compatible Responses API。先在 LiteLLM 的 `config.yaml` 建立對外使用的模型名稱；以下用 `coding-model` 隱藏實際供應商與 deployment：
-
-```yaml
-model_list:
-  - model_name: coding-model
-    litellm_params:
-      model: openai/gpt-5.6
-      api_key: os.environ/OPENAI_API_KEY
-```
-
-接著把 LiteLLM provider 寫進**使用者層** `~/.codex/config.toml`：
+如果團隊透過 LiteLLM 呼叫模型，將下列設定寫進**使用者自己的** `~/.codex/config.toml`，讓 LiteLLM 成為 Codex 的模型 provider。
 
 ```toml
 model = "coding-model"
@@ -158,13 +143,16 @@ env_key = "LITELLM_API_KEY"
 wire_api = "responses"
 ```
 
-這段設定的讀法是：Codex 把 `coding-model` 的 Responses API 請求送到 LiteLLM；LiteLLM 再依 `config.yaml` 路由到實際模型。`model` 必須和 LiteLLM 的 `model_name` 相同，`base_url` 則要改成你的 Proxy 位址。
+設定時核對四件事：
+
+1. Codex 的 `model` 必須和 LiteLLM 的 `model_name` 相同。
+2. `base_url` 要指向實際 Proxy，且 Proxy 必須提供 Responses API。
+3. `wire_api` 使用 `"responses"`。
+4. `env_key` 只寫環境變數名稱；Token 放在執行環境，不寫進 TOML。
 
 ::: warning Provider 設定與 Token 都不要放進專案 Config
 專案 `.codex/config.toml` 會忽略 `model_provider` 與 `model_providers` 等主機層設定，因此 LiteLLM provider 應放在 `~/.codex/config.toml`。`env_key` 寫的是環境變數名稱，不是 Token 本身；請在執行環境設定 `LITELLM_API_KEY`，不要把 Proxy key 寫進 TOML 或版本控制。
 :::
-
-如果 LiteLLM Proxy 沒有提供 Responses API，或所選的上游模型不支援 Codex 需要的能力，這份設定仍可能無法正常工作；先用 LiteLLM 的 `/responses` 端點驗證模型路由，再交給 Codex 使用。
 
 ### Model 是能力選擇，不是權限選擇
 

@@ -56,14 +56,24 @@ export default defineConfig({
         activeMatch: '^/advanced/',
         items: [
           { text: '學習路線', link: '/advanced/' },
-          { text: 'AGENTS.md', link: '/advanced/agents-md' },
-          { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
-          { text: 'Skills', link: '/advanced/skills' },
-          { text: 'Plugins', link: '/advanced/plugins' },
-          { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
-          { text: 'Scheduled tasks', link: '/advanced/automation' },
-          { text: 'Subagents', link: '/advanced/worktrees' },
-          { text: 'Hooks', link: '/advanced/hooks' }
+          {
+            text: '核心路線',
+            items: [
+              { text: 'AGENTS.md', link: '/advanced/agents-md' },
+              { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
+              { text: 'Skills', link: '/advanced/skills' },
+              { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
+              { text: 'Plugins', link: '/advanced/plugins' },
+              { text: 'Scheduled tasks', link: '/advanced/automation' }
+            ]
+          },
+          {
+            text: '選修進階',
+            items: [
+              { text: 'Subagents', link: '/advanced/worktrees' },
+              { text: 'Hooks', link: '/advanced/hooks' }
+            ]
+          }
         ]
       },
       {
@@ -111,13 +121,25 @@ export default defineConfig({
         {
           text: '進階課程',
           items: [
-            { text: '學習路線', link: '/advanced/' },
+            { text: '學習路線', link: '/advanced/' }
+          ]
+        },
+        {
+          text: '核心路線',
+          collapsed: false,
+          items: [
             { text: 'AGENTS.md', link: '/advanced/agents-md' },
             { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
             { text: 'Skills', link: '/advanced/skills' },
-            { text: 'Plugins', link: '/advanced/plugins' },
             { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
-            { text: 'Scheduled tasks', link: '/advanced/automation' },
+            { text: 'Plugins', link: '/advanced/plugins' },
+            { text: 'Scheduled tasks', link: '/advanced/automation' }
+          ]
+        },
+        {
+          text: '選修進階',
+          collapsed: false,
+          items: [
             { text: 'Subagents', link: '/advanced/worktrees' },
             { text: 'Hooks', link: '/advanced/hooks' }
           ]

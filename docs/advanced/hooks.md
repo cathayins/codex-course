@@ -6,6 +6,10 @@ outline: [2, 3]
 
 # Hooks：從 Matcher 到 Handler
 
+::: tip 選修章
+Hooks 適合少數必須在 lifecycle 固定時點機械式執行的規則。若文字規範、Permissions 與人工審查已足夠，不需要為了完成核心路線而設定 Hook。
+:::
+
 本課程先用一個簡化式理解 Agent：**Agent = Model + Harness**。Model 負責理解、推理與產生下一步；Harness 則把 Model 放進一個可工作的環境，提供 context、tools、permissions 與執行流程。
 
 <section class="hooks-agent-equation" aria-label="Agent 等於 Model 加上 Harness 的概念圖">
@@ -340,4 +344,4 @@ Matcher 通過後，Codex 會啟動 Handler。現在 Codex 只會執行 `type: "
 - [OpenAI 官方：Advanced configuration](https://learn.chatgpt.com/docs/config-file/config-advanced#hooks)
 - [Codex Guide：Hooks](https://codexguide.ai/advanced/06-hooks.html#%E5%B8%B8%E8%A7%81%E4%BA%8B%E4%BB%B6)
 - [Claude Code Hooks 案例整理](https://www.oao.tw/ai-knowledge/claude-code-hooks)（只參考情境；事件、schema 與支援能力不可直接套用到 Codex）
-- [上一章：Subagents](/advanced/worktrees)
+- [選修上一章：Subagents](/advanced/worktrees) — Hooks 的 lifecycle 也包含 SubagentStart 與 SubagentStop。
