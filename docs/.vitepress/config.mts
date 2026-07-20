@@ -46,7 +46,7 @@ export default defineConfig({
           { text: 'Plugins', link: '/advanced/plugins' },
           { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
           { text: 'Scheduled tasks', link: '/advanced/automation' },
-          { text: 'Worktrees', link: '/advanced/worktrees' },
+          { text: 'Subagents', link: '/advanced/worktrees' },
           { text: 'Hooks', link: '/advanced/hooks' }
         ]
       },
@@ -101,7 +101,7 @@ export default defineConfig({
             { text: 'Plugins', link: '/advanced/plugins' },
             { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
             { text: 'Scheduled tasks', link: '/advanced/automation' },
-            { text: 'Worktrees', link: '/advanced/worktrees' },
+            { text: 'Subagents', link: '/advanced/worktrees' },
             { text: 'Hooks', link: '/advanced/hooks' }
           ]
         }
