@@ -1,0 +1,3 @@
+[submodule ".agents/skills/speak-human-tw"]
+	path = .agents/skills/speak-human-tw
+	url = https://github.com/Raymondhou0917/speak-human-tw.git
