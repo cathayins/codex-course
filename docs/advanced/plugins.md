@@ -137,48 +137,73 @@ Plugins Directory 可能依來源分成：
 - **Personal**：個人 marketplace，以及環境支援時的 Created by me、Shared with me。
 - **Installed**：目前已安裝的 Plugins；這是狀態，不是另一個作者來源。
 
-<!-- Screenshot asset: /images/plugins/plugins-directory.webp -->
-<figure class="plugins-screenshot" aria-labelledby="plugins-shot-directory-title">
-  <div class="plugins-screenshot__placeholder" role="img" aria-label="待補：Plugins Directory 的來源分頁與 Installed 狀態">
-    <span>SCREENSHOT PLACEHOLDER · BASIC 01</span>
-    <strong id="plugins-shot-directory-title">瀏覽 Plugins Directory</strong>
-    <code>/images/plugins/plugins-directory.webp</code>
-    <p>拍攝 OpenAI、Workspace、Personal 與 Installed 等來源或狀態；遮蔽帳號、Workspace 名稱、私人 Plugin 與其他組織資訊。</p>
+<figure class="course-visual" aria-labelledby="plugins-shot-directory-title">
+  <div class="media-tabs__stage is-compact">
+    <div class="media-tabs__glow" aria-hidden="true"></div>
+    <div class="media-tabs__window">
+      <img src="/images/plugins/plugins_directory.png" width="814" height="708" alt="Plugins Directory 畫面，顯示已安裝的 Plugins、Public 與 Personal 分頁，以及 Featured 清單" loading="lazy" decoding="async">
+    </div>
   </div>
-  <figcaption>學生看到的分頁與清單可能不同；請用「來源可信嗎、用途符合嗎」做第一輪判斷。</figcaption>
+  <figcaption id="plugins-shot-directory-title">這個畫面展示 Installed、Public 與 Personal 分頁，以及 Featured 清單；先確認來源是否可信、用途是否符合，再打開詳細資料。</figcaption>
 </figure>
 
 先用一句話寫下你要解決的工作，再比較 Plugin 詳細資料。名稱看起來相似，不代表它們使用相同資料、執行相同動作或遵循相同流程。
 
-### 3｜安裝前，用六個問題閱讀詳細資料
+### 3｜安裝前，依五個面向閱讀詳細資料
 
-打開 Plugin 詳細頁後，至少確認：
+進行安裝前，請務必檢核以下五個面向的評估細節：用途、連線、能力、資訊與授權範圍。請依據對應的檢核重點與通過條件進行確認：
 
-1. **誰提供？** 作者、Workspace、版本與來源是否可信。
-2. **解決什麼？** 說明與範例是否符合你的真實任務。
-3. **帶入什麼？** 是否包含 Skills、connectors、MCP tools 或 Hooks。
-4. **連到哪裡？** 需要登入哪些服務，準備使用哪個帳號。
-5. **可以做什麼？** Tools 只有 read，還是包含 write、send、delete、publish。
-6. **資料會去哪裡？** 外部服務的條款、隱私政策與組織規範是否允許。
-
-<section class="plugins-inspection-strip" aria-label="安裝 Plugin 前的三階段檢查">
-  <article><b>來源</b><span>作者 · 版本 · Workspace</span></article>
-  <i aria-hidden="true">→</i>
-  <article><b>能力</b><span>Skills · tools · Hooks</span></article>
-  <i aria-hidden="true">→</i>
-  <article><b>資料</b><span>帳號 · 範圍 · 讀寫動作</span></article>
-</section>
-
-<!-- Screenshot asset: /images/plugins/plugin-details.webp -->
-<figure class="plugins-screenshot" aria-labelledby="plugins-shot-details-title">
-  <div class="plugins-screenshot__placeholder" role="img" aria-label="待補：Plugin 詳細資料、安裝按鈕與 Authentication 提示">
-    <span>SCREENSHOT PLACEHOLDER · BASIC 02</span>
-    <strong id="plugins-shot-details-title">安裝前閱讀詳細資料</strong>
-    <code>/images/plugins/plugin-details.webp</code>
-    <p>拍攝作者、簡介、包含能力、安裝入口與 Authentication 提示；不要讓電子郵件、租戶、連線帳號或授權範圍出現在截圖。</p>
-  </div>
-  <figcaption>看見安裝按鈕不代表應直接安裝；先確認來源、能力與資料範圍。</figcaption>
-</figure>
+<MediaTabs
+  class="plugins-media-tabs"
+  aria-label="安裝 Plugin 前閱讀詳細資料的五個面向"
+  :items="[
+    {
+      label: '定位與範例',
+      title: '它真的解決你的問題嗎？',
+      description: '先讀名稱、簡介、建議任務與完整說明，確認它處理的工作、輸入與預期成果和你的真實需求一致；不要只因名稱相似就安裝。',
+      image: '/images/plugins/plugins_intro.png',
+      alt: 'Data Analytics Plugin 詳細頁，顯示名稱、簡介、建議任務與完整用途說明',
+      note: '通過條件：你能用一句話說明它解決什麼，而且範例確實對應你的任務。',
+      fit: 'compact'
+    },
+    {
+      label: 'Apps 連線',
+      title: '它需要連到哪些服務？',
+      description: '查看需要哪些 Apps、哪些服務顯示 Connect，以及目前的連線狀態。逐一確認每個外部服務是否必要，並預先決定要使用的帳號與組織。',
+      image: '/images/plugins/plugins_app.png',
+      alt: 'Data Analytics Plugin 的 Apps 清單，顯示 Slack、Notion、Google Drive、Gmail 與行事曆等服務的連線狀態',
+      note: '通過條件：每個連線都有明確用途，預計使用的帳號與組織也正確。',
+      fit: 'compact'
+    },
+    {
+      label: 'MCP 與 Skills',
+      title: '它會帶入哪些能力與動作？',
+      description: '展開 MCP servers 與 Skills，確認包含哪些工作方法、工具與啟用狀態。名稱只提供線索，還要理解它們會讀取哪些資料、執行哪些步驟，以及可能造成的讀寫影響。',
+      image: '/images/plugins/plugins_mcp_skills.png',
+      alt: 'Data Analytics Plugin 的 MCP servers 與 Skills 清單，顯示一個 MCP server 和多個已啟用的分析 Skills',
+      note: '通過條件：你理解它帶入哪些方法與工具，並能說明可能造成的讀寫影響。',
+      fit: 'compact'
+    },
+    {
+      label: '資訊與政策',
+      title: '來源、權限與政策可信嗎？',
+      description: '核對 capabilities、developer、category、版本、網站、隱私政策與服務條款。若包含 Read、Write 或其他高影響動作，確認它們符合真實需求與組織規範。',
+      image: '/images/plugins/plugins_info.png',
+      alt: 'Data Analytics Plugin 的 Information 區塊，顯示 capabilities、developer、category、version 與政策連結',
+      note: '通過條件：來源與版本可信、權限符合需求，資料處理方式也符合組織規範。',
+      fit: 'compact'
+    },
+    {
+      label: '授權範圍',
+      title: '這次實際授權了什麼？',
+      description: '先確認即將前往的服務、開發者、管理員核准狀態與資料使用方式；進入服務端後，再核對登入帳號與實際授權 scope。',
+      image: '/images/plugins/plugins_authentication.png',
+      alt: 'Connect Gmail 授權畫面，顯示由 OpenAI 開發、管理員已核准、資料隱私說明與前往 Gmail 的按鈕',
+      note: '通過條件：服務、帳號、授權 scope 與資料用途都符合預期；任何一項不符就停止。',
+      fit: 'tall'
+    }
+  ]"
+/>
 
 ### 4｜安裝、連線，然後開啟新 task
 
@@ -196,15 +221,14 @@ Plugins Directory 可能依來源分成：
 
 有些 connectors 會在安裝時要求 Authentication，有些則等到第一次使用才詢問。無論在哪個時點出現，都要確認帳號、組織與授權範圍，不要只按下一步。
 
-<!-- Screenshot asset: /images/plugins/plugin-composer.webp -->
-<figure class="plugins-screenshot" aria-labelledby="plugins-shot-composer-title">
-  <div class="plugins-screenshot__placeholder" role="img" aria-label="待補：新 task 中輸入 @ 明確選擇已安裝 Plugin">
-    <span>SCREENSHOT PLACEHOLDER · BASIC 03</span>
-    <strong id="plugins-shot-composer-title">在新 task 中明確選擇 Plugin</strong>
-    <code>/images/plugins/plugin-composer.webp</code>
-    <p>拍攝輸入 <code>@</code> 後的選擇清單與一段 read-only／draft-only Prompt；範例資料請使用虛構名稱，不顯示真實文件、信件或客戶資訊。</p>
+<figure class="course-visual" aria-labelledby="plugins-shot-composer-title">
+  <div class="media-tabs__stage is-compact">
+    <div class="media-tabs__glow" aria-hidden="true"></div>
+    <div class="media-tabs__window">
+      <img src="/images/plugins/use_plugins.png" width="778" height="451" alt="Codex 新 task 的輸入區，輸入 @ 後從 Plugins 清單明確選擇 Data Analytics" loading="lazy" decoding="async">
+    </div>
   </div>
-  <figcaption>意圖非常清楚時可以直接描述成果；教學與首次驗證建議先用 <code>@</code> 明確指定。</figcaption>
+  <figcaption id="plugins-shot-composer-title">安裝後先開啟新 task，再輸入 <code>@</code> 明確選擇 Plugin；首次使用時從範圍小、容易核對的任務開始。</figcaption>
 </figure>
 
 ### 5｜Plugins 實戰應用案例

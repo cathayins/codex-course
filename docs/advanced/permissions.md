@@ -69,27 +69,47 @@ outline: [2, 3]
 
 ### Config 放在哪裡
 
-<ol class="permissions-config-stack" aria-label="Codex 三個主要設定層，由高到低">
-  <li><b>01</b><span><strong>專案 <code>.codex/config.toml</code></strong><small>設定只屬於這個 Repository 的模型、Sandbox、Approval、MCP、hooks 或 rules；只有受信任的 Repository 會載入，越靠近目前目錄越優先</small></span></li>
-  <li><b>02</b><span><strong>使用者 <code>~/.codex/config.toml</code></strong><small>設定跨 Repository 共用的個人預設；模型供應商、LiteLLM Proxy、認證方式與本機偏好應放在這一層</small></span></li>
-  <li><b>03</b><span><strong>System config 與內建預設</strong><small>由管理者提供整台機器或組織的共同起點；當上層沒有指定欄位時，Codex 才沿用 system config 或內建預設</small></span></li>
-</ol>
+<MediaTabs
+  class="permissions-media-tabs"
+  aria-label="在 App 與 IDE 中找到 config.toml"
+  :items="[
+    {
+      label: 'App',
+      title: '在 Configuration 選擇設定層級',
+      description: '從 App 的 Configuration 頁開啟設定層級選單，可切換 Project config、User config 與 Admin config。先確認設定屬於哪一層，再決定放入專案或個人 config.toml。',
+      image: '/images/permissions/app_settings.png',
+      alt: 'Codex App 的 Configuration 設定頁，展開選單顯示 Project config、User config 與 Admin config',
+      fit: 'compact'
+    },
+    {
+      label: 'IDE',
+      title: '在 IDE 的組態頁開啟 config.toml',
+      description: 'IDE 的組態頁提供開啟 config.toml 的入口；若設定不是目前 workspace 專屬，仍要回到 User config 或 System config 判斷放置層級。',
+      image: '/images/permissions/ide_settings.png',
+      alt: 'IDE 的組態設定頁，顯示開啟 config.toml 的按鈕與模型功能設定',
+      fit: 'compact'
+    }
+  ]"
+/>
 
-可以用「這個設定屬於誰」判斷放置位置：專案團隊共同需要的行為放專案層；只屬於自己的模型服務與工作偏好放使用者層；所有使用者都必須遵循的基準交給 system config 或組織管理政策。上層設定可以覆寫下層預設，但組織的 `requirements.toml` 仍可限制哪些值允許使用。
+<section class="mcp-transport-grid permissions-config-grid" aria-label="專案與使用者 Config 比較">
+  <article class="is-stdio">
+    <header><span>PROJECT SCOPE</span><strong>專案 Config</strong></header>
+    <p>只屬於目前 Repository 的設定；受信任的 Repository 才會載入。</p>
+    <dl><div><dt>設定檔</dt><dd><code>.codex/config.toml</code></dd></div><div><dt>適合放</dt><dd>團隊共同的 Model、Sandbox、Approval、MCP、hooks 與 rules</dd></div><div><dt>判斷方式</dt><dd>換到另一個 Repository 後，仍然應該保留嗎？</dd></div></dl>
+  </article>
+  <article class="is-http">
+    <header><span>USER SCOPE</span><strong>使用者 Config</strong></header>
+    <p>跨 Repository 共用的個人預設；主機層設定與本機偏好應集中在這一層。</p>
+    <dl><div><dt>設定檔</dt><dd><code>~/.codex/config.toml</code></dd></div><div><dt>適合放</dt><dd>模型供應商、LiteLLM Proxy、認證方式與個人工作偏好</dd></div><div><dt>判斷方式</dt><dd>只有自己使用，或會跟著這台機器走嗎？</dd></div></dl>
+  </article>
+</section>
+
+可以用「這個設定屬於誰」判斷放置位置：專案團隊共同需要的行為放專案層；只屬於自己的模型服務與工作偏好放使用者層。System config 與內建預設是管理者提供的 fallback，不是日常自行選擇的專案／使用者設定層。上層設定可以覆寫下層預設，但組織的 `requirements.toml` 仍可限制哪些值允許使用。
 
 ::: warning Repository trust 是載入條件
 不受信任的 Repository 不能用自己的 `.codex/config.toml`、hooks 或 rules 改變 Codex 行為。若設定看似正確卻沒有生效，先檢查目前目錄、設定優先順序與 Repository 是否受信任。
 :::
-
-<figure class="permissions-screenshot" aria-labelledby="permissions-shot-config-title">
-  <div class="permissions-screenshot__placeholder" role="img" aria-label="待補：Codex App 設定頁中開啟 config.toml 的畫面">
-    <span>SCREENSHOT PLACEHOLDER</span>
-    <strong id="permissions-shot-config-title">開啟 Config 設定</strong>
-    <code>docs/public/images/permissions/config-settings.webp</code>
-    <p>拍攝 App 或 IDE 設定頁中開啟 <code>config.toml</code> 的入口；遮蔽使用者路徑、帳號、工作區名稱、環境變數與 Token。</p>
-  </div>
-  <figcaption>介面入口可能隨版本調整；設定檔的層級與欄位才是本章重點。</figcaption>
-</figure>
 
 ## 2｜第一步：先設定 Model
 
@@ -197,14 +217,14 @@ Auto-review 會評估符合條件的 Approval，但不會擴大 Sandbox、不會
 `approvals_reviewer` 通常搭配 `approval_policy = "on-request"` 或 granular approval policy。若使用 `approval_policy = "never"`，不會產生互動式 Approval，也就沒有請 Reviewer 判斷的流程。組織管理者也可以用 `allowed_approvals_reviewers` 限制可選值。
 :::
 
-<figure class="permissions-screenshot" aria-labelledby="permissions-shot-selector-title">
-  <div class="permissions-screenshot__placeholder" role="img" aria-label="待補：Codex App composer 下方展開權限選擇器的畫面">
-    <span>SCREENSHOT PLACEHOLDER</span>
-    <strong id="permissions-shot-selector-title">App 權限選擇器</strong>
-    <code>docs/public/images/permissions/permissions-selector.webp</code>
-    <p>拍攝 composer 下方展開選單的狀態，需同時看見 Ask、Approve for me、Full access 與 Custom；遮蔽專案名稱、帳號與私人路徑。</p>
+<figure class="course-visual permissions-course-visual" aria-labelledby="permissions-shot-skill-title">
+  <div class="media-tabs__stage is-compact">
+    <div class="media-tabs__glow" aria-hidden="true"></div>
+    <div class="media-tabs__window">
+      <img src="/images/skills/use_skills.png" width="1530" height="892" alt="Codex Desktop App 的 composer，底部顯示 Approve for me 權限選項，輸入區也可選擇 Skill" loading="lazy" decoding="async">
+    </div>
   </div>
-  <figcaption>介面名稱可能調整，仍可用 Approval policy、Reviewer 與 Sandbox 三個欄位理解模式差異。</figcaption>
+  <figcaption id="permissions-shot-skill-title">App 的 composer 會把 Skill 選用與 Approval 控制放在同一個工作入口；送出前先確認底部的 Approval 模式，再依 <code>approval_policy</code> 與 <code>approvals_reviewer</code> 理解誰會做最後決定。</figcaption>
 </figure>
 
 ## 4｜第三步：用 Sandbox 畫出技術邊界
@@ -404,60 +424,52 @@ network_access = false
 正式環境仍要依資料敏感度、網路政策、組織的 `requirements.toml` 與任務類型調整。不要為了少一次 Approval，就把 Full access 設成長期預設。
 :::
 
-## 7｜依任務切換 Config 配方
+### 依任務切換 Config 配方
 
 以下三種配方都沿用相同欄位，只調整任務真正需要的部分。
 
-### 配方 A｜陌生專案只讀審查
-
-```toml
-model_reasoning_effort = "high"
-approval_policy = "on-request"
-approvals_reviewer = "user"
-sandbox_mode = "read-only"
-web_search = "disabled"
-```
-
-重點是先理解內容，不讓探索階段直接改檔案，也不需要外部網路。若任務後來變成實作，再明確切換模式。
-
-### 配方 B｜一般文件或程式修改
-
-```toml
-approval_policy = "on-request"
-approvals_reviewer = "user"
-sandbox_mode = "workspace-write"
-web_search = "cached"
-
-[sandbox_workspace_write]
-network_access = false
-```
-
-這是多數互動式工作的起點：workspace 內可以持續修改，跨目錄或命令連網時才出現新的決策。
-
-### 配方 C｜固定的跨目錄或網路任務
-
-```toml
-approval_policy = "on-request"
-approvals_reviewer = "user"
-sandbox_mode = "workspace-write"
-web_search = "live"
-
-[sandbox_workspace_write]
-writable_roots = ["/absolute/path/to/shared-docs"]
-network_access = true
-```
-
-只有在額外目錄與網路是穩定、反覆出現且來源可信時，才把它們寫成持久設定。一次性需求保留 Approval，通常比永久放寬邊界更容易審查。
-
-<figure class="permissions-screenshot" aria-labelledby="permissions-shot-auto-title">
-  <div class="permissions-screenshot__placeholder" role="img" aria-label="待補：Auto-review 拒絕高風險命令的畫面">
-    <span>SCREENSHOT PLACEHOLDER</span>
-    <strong id="permissions-shot-auto-title">越界請求被拒絕</strong>
-    <code>docs/public/images/permissions/auto-review-denied.webp</code>
-    <p>使用不含真實憑據的示範命令，保留拒絕原因與狀態；不得讓畫面出現 Token、SSH key、使用者名稱或真實檔案內容。</p>
-  </div>
-  <figcaption>被拒絕不代表設定失敗；它通常表示 Sandbox 或 Reviewer 正在依預期阻止超出範圍的動作。</figcaption>
-</figure>
+<MediaTabs
+  class="permissions-recipe-tabs"
+  aria-label="依任務切換 Config 配方"
+  :items="[
+    {
+      label: '配方 A',
+      title: '陌生專案只讀審查',
+      description: '先理解內容，不讓探索階段直接改檔案，也不需要外部網路。若任務後來變成實作，再明確切換模式。',
+      commands: [
+        {
+          label: 'config.toml',
+          code: 'model_reasoning_effort = &quot;high&quot;\napproval_policy = &quot;on-request&quot;\napprovals_reviewer = &quot;user&quot;\nsandbox_mode = &quot;read-only&quot;\nweb_search = &quot;disabled&quot;'
+        }
+      ],
+      note: '適合陌生 Repository、程式碼 review 與風險盤點。'
+    },
+    {
+      label: '配方 B',
+      title: '一般文件或程式修改',
+      description: '這是多數互動式工作的起點：workspace 內可以持續修改，跨目錄或命令連網時才出現新的決策。',
+      commands: [
+        {
+          label: 'config.toml',
+          code: 'approval_policy = &quot;on-request&quot;\napprovals_reviewer = &quot;user&quot;\nsandbox_mode = &quot;workspace-write&quot;\nweb_search = &quot;cached&quot;\n\n[sandbox_workspace_write]\nnetwork_access = false'
+        }
+      ],
+      note: '適合一般文件、程式修改與需要逐步核對結果的日常工作。'
+    },
+    {
+      label: '配方 C',
+      title: '固定的跨目錄或網路任務',
+      description: '只有在額外目錄與網路是穩定、反覆出現且來源可信時，才把它們寫成持久設定；一次性需求仍保留 Approval。',
+      commands: [
+        {
+          label: 'config.toml',
+          code: 'approval_policy = &quot;on-request&quot;\napprovals_reviewer = &quot;user&quot;\nsandbox_mode = &quot;workspace-write&quot;\nweb_search = &quot;live&quot;\n\n[sandbox_workspace_write]\nwritable_roots = [&quot;/absolute/path/to/shared-docs&quot;]\nnetwork_access = true'
+        }
+      ],
+      note: '放寬前先確認目錄、網域、命令與資料來源都屬於可信工作流程。'
+    }
+  ]"
+/>
 
 ## Takeaway
 

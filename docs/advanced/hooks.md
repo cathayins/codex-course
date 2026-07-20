@@ -149,13 +149,13 @@ Event 決定何時檢查，Matcher 則決定**這一次事件要不要叫 Handle
 ```json
 {
   "hooks": {
-    "PostToolUse": [
+    "PostToolUse": [ // [!code highlight]
       {
-        "matcher": "^Bash$",
+        "matcher": "^Bash$", // [!code highlight]
         "hooks": [
           {
             "type": "command",
-            "command": "python3 /path/to/review_test.py"
+            "command": "python3 /path/to/review_test.py" // [!code highlight]
           }
         ]
       }
