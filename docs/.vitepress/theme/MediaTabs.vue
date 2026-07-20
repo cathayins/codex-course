@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, useId } from 'vue'
 import { withBase } from 'vitepress'
+import FollowUpDemo from './FollowUpDemo.vue'
 
 type MediaTab = {
   label: string
@@ -27,6 +28,7 @@ type MediaTab = {
     code: string
   }[]
   visual?: string
+  demo?: 'steer' | 'queue'
   platforms?: {
     label: string
     title: string
@@ -188,6 +190,8 @@ onMounted(() => {
       role="tabpanel"
       :aria-labelledby="`${instanceId}-tab-${activeIndex}`"
     >
+      <FollowUpDemo v-if="activeItem.demo" :mode="activeItem.demo" />
+
       <div
         v-if="activeItem.image"
         class="media-tabs__stage"

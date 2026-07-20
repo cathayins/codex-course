@@ -4572,6 +4572,37 @@ html:not(.dark) .vp-doc .vp-code span {
   line-height: 1.55;
 }
 
+.slash-commands-page .media-tabs__steps section {
+  opacity: .48;
+  animation: slash-plan-flow 4.8s ease-in-out infinite both;
+}
+
+.slash-commands-page .media-tabs__steps section:nth-child(2) {
+  animation-delay: 1.35s;
+}
+
+.slash-commands-page .media-tabs__steps section:nth-child(3) {
+  animation-delay: 2.7s;
+}
+
+@keyframes slash-plan-flow {
+  0%, 100% {
+    opacity: .48;
+    transform: translateY(0);
+  }
+  8%, 27% {
+    border-color: #72afe3;
+    opacity: 1;
+    background: #eef7ff;
+    box-shadow: 0 9px 22px rgb(47 111 159 / 13%);
+    transform: translateY(-3px);
+  }
+  38% {
+    opacity: .48;
+    transform: translateY(0);
+  }
+}
+
 .media-tabs__commands {
   display: grid;
   gap: 10px;
