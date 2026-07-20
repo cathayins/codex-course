@@ -214,60 +214,7 @@ Subagents 會繼承父 task 當下的 Permission／Sandbox 與可用工具。派
 探索、審查、測試、分類與摘要通常衝突較少。多個 agents 同時寫入同一批 shared files，容易互相覆蓋或產生難以整合的修改；初學時把最後寫入集中交給主 agent。
 :::
 
-## 4｜實戰：平行比較三個區域的銷售資料
-
-情境：你拿到北、中、南三份彼此獨立的銷售資料：`data/north.csv`、`data/central.csv` 與 `data/south.csv`。三份檔案涵蓋相同期間，也使用相同欄位：`order_date`、`product`、`quantity` 與 `revenue`。
-
-<section class="subagents-case" aria-labelledby="subagents-case-title">
-  <span>CASE STUDY · PARALLEL MAP–REDUCE</span>
-  <strong id="subagents-case-title">一個 Subagent 負責一份資料，完成後再合併</strong>
-  <p>三個 Subagents 使用同一套指標定義，各自分析一份 CSV。彼此不需要等待或使用其他 Subagent 的輸出；主 agent 只在最後把三份摘要合併成比較表。</p>
-</section>
-
-::: tip 為什麼這個案例適合 Subagents？
-北、中、南三份資料可以獨立計算，任何一個 Subagent 失敗都不會阻止另外兩個完成。這是典型的平行工作：先對多份獨立輸入執行相同分析，再由主 agent 匯聚結果。
-:::
-
-### Step 1：先寫清楚分工
-
-```text
-# Goal
-比較北、中、南三個區域的銷售表現。
-
-# Shared definitions
-- 訂單筆數：CSV 的資料列數，不含標題列。
-- 總營收：revenue 欄位總和。
-- 平均每筆營收：總營收 ÷ 訂單筆數。
-- 熱門產品：總營收最高的 product。
-
-# Delegation
-請派出 3 個 Subagents 平行工作：
-1. North：只分析 data/north.csv。
-2. Central：只分析 data/central.csv。
-3. South：只分析 data/south.csv。
-
-# Ownership and constraints
-- 每個 Subagent 只能讀取自己負責的 CSV，並執行不會改寫檔案的 Python 指令。
-- 不修改 CSV、不新增分析檔案、不安裝新的套件。
-- 三個 Subagents 不互相等待，也不使用彼此的結果。
-
-# Done when
-- 等待三個 Subagents 全部完成。
-- 每個 Subagent 使用相同格式回報：區域、訂單筆數、總營收、平均每筆營收、熱門產品。
-- 另外列出自己負責檔案的缺失值或重複列數量。
-- 最後由主 agent 合併成區域比較表，不要求 Subagents 重新分析其他檔案。
-```
-
-### Step 2：觀察而不是一直插手
-
-<ol class="subagents-practice-flow" aria-label="Subagents 實戰流程">
-  <li><b>01</b><span><strong>確認三份獨立輸入</strong><small>活動區應顯示 North、Central 與 South threads。</small></span></li>
-  <li><b>02</b><span><strong>開啟其中一個 thread</strong><small>確認它只讀取被分配的 CSV，並使用共同的指標定義。</small></span></li>
-  <li><b>03</b><span><strong>等待全部完成</strong><small>除非範圍錯誤，不需要頻繁打斷。</small></span></li>
-  <li><b>04</b><span><strong>讓主 agent 合併結果</strong><small>檢查三份回報欄位一致，再建立區域比較表。</small></span></li>
-</ol>
-
-## 5｜進階：客製化 Agent
+## 4｜進階：客製化 Agent
 
 當某種分工會重複出現，例如每週都要檢查 CSV 品質並產生相同格式的摘要，就可以把角色寫成客製化 Agent。
 
