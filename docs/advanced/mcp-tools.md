@@ -235,16 +235,38 @@ Codex App、CLI 與 IDE extension 共用 MCP 設定，第一次連線建議從 A
 5. 需要 OAuth 時執行 **Authenticate**。
 6. 在輸入區使用 `/mcp`，確認 server 與 tools 可見。
 
-<!-- Screenshot asset: /images/mcp/add-server.webp -->
-<figure class="mcp-screenshot" aria-labelledby="mcp-shot-add-title">
-  <div class="mcp-screenshot__placeholder" role="img" aria-label="待補：Codex App 新增 MCP Server 的設定畫面">
-    <span>SCREENSHOT PLACEHOLDER · APP 01</span>
-    <strong id="mcp-shot-add-title">新增 MCP Server</strong>
-    <code>docs/public/images/mcp/add-server.webp</code>
-    <p>拍攝 Settings → MCP servers → Add server，讓學生看見名稱、STDIO／Streamable HTTP 與 command／URL 欄位；遮蔽帳號、私人路徑、內部網域、Headers 與 Token。</p>
-  </div>
-  <figcaption>實際介面名稱可能隨版本調整；重點是辨認 transport、啟用狀態與 Authentication。</figcaption>
-</figure>
+<MediaTabs
+  class="mcp-media-tabs"
+  aria-label="新增 MCP Server 的操作畫面"
+  :items="[
+    {
+      label: 'MCP 清單',
+      title: '先從 MCP 清單進入新增流程',
+      description: '在 Plugins 頁開啟 MCPs 分頁，先確認目前已設定的 Server 與啟用狀態，再按 Add server 開始新增。',
+      image: '/images/mcp/mcp_list.png',
+      alt: 'Codex Desktop App 的 MCP 清單，顯示既有 Server、啟用開關與 Add server 按鈕',
+      fit: 'compact'
+    },
+    {
+      label: 'STDIO',
+      title: '用 STDIO 連接本機命令',
+      description: '選擇 STDIO 後填入 Server 名稱、啟動命令與 arguments；需要時再設定環境變數與工作目錄。適合由 Codex 在本機啟動的工具。',
+      image: '/images/mcp/add_mcp_stdio.png',
+      alt: 'Codex Desktop App 新增 MCP Server 的 STDIO 設定畫面，顯示命令、arguments、環境變數與工作目錄欄位',
+      fit: 'tall'
+    },
+    {
+      label: 'Streamable HTTP',
+      title: '用 Streamable HTTP 連接遠端服務',
+      description: '選擇 Streamable HTTP 後填入遠端 URL；若服務需要驗證，使用 bearer token 環境變數或 headers 的環境變數，不要直接貼入 token。',
+      image: '/images/mcp/add_mcp_stream.png',
+      alt: 'Codex Desktop App 新增 MCP Server 的 Streamable HTTP 設定畫面，顯示 URL、Bearer token 環境變數與 headers 欄位',
+      fit: 'tall'
+    }
+  ]"
+/>
+
+<p class="mcp-media-caption">實際介面名稱可能隨版本調整；重點是辨認 MCP 清單、transport、啟用狀態與 Authentication。</p>
 
 ::: tip 網頁課程與本機 Codex 的差異
 如果你是在 ChatGPT 網頁版的 Work mode 上課，請從 Plugins 瀏覽可用工具；只有本機 Codex App、CLI 或 IDE extension 才使用本節的本機 MCP 設定與 `/mcp` 指令。
@@ -342,15 +364,14 @@ codex mcp add context7 -- npx -y @upstash/context7-mcp
 - 沒有等待 Authentication 或 startup error。
 - Tool 清單與你剛才審查的用途一致。
 
-<!-- Screenshot asset: /images/mcp/server-tools-status.webp -->
-<figure class="mcp-screenshot" aria-labelledby="mcp-shot-status-title">
-  <div class="mcp-screenshot__placeholder" role="img" aria-label="待補：斜線 mcp 指令顯示 Server 與 tools 狀態的畫面">
-    <span>SCREENSHOT PLACEHOLDER · VERIFY 02</span>
-    <strong id="mcp-shot-status-title">確認 Server 與 Tools 已連線</strong>
-    <code>docs/public/images/mcp/server-tools-status.webp</code>
-    <p>拍攝 <code>/mcp</code> 或 MCP status 畫面，需看見 Server 名稱、連線狀態與 tool 清單；遮蔽私人 Server 名稱、內部 URL、帳號、Token 與不屬於課程的工具。</p>
+<figure class="course-visual mcp-status-visual" aria-labelledby="mcp-shot-status-title">
+  <div class="media-tabs__stage is-compact">
+    <div class="media-tabs__glow" aria-hidden="true"></div>
+    <div class="media-tabs__window">
+      <img src="/images/mcp/show_mcp.png" width="772" height="458" alt="Codex Desktop App 輸入 /mcp 後顯示 Server 清單與啟用狀態的畫面" loading="lazy" decoding="async">
+    </div>
   </div>
-  <figcaption>設定存在不代表連線成功；真正的驗收點是 Server 初始化完成，且預期 tools 可被發現。</figcaption>
+  <figcaption id="mcp-shot-status-title">輸入 <code>/mcp</code> 後，確認 Server 已啟用，且工具清單已出現；設定存在不代表連線成功，真正的驗收點是 Server 初始化完成並能被發現。</figcaption>
 </figure>
 
 ### Step 3｜執行一個有邊界的查核 Prompt
