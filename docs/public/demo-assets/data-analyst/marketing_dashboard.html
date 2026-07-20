@@ -1,0 +1,1366 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data:; style-src 'unsafe-inline' blob: data:; img-src blob: data:; font-src blob: data:; media-src blob: data:; worker-src blob:; connect-src blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Marketing Campaign Dashboard</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html>body{padding:0}</style>
+</head>
+<body>
+<div id="marketing-dashboard-20260720">
+  <div id="widget">
+    <section class="card dashboard-section dashboard-filter-card" aria-label="篩選器">
+      <div class="viz-controls">
+        <label class="form-label" for="md-platform">
+          <span>Platform</span>
+          <select class="form-select" id="md-platform"></select>
+        </label>
+        <label class="form-label" for="md-region">
+          <span>Region</span>
+          <select class="form-select" id="md-region"></select>
+        </label>
+        <label class="form-label" for="md-campaign">
+          <span>CampaignName</span>
+          <select class="form-select" id="md-campaign"></select>
+        </label>
+        <button class="btn btn-ghost" id="md-clear" type="button">Clear filters</button>
+      </div>
+      <p class="text-small text-muted" id="md-filter-status" aria-live="polite"></p>
+    </section>
+
+    <section class="viz-grid dashboard-kpis" aria-label="關鍵績效指標">
+      <article class="card viz-stat">
+        <span class="kpi-label">Total Cost</span>
+        <span class="viz-stat-value" id="md-total-cost"></span>
+      </article>
+      <article class="card viz-stat">
+        <span class="kpi-label">Total Revenue</span>
+        <span class="viz-stat-value" id="md-total-revenue"></span>
+      </article>
+      <article class="card viz-stat">
+        <span class="kpi-label">Total Enrollments</span>
+        <span class="viz-stat-value" id="md-total-enrollments"></span>
+      </article>
+      <article class="card viz-stat">
+        <span class="kpi-label">ROAS</span>
+        <span class="viz-stat-value" id="md-roas"></span>
+      </article>
+    </section>
+
+    <section class="dashboard-section" aria-labelledby="md-revenue-title">
+      <h2 id="md-revenue-title">月度 Revenue 趨勢</h2>
+      <div class="chart-wrap" id="md-revenue-wrap">
+        <svg class="chart-svg" id="md-revenue-chart" role="img"></svg>
+      </div>
+      <p class="text-small text-muted" id="md-revenue-summary"></p>
+    </section>
+
+    <div class="dashboard-charts">
+      <section class="dashboard-section" aria-labelledby="md-platform-title">
+        <h2 id="md-platform-title">Platform ROAS 比較</h2>
+        <div class="chart-wrap" id="md-platform-wrap">
+          <svg class="chart-svg" id="md-platform-chart" role="img"></svg>
+        </div>
+      </section>
+      <section class="dashboard-section" aria-labelledby="md-funnel-title">
+        <h2 id="md-funnel-title">行銷漏斗</h2>
+        <div class="chart-wrap" id="md-funnel-wrap">
+          <svg class="chart-svg" id="md-funnel-chart" role="img"></svg>
+        </div>
+      </section>
+    </div>
+
+    <section class="dashboard-section" aria-labelledby="md-insight-title">
+      <h2 id="md-insight-title">Insight</h2>
+      <div class="dashboard-insights" aria-live="polite">
+        <article class="insight-block">
+          <h3>資料事實</h3>
+          <p id="md-fact"></p>
+        </article>
+        <article class="insight-block">
+          <h3>解讀</h3>
+          <p id="md-interpretation"></p>
+        </article>
+        <article class="insight-block">
+          <h3>下一步</h3>
+          <p id="md-next-step"></p>
+        </article>
+      </div>
+    </section>
+
+    <footer class="dashboard-meta text-small" aria-label="資料說明與限制">
+      <p id="md-meta-note"></p>
+    </footer>
+  </div>
+</div>
+
+<style>
+  html,
+  body {
+    color-scheme: light;
+    background: #ffffff !important;
+  }
+
+  #marketing-dashboard-20260720 {
+    --background: #ffffff;
+    --foreground: #2b2b2b;
+    --card: #f5f6f7;
+    --card-foreground: #2b2b2b;
+    --popover: #ffffff;
+    --popover-foreground: #2b2b2b;
+    --primary: #4e79a7;
+    --primary-foreground: #ffffff;
+    --secondary: #ffffff;
+    --secondary-foreground: #2b2b2b;
+    --muted: #f0f0f0;
+    --muted-foreground: #5f6368;
+    --accent: #e8f0f8;
+    --accent-foreground: #365f86;
+    --border: #d7d7d7;
+    --input: #b8b8b8;
+    --ring: #4e79a7;
+    --radius: 2px;
+    --viz-series-1: #4e79a7;
+    --viz-series-2: #f28e2b;
+    width: 100%;
+    padding: 12px;
+    color: var(--foreground);
+    background: var(--background);
+  }
+
+  #marketing-dashboard-20260720 .dashboard-section,
+  #marketing-dashboard-20260720 .insight-block {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  #marketing-dashboard-20260720 .dashboard-filter-card {
+    padding: 10px;
+  }
+
+  #marketing-dashboard-20260720 .dashboard-kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  #marketing-dashboard-20260720 .kpi-label {
+    color: var(--muted-foreground);
+    font-weight: 500;
+  }
+
+  #marketing-dashboard-20260720 .dashboard-charts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    min-width: 0;
+  }
+
+  #marketing-dashboard-20260720 .dashboard-charts > .dashboard-section {
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  #marketing-dashboard-20260720 .dashboard-insights {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  #marketing-dashboard-20260720 .insight-block {
+    padding-top: 8px;
+    border-top: 2px solid var(--viz-series-1);
+  }
+
+  #marketing-dashboard-20260720 .chart-wrap {
+    position: relative;
+    min-width: 0;
+  }
+
+  #marketing-dashboard-20260720 .chart-svg {
+    display: block;
+    width: 100%;
+    height: 230px;
+    overflow: visible;
+  }
+
+  #marketing-dashboard-20260720 .chart-svg text {
+    fill: var(--foreground);
+    font-family: inherit;
+    font-size: var(--font-size-small);
+    font-weight: 400;
+  }
+
+  #marketing-dashboard-20260720 .chart-svg .axis-label {
+    fill: var(--muted-foreground);
+  }
+
+  #marketing-dashboard-20260720 .chart-svg .gridline {
+    stroke: var(--border);
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+
+  #marketing-dashboard-20260720 .chart-svg .revenue-line {
+    fill: none;
+    stroke: var(--viz-series-1);
+    stroke-width: 2;
+  }
+
+  #marketing-dashboard-20260720 .chart-svg .revenue-point,
+  #marketing-dashboard-20260720 .chart-svg .platform-bar,
+  #marketing-dashboard-20260720 .chart-svg .funnel-bar {
+    fill: var(--viz-series-1);
+  }
+
+  #marketing-dashboard-20260720 .chart-svg .platform-bar.is-best {
+    fill: var(--viz-series-2);
+  }
+
+  #marketing-dashboard-20260720 .chart-svg .funnel-bar {
+    stroke: var(--background);
+    stroke-width: 1;
+  }
+
+  #marketing-dashboard-20260720 .dashboard-meta {
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    color: var(--muted-foreground);
+  }
+
+  @media (max-width: 620px) {
+    #marketing-dashboard-20260720 .dashboard-charts,
+    #marketing-dashboard-20260720 .dashboard-insights {
+      grid-template-columns: 1fr;
+    }
+
+    #marketing-dashboard-20260720 .dashboard-kpis {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 360px) {
+    #marketing-dashboard-20260720 {
+      padding: 6px;
+    }
+
+    #marketing-dashboard-20260720 .chart-svg {
+      height: 220px;
+    }
+  }
+</style>
+
+<script>
+(() => {
+  const payload = {"source":"Marketing_Campaign_Data.xlsx","sheet":"CampaignPerformance","startDate":"2024-01-01","endDate":"2025-10-31","rows":[["2024-01-01","YouTube","West India","Hackathon",285708,16956,4087,2547,1148,275457.87,4615838.04],["2024-01-02","YouTube","North India","Hackathon",140449,10082,1815,951,565,133025.86,3513169.9],["2024-01-03","YouTube","North India","Hackathon",140958,7474,1169,683,343,135765.61,1051924.88],["2024-01-04","YouTube","West India","Hackathon",257823,16841,3179,1584,698,229715.44,3850639.56],["2024-01-05","YouTube","West India","Hackathon",98595,7293,1340,854,368,52360.96,1543262.86],["2024-01-06","YouTube","North India","Hackathon",68114,5377,909,505,222,27454.35,1717163.91],["2024-01-07","YouTube","East India","Hackathon",175572,6855,1452,757,346,95497.97,2598807.52],["2024-01-08","YouTube","West India","Hackathon",231966,9373,1934,1247,553,175649.0,2558956.35],["2024-01-09","YouTube","West India","Hackathon",281339,12310,2329,1319,734,126723.85,4265725.03],["2024-01-10","YouTube","North India","Hackathon",98805,6952,1479,955,455,49446.12,3012430.04],["2024-01-11","YouTube","North India","Hackathon",144093,11451,1776,934,480,104177.45,1723113.84],["2024-01-12","YouTube","Pan India","Hackathon",158894,6588,1470,867,405,102314.09,3080880.49],["2024-01-13","YouTube","North India","Hackathon",66250,4921,871,392,210,51283.71,1495426.01],["2024-01-14","YouTube","West India","Hackathon",146445,6570,1466,803,436,60478.27,2107164.39],["2024-01-15","YouTube","South India","Hackathon",95097,7359,1754,1030,512,47007.7,2174797.75],["2024-01-16","YouTube","South India","Hackathon",234993,13461,2316,1322,778,118803.89,3598637.63],["2024-01-17","YouTube","West India","Hackathon",72601,4823,859,471,224,65231.88,1540858.24],["2024-01-18","YouTube","South India","Hackathon",64854,3268,774,379,187,29837.69,1134934.72],["2024-01-19","YouTube","Pan India","Hackathon",140767,7435,1316,748,419,134777.68,2166219.39],["2024-01-20","YouTube","West India","Hackathon",102564,4036,954,619,352,51435.05,2739137.65],["2024-01-21","YouTube","East India","Hackathon",99366,6149,1025,585,331,39928.53,2041493.6],["2024-01-22","YouTube","Pan India","Hackathon",130732,9877,1815,1127,550,65158.43,2707316.61],["2024-01-23","YouTube","East India","Hackathon",60282,3890,823,440,184,50617.5,1332250.53],["2024-01-24","YouTube","North India","Hackathon",227987,9955,2151,1233,739,116682.0,4318918.7],["2024-01-25","YouTube","West India","Hackathon",272168,16989,3561,1864,959,166206.38,4449882.89],["2024-01-26","YouTube","North India","Hackathon",264817,10684,1820,1080,558,178964.33,2959111.96],["2024-01-27","YouTube","Pan India","Hackathon",296970,16468,3817,2120,1220,288391.33,6571498.95],["2024-01-28","YouTube","West India","Hackathon",280154,13508,2070,1200,490,258351.31,2606824.76],["2024-01-29","YouTube","East India","Hackathon",246082,9319,1989,960,442,195337.39,2170310.94],["2024-01-30","YouTube","Pan India","Hackathon",162479,9378,2210,1154,604,157517.73,4429720.09],["2024-01-31","YouTube","South India","Hackathon",256182,17232,3397,1850,871,212839.26,3579677.63],["2024-02-01","YouTube","South India","Hackathon",269710,19961,3100,1479,780,108988.07,2698691.68],["2024-02-02","YouTube","Pan India","Hackathon",85354,4637,948,471,279,39467.1,1069477.66],["2024-02-03","YouTube","North India","Hackathon",96853,3046,699,327,162,53820.55,868489.67],["2024-02-04","YouTube","West India","Hackathon",251547,15827,2989,1925,804,123902.52,5851415.05],["2024-02-05","YouTube","North India","Hackathon",189912,12514,2711,1616,890,132682.38,5279956.64],["2024-02-06","YouTube","West India","Hackathon",202653,7479,1790,1010,592,93098.57,3172503.59],["2024-02-07","YouTube","West India","Hackathon",72831,5085,1192,648,367,65890.34,2806226.91],["2024-02-08","YouTube","East India","Hackathon",215776,15117,2292,1195,520,203852.45,3424734.79],["2024-02-09","YouTube","South India","Hackathon",72443,3074,557,275,119,67537.92,364638.44],["2024-02-10","YouTube","South India","Hackathon",155169,10534,1826,964,488,65548.51,2007650.15],["2024-02-11","YouTube","Pan India","Hackathon",145600,10817,2620,1253,628,143250.0,3766197.11],["2024-02-12","YouTube","East India","Hackathon",235449,17901,3572,1970,869,156170.05,3779197.39],["2024-02-13","YouTube","North India","Hackathon",92082,5873,1376,740,425,72924.97,2747864.33],["2024-02-14","YouTube","Pan India","Hackathon",69767,4894,1047,585,275,47791.5,2145764.47],["2024-02-15","YouTube","East India","Hackathon",131440,4550,1063,659,286,119990.61,1990223.55],["2024-02-16","YouTube","South India","Hackathon",281475,14540,2460,1239,519,112654.64,3920124.36],["2024-02-17","YouTube","South India","Hackathon",138904,6550,1548,797,435,128170.76,3043168.56],["2024-02-18","YouTube","Pan India","Hackathon",294254,13308,3157,1809,752,251733.22,4143706.82],["2024-02-19","YouTube","South India","Hackathon",176880,12551,2597,1551,905,165229.22,3242544.96],["2024-02-20","YouTube","North India","Hackathon",135158,10392,2062,977,480,101398.32,1965140.43],["2024-02-21","YouTube","Pan India","Hackathon",236532,17823,2773,1664,752,209088.36,2447521.69],["2024-02-22","YouTube","North India","Hackathon",279307,12903,2336,1311,548,265211.11,3931415.84],["2024-02-23","YouTube","South India","Hackathon",51984,2911,604,374,222,27007.8,1729748.62],["2024-02-24","YouTube","South India","Hackathon",103947,7149,1414,811,375,55023.96,1623225.67],["2024-02-25","YouTube","East India","Hackathon",61783,3786,675,431,230,48713.0,1095170.86],["2024-02-26","YouTube","East India","Hackathon",211522,8146,1649,828,347,139232.0,1343595.62],["2024-02-27","YouTube","South India","Hackathon",55880,1910,340,220,103,40730.48,486883.69],["2024-02-28","YouTube","West India","Hackathon",167535,11504,2177,1304,556,110296.86,4174012.5],["2024-02-29","YouTube","West India","Hackathon",206944,15993,2610,1657,747,170089.29,2704688.17],["2024-03-01","Google Ads","Pan India","UG Admission",86043,5121,1032,663,383,84842.24,2067523.93],["2024-03-01","YouTube","East India","Hackathon",238624,16826,3034,1553,882,121439.76,5523179.95],["2024-03-02","Google Ads","South India","UG Admission",106383,8132,1989,1180,597,68120.59,4167141.49],["2024-03-02","YouTube","Pan India","Hackathon",137353,10177,1561,926,440,62507.3,2300981.91],["2024-03-03","Google Ads","North India","UG Admission",190183,9911,2343,1331,712,170515.0,2633312.2],["2024-03-03","YouTube","East India","Hackathon",248339,16962,3496,1806,789,175686.4,2908345.21],["2024-03-04","Google Ads","West India","UG Admission",151825,7293,1728,1114,497,76965.64,3527269.49],["2024-03-04","YouTube","Pan India","Hackathon",56983,2037,418,208,123,53251.91,737803.26],["2024-03-05","Google Ads","South India","UG Admission",70110,3013,750,468,238,52948.0,1892177.59],["2024-03-05","YouTube","South India","Hackathon",161034,5095,881,462,224,84019.32,923164.11],["2024-03-06","Google Ads","Pan India","UG Admission",127872,7698,1526,763,381,116041.16,2303108.01],["2024-03-06","YouTube","North India","Hackathon",207444,12055,2103,1256,542,112399.62,2091662.03],["2024-03-07","Google Ads","West India","UG Admission",125458,8435,1509,693,366,66260.18,2398363.29],["2024-03-07","YouTube","East India","Hackathon",125186,5438,1013,516,288,70257.17,1655474.48],["2024-03-08","Google Ads","West India","UG Admission",52749,3113,594,267,132,47097.46,644765.61],["2024-03-08","YouTube","South India","Hackathon",153379,7139,1663,957,429,102014.36,1463624.77],["2024-03-09","Google Ads","North India","UG Admission",55614,3540,572,343,154,36078.71,646246.86],["2024-03-09","YouTube","South India","Hackathon",123685,8520,2108,1010,406,122048.41,1454477.2],["2024-03-10","Google Ads","North India","UG Admission",160586,9019,1457,790,427,118320.36,2536804.91],["2024-03-10","YouTube","Pan India","Hackathon",226639,12635,2302,1218,650,199476.34,3964941.02],["2024-03-11","Google Ads","West India","UG Admission",73407,5606,883,498,256,70482.99,1018845.71],["2024-03-11","YouTube","North India","Hackathon",213309,8042,1913,1209,533,164269.5,4063881.15],["2024-03-12","Google Ads","North India","UG Admission",216597,15507,2335,1445,726,192461.62,2305973.39],["2024-03-12","YouTube","Pan India","Hackathon",226506,7970,1292,750,420,175994.8,2066586.58],["2024-03-13","Google Ads","West India","UG Admission",175194,5344,957,551,261,169204.3,976767.04],["2024-03-13","YouTube","East India","Hackathon",185895,10159,1559,796,319,152446.61,2203003.63],["2024-03-14","Google Ads","West India","UG Admission",188495,10549,1800,1004,441,182807.04,2268459.24],["2024-03-14","YouTube","Pan India","Hackathon",61348,4749,863,560,278,41334.61,2016292.77],["2024-03-15","Google Ads","East India","UG Admission",100344,8008,1473,816,424,77929.71,1344335.07],["2024-03-15","YouTube","East India","Hackathon",194652,12957,2628,1452,793,188268.91,5847270.23],["2024-03-16","Google Ads","West India","UG Admission",275868,10436,1877,1023,453,133644.66,2895845.33],["2024-03-16","YouTube","East India","Hackathon",144241,6954,1273,706,292,70141.8,1034342.01],["2024-03-17","Google Ads","West India","UG Admission",292584,23331,3605,1899,921,169598.15,3162278.82],["2024-03-17","YouTube","South India","Hackathon",117460,8173,1756,887,365,93791.14,1580107.16],["2024-03-18","Google Ads","South India","UG Admission",160356,10619,2317,1167,687,89639.34,4671783.2],["2024-03-18","YouTube","North India","Hackathon",58163,3769,797,395,178,25554.54,1293768.14],["2024-03-19","Google Ads","East India","UG Admission",172256,8896,2048,985,576,152568.15,1915389.82],["2024-03-19","YouTube","South India","Hackathon",258133,14755,2438,1536,617,103655.55,4524608.51],["2024-03-20","Google Ads","South India","UG Admission",203648,8947,1995,1108,625,126623.75,3738989.85],["2024-03-20","YouTube","South India","Hackathon",219527,10693,1929,990,415,203424.0,2119680.17],["2024-03-21","Google Ads","North India","UG Admission",85480,4749,1166,617,295,77652.63,1845721.68],["2024-03-21","YouTube","North India","Hackathon",284030,14236,2183,1152,592,262334.25,2663779.71],["2024-03-22","Google Ads","West India","UG Admission",298776,13733,2795,1309,703,212229.85,5350895.6],["2024-03-22","YouTube","Pan India","Hackathon",64434,3679,729,397,235,59041.52,1242049.05],["2024-03-23","Google Ads","North India","UG Admission",245366,12959,2802,1515,836,241060.05,6091993.93],["2024-03-23","YouTube","South India","Hackathon",53724,1683,344,159,73,49801.33,513709.91],["2024-03-24","Google Ads","South India","UG Admission",240769,8468,1835,987,400,145335.12,2921642.34],["2024-03-24","YouTube","North India","Hackathon",79876,4171,757,434,226,75946.35,1660035.68],["2024-03-25","Google Ads","South India","UG Admission",122186,5865,1463,777,313,54949.89,1100080.07],["2024-03-25","YouTube","East India","Hackathon",199247,9891,2264,1217,616,105185.38,4785145.21],["2024-03-26","Google Ads","North India","UG Admission",274044,13557,2893,1644,828,131707.58,6173759.68],["2024-03-26","YouTube","East India","Hackathon",244500,9131,2098,1346,655,146175.82,3464551.93],["2024-03-27","Google Ads","Pan India","UG Admission",75569,3044,699,363,210,43169.18,954211.72],["2024-03-27","YouTube","South India","Hackathon",62090,3649,636,301,174,58686.75,569195.34],["2024-03-28","Google Ads","South India","UG Admission",151614,5544,1000,552,221,66293.7,838838.11],["2024-03-28","YouTube","Pan India","Hackathon",275576,19381,2993,1920,883,152033.82,2850575.87],["2024-03-29","Google Ads","West India","UG Admission",128767,7454,1142,540,253,99239.26,960812.07],["2024-03-29","YouTube","North India","Hackathon",94022,2854,695,411,192,58116.78,1323997.7],["2024-03-30","Google Ads","North India","UG Admission",168427,7496,1354,707,399,121004.62,2780010.07],["2024-03-30","YouTube","East India","Hackathon",153437,5657,1049,519,211,147977.24,1161334.2],["2024-03-31","Google Ads","East India","UG Admission",80636,5687,1072,607,344,59284.93,2288813.48],["2024-03-31","YouTube","East India","Hackathon",158630,4927,822,475,264,141499.38,1140875.76],["2024-04-01","Google Ads","West India","UG Admission",186499,6536,1354,621,368,85229.02,2637713.85],["2024-04-02","Google Ads","North India","UG Admission",280440,19647,3222,1784,885,254339.0,4246093.25],["2024-04-03","Google Ads","South India","UG Admission",79911,2837,458,283,153,34959.15,584662.54],["2024-04-04","Google Ads","West India","UG Admission",274653,14146,2816,1386,561,208104.41,3892837.87],["2024-04-05","Google Ads","West India","UG Admission",165340,10645,1684,807,389,129203.32,3018743.31],["2024-04-06","Google Ads","West India","UG Admission",282778,15067,2772,1717,949,219848.01,5156798.93],["2024-04-07","Google Ads","Pan India","UG Admission",285987,22561,5121,2466,1091,146348.42,3872314.53],["2024-04-08","Google Ads","Pan India","UG Admission",200034,14443,3338,1578,716,189341.96,5411518.93],["2024-04-09","Google Ads","Pan India","UG Admission",114098,4796,979,559,277,95244.65,1500707.12],["2024-04-10","Google Ads","North India","UG Admission",230730,8044,1273,591,285,100417.85,2085502.25],["2024-04-11","Google Ads","Pan India","UG Admission",221570,12355,2256,1301,521,200217.89,2522440.58],["2024-04-12","Google Ads","South India","UG Admission",241871,18824,3533,2181,917,126584.31,7087676.71],["2024-04-13","Google Ads","East India","UG Admission",288853,12032,2732,1717,785,202094.55,2398171.83],["2024-04-14","Google Ads","West India","UG Admission",213540,14462,3456,1678,696,108897.67,3431908.04],["2024-04-15","Google Ads","West India","UG Admission",72233,3762,590,318,184,57707.1,1314021.37],["2024-04-16","Google Ads","West India","UG Admission",167205,5074,1208,604,322,115667.4,2387204.39],["2024-04-17","Google Ads","West India","UG Admission",234584,15677,3010,1913,842,190234.63,4025666.51],["2024-04-18","Google Ads","West India","UG Admission",50267,3518,817,515,226,39781.59,893338.11],["2024-04-19","Google Ads","South India","UG Admission",147737,9789,2427,1461,710,115882.02,4999994.77],["2024-04-20","Google Ads","South India","UG Admission",103945,5827,1089,686,290,45623.84,1291459.42],["2024-04-21","Google Ads","South India","UG Admission",180309,13125,2445,1328,595,107078.07,4718406.56],["2024-04-22","Google Ads","South India","UG Admission",165998,7203,1295,834,489,155076.27,3804206.8],["2024-04-23","Google Ads","Pan India","UG Admission",204547,9363,1756,1126,509,150706.37,2219931.49],["2024-04-24","Google Ads","Pan India","UG Admission",124784,7174,1288,783,351,103744.92,1765941.04],["2024-04-25","Google Ads","Pan India","UG Admission",132967,10361,1745,990,467,65512.99,1832026.4],["2024-04-26","Google Ads","West India","UG Admission",260506,13356,3163,1998,854,256268.15,4686283.68],["2024-04-27","Google Ads","Pan India","UG Admission",229208,9355,2081,1043,469,178259.19,2674523.87],["2024-04-28","Google Ads","West India","UG Admission",171241,7348,1294,719,302,85665.34,1939708.81],["2024-04-29","Google Ads","East India","UG Admission",161956,10797,1786,1036,542,150183.86,2235498.12],["2024-04-30","Google Ads","West India","UG Admission",61492,4436,909,457,244,50083.82,751942.31],["2024-05-01","Google Ads","South India","UG Admission",203882,9925,2110,963,504,181726.55,3279195.9],["2024-05-02","Google Ads","West India","UG Admission",52572,2746,633,286,115,31495.18,721471.98],["2024-05-03","Google Ads","Pan India","UG Admission",182398,9821,2358,1144,659,117138.56,4142036.47],["2024-05-04","Google Ads","South India","UG Admission",291292,19445,3115,1736,1028,264152.72,6279650.61],["2024-05-05","Google Ads","West India","UG Admission",209896,11020,2016,1282,676,134786.32,5166291.92],["2024-05-06","Google Ads","Pan India","UG Admission",212729,11086,2540,1442,785,148219.13,2403528.22],["2024-05-07","Google Ads","South India","UG Admission",53575,1779,383,198,83,31495.13,562987.04],["2024-05-08","Google Ads","North India","UG Admission",77717,5458,1240,600,252,39733.88,1374432.65],["2024-05-09","Google Ads","Pan India","UG Admission",254812,8231,1789,905,508,214463.0,3712872.07],["2024-05-10","Google Ads","Pan India","UG Admission",159338,8621,1987,1010,560,121166.88,2837406.55],["2024-05-11","Google Ads","North India","UG Admission",107691,5395,912,434,235,50972.7,1299358.1],["2024-05-12","Google Ads","North India","UG Admission",150217,9087,1717,921,420,84200.07,2218829.95],["2024-05-13","Google Ads","North India","UG Admission",227093,11820,2504,1225,522,192460.38,2362547.82],["2024-05-14","Google Ads","West India","UG Admission",212823,12602,1904,1005,425,107267.35,1912334.83],["2024-05-15","Google Ads","West India","UG Admission",129087,4033,640,346,198,101205.53,1581964.16],["2024-05-16","Google Ads","North India","UG Admission",95904,4183,667,322,147,66125.77,751735.0],["2024-05-17","Google Ads","Pan India","UG Admission",135876,8214,1729,909,441,85485.01,2700293.92],["2024-05-18","Google Ads","Pan India","UG Admission",280625,14687,2934,1372,655,191298.55,3980786.43],["2024-05-19","Google Ads","Pan India","UG Admission",99328,5165,1149,717,314,59406.59,1218839.81],["2024-05-20","Google Ads","North India","UG Admission",144094,11075,2057,1117,577,118500.5,3178344.45],["2024-05-21","Google Ads","South India","UG Admission",257103,13993,3038,1674,939,151753.51,5715057.08],["2024-05-22","Google Ads","North India","UG Admission",209828,14119,2701,1585,667,164161.53,3749676.3],["2024-05-23","Google Ads","East India","UG Admission",218859,11905,1854,941,482,120754.52,1563740.44],["2024-05-24","Google Ads","West India","UG Admission",210510,12742,2399,1408,810,182684.18,6159533.63],["2024-05-25","Google Ads","North India","UG Admission",112134,3488,542,286,159,76411.33,520844.26],["2024-05-26","Google Ads","West India","UG Admission",167323,6870,1386,656,339,154889.76,2689431.95],["2024-05-27","Google Ads","South India","UG Admission",71573,3385,572,368,169,37172.3,1300602.63],["2024-05-28","Google Ads","South India","UG Admission",157823,9513,2121,1051,506,109850.41,3668863.75],["2024-05-29","Google Ads","North India","UG Admission",170857,13220,2821,1398,619,96132.33,4551261.95],["2024-05-30","Google Ads","North India","UG Admission",286098,8605,1496,757,307,284695.91,2297719.94],["2024-05-31","Google Ads","South India","UG Admission",179655,7512,1329,827,420,177940.53,2774452.44],["2024-06-01","Google Ads","West India","UG Admission",200920,10462,2244,1338,750,142412.11,4242470.36],["2024-06-02","Google Ads","East India","UG Admission",277733,19722,3356,1999,1087,267369.15,6633449.5],["2024-06-03","Google Ads","East India","UG Admission",163525,6314,1573,794,445,161244.1,2892185.32],["2024-06-04","Google Ads","North India","UG Admission",57200,2876,542,295,144,40656.16,1131479.57],["2024-06-05","Google Ads","West India","UG Admission",138496,6165,1152,534,238,78355.93,1666242.27],["2024-06-06","Google Ads","East India","UG Admission",173098,12987,2605,1205,678,171934.55,4701884.7],["2024-06-07","Google Ads","North India","UG Admission",132867,6166,1353,871,423,110775.88,1886619.18],["2024-06-08","Google Ads","Pan India","UG Admission",78405,5902,1106,584,309,59265.23,1624992.95],["2024-06-09","Google Ads","Pan India","UG Admission",123612,8089,1527,775,424,113946.27,3146851.09],["2024-06-10","Google Ads","North India","UG Admission",195933,8997,1665,915,447,189378.11,2736847.83],["2024-06-11","Google Ads","South India","UG Admission",107645,6490,1396,669,394,64452.16,2150210.51],["2024-06-12","Google Ads","South India","UG Admission",126990,3967,640,342,195,78557.41,817559.85],["2024-06-13","Google Ads","East India","UG Admission",173173,6384,1547,788,399,127532.25,2683477.69],["2024-06-14","Google Ads","Pan India","UG Admission",267033,20262,3713,2404,1299,216742.23,7943328.02],["2024-06-15","Google Ads","East India","UG Admission",132726,7918,1387,700,353,57062.19,1916053.2],["2024-06-16","Google Ads","North India","UG Admission",251270,9386,1500,689,349,244867.93,2427243.89],["2024-06-17","Google Ads","West India","UG Admission",207125,16396,3081,1427,767,130264.98,5214044.04],["2024-06-18","Google Ads","East India","UG Admission",224667,15878,3948,2098,1224,195773.85,4343632.79],["2024-06-19","Google Ads","East India","UG Admission",295874,20384,3505,2023,974,195140.62,5500364.7],["2024-06-20","Google Ads","Pan India","UG Admission",205409,7026,1119,706,423,175824.96,1322998.03],["2024-06-21","Google Ads","North India","UG Admission",189047,7231,1473,846,469,149311.23,2655170.75],["2024-06-22","Google Ads","North India","UG Admission",174907,8495,2121,1059,425,134700.51,2590998.61],["2024-06-23","Google Ads","East India","UG Admission",176167,10868,1936,1164,627,121892.02,4751275.42],["2024-06-24","Google Ads","Pan India","UG Admission",170905,8986,2123,1289,772,77320.5,3546992.04],["2024-06-25","Google Ads","West India","UG Admission",92195,6158,1102,514,217,53344.57,1158159.81],["2024-06-26","Google Ads","Pan India","UG Admission",144589,11439,2189,1146,674,93882.94,3774177.24],["2024-06-27","Google Ads","North India","UG Admission",218634,13467,2852,1603,838,196856.04,2571768.14],["2024-06-28","Google Ads","North India","UG Admission",224017,17218,3927,2217,1085,145416.06,7154154.91],["2024-06-29","Google Ads","North India","UG Admission",99562,5277,1146,694,296,73478.7,920163.38],["2024-06-30","Google Ads","West India","UG Admission",247894,9939,2312,1356,632,174102.28,4208262.52],["2024-07-01","Google Ads","South India","UG Admission",189966,6959,1711,797,357,128422.24,2524973.42],["2024-07-02","Google Ads","South India","UG Admission",290368,17043,2956,1912,1082,182544.6,3348574.79],["2024-07-03","Google Ads","East India","UG Admission",98624,5398,1025,555,234,58644.23,1605697.96],["2024-07-04","Google Ads","North India","UG Admission",185544,8967,1881,974,497,143891.23,2013575.82],["2024-07-05","Google Ads","East India","UG Admission",64345,2893,673,399,231,58397.08,1512057.86],["2024-07-06","Google Ads","Pan India","UG Admission",260059,15459,2859,1616,748,238169.83,3760809.01],["2024-07-07","Google Ads","East India","UG Admission",272679,12573,2386,1298,669,125239.22,4864239.68],["2024-07-08","Google Ads","Pan India","UG Admission",248350,16741,2897,1713,861,217164.85,3498930.88],["2024-07-09","Google Ads","Pan India","UG Admission",177393,7806,1826,1016,471,138014.22,3729596.77],["2024-07-10","Google Ads","Pan India","UG Admission",151029,9303,1887,1057,498,70776.38,1931400.27],["2024-07-11","Google Ads","North India","UG Admission",53745,4296,787,354,145,28330.69,567612.72],["2024-07-12","Google Ads","East India","UG Admission",81985,2676,589,334,155,39730.86,1134386.5],["2024-07-13","Google Ads","South India","UG Admission",101535,3234,704,418,167,49643.44,538637.71],["2024-07-14","Google Ads","East India","UG Admission",56203,3399,526,282,124,50748.12,703721.34],["2024-07-15","Google Ads","West India","UG Admission",172571,12649,2920,1512,709,144033.44,4185547.5],["2024-07-16","Google Ads","West India","UG Admission",206620,15320,3284,2077,936,107031.96,4032427.25],["2024-07-17","Google Ads","West India","UG Admission",238579,11277,1997,942,481,200472.94,1996665.29],["2024-07-18","Google Ads","Pan India","UG Admission",299596,13778,2469,1401,803,133225.18,4364604.85],["2024-07-19","Google Ads","North India","UG Admission",289584,9928,1754,852,495,233553.6,1607665.33],["2024-07-20","Google Ads","West India","UG Admission",272890,10309,2371,1461,865,248690.64,6675094.56],["2024-07-21","Google Ads","West India","UG Admission",285905,8585,1949,993,582,254211.76,3218555.65],["2024-07-22","Google Ads","West India","UG Admission",92579,6825,1236,768,372,46340.62,2501009.92],["2024-07-23","Google Ads","North India","UG Admission",262199,20171,3719,2289,1259,108832.62,8859616.13],["2024-07-24","Google Ads","Pan India","UG Admission",198212,6874,1415,799,462,108824.3,3333666.45],["2024-07-25","Google Ads","West India","UG Admission",118809,7312,1760,995,443,100651.52,2996388.37],["2024-07-26","Google Ads","North India","UG Admission",182889,5572,878,401,226,93158.25,1525793.32],["2024-07-27","Google Ads","South India","UG Admission",85016,3976,731,365,182,39557.93,1358545.74],["2024-07-28","Google Ads","West India","UG Admission",136206,8419,2017,1200,719,66697.45,3914237.0],["2024-07-29","Google Ads","South India","UG Admission",165347,11046,2068,1143,503,143383.04,1991695.9],["2024-07-30","Google Ads","West India","UG Admission",293930,12917,3074,1552,860,135737.98,4957159.97],["2024-07-31","Google Ads","Pan India","UG Admission",143598,9751,1930,965,442,121893.19,1449676.75],["2024-08-01","Google Ads","North India","UG Admission",54410,4309,693,357,191,48121.46,1063428.31],["2024-08-01","Instagram","South India","Semester Exchange Program",100600,4426,1006,578,315,88124.93,2363533.5],["2024-08-02","Google Ads","North India","UG Admission",132675,10342,1904,862,374,113475.65,1926663.81],["2024-08-02","Instagram","North India","Semester Exchange Program",120721,9109,1747,1023,521,75049.88,2509324.06],["2024-08-03","Google Ads","South India","UG Admission",200741,11692,2445,1190,664,136500.62,3345576.76],["2024-08-03","Instagram","Pan India","Semester Exchange Program",208142,16098,3655,2210,1252,141729.43,7709099.55],["2024-08-04","Google Ads","West India","UG Admission",62326,2288,416,208,97,53808.35,514275.89],["2024-08-04","Instagram","East India","Semester Exchange Program",60178,3164,594,300,141,36780.38,638055.97],["2024-08-05","Google Ads","South India","UG Admission",105561,6091,1210,657,361,58132.88,1085319.27],["2024-08-05","Instagram","South India","Semester Exchange Program",108128,4562,1033,586,260,58193.29,1634560.79],["2024-08-06","Google Ads","East India","UG Admission",96715,4883,1120,538,232,43537.41,1813996.79],["2024-08-06","Instagram","North India","Semester Exchange Program",99786,4538,843,475,270,86472.87,1992669.9],["2024-08-07","Google Ads","West India","UG Admission",297887,19916,3329,2125,936,270727.95,2895011.75],["2024-08-07","Instagram","Pan India","Semester Exchange Program",54376,2198,530,240,98,48889.03,404235.06],["2024-08-08","Google Ads","Pan India","UG Admission",88036,3843,807,511,208,69666.14,1270694.45],["2024-08-08","Instagram","West India","Semester Exchange Program",276523,11747,1913,1099,451,112550.84,3062511.38],["2024-08-09","Google Ads","South India","UG Admission",61270,3608,771,487,203,48486.67,1016705.47],["2024-08-09","Instagram","East India","Semester Exchange Program",175935,8558,1832,1035,601,163462.72,2873827.39],["2024-08-10","Google Ads","Pan India","UG Admission",270202,19267,3864,1957,1169,132916.08,5811867.04],["2024-08-10","Instagram","South India","Semester Exchange Program",70308,4870,930,492,251,51723.19,1262103.52],["2024-08-11","Google Ads","South India","UG Admission",206790,15329,3569,2038,1076,151435.23,8479988.83],["2024-08-11","Instagram","North India","Semester Exchange Program",239465,10006,1533,767,445,119177.15,3554173.67],["2024-08-12","Google Ads","Pan India","UG Admission",143259,4765,1041,609,246,103534.0,1950084.07],["2024-08-12","Instagram","Pan India","Semester Exchange Program",60504,2239,539,322,184,54506.92,1051156.08],["2024-08-13","Google Ads","North India","UG Admission",203962,9650,2394,1402,591,143265.17,2808713.52],["2024-08-13","Instagram","West India","Semester Exchange Program",140195,9654,1913,1044,524,78718.46,3267340.14],["2024-08-14","Google Ads","West India","UG Admission",93684,5805,1305,670,372,41067.66,1553036.39],["2024-08-14","Instagram","South India","Semester Exchange Program",184290,10858,2176,991,427,163226.63,1995132.12],["2024-08-15","Google Ads","North India","UG Admission",246897,8565,2017,1112,614,246807.4,4424382.49],["2024-08-15","Instagram","North India","Semester Exchange Program",75772,2986,585,343,194,50358.62,1510026.78],["2024-08-16","Google Ads","North India","UG Admission",259857,18951,3776,2370,1066,110740.59,3876986.66],["2024-08-16","Instagram","West India","Semester Exchange Program",147185,8624,2052,1243,630,102580.43,3446317.81],["2024-08-17","Google Ads","North India","UG Admission",160425,11372,2306,1230,588,133747.28,2831000.7],["2024-08-17","Instagram","South India","Semester Exchange Program",196487,8699,1691,1051,613,171743.84,3311850.86],["2024-08-18","Google Ads","West India","UG Admission",136692,7477,1371,764,442,120425.27,2071543.89],["2024-08-18","Instagram","West India","Semester Exchange Program",254671,15131,3100,1454,638,167140.01,4151995.55],["2024-08-19","Google Ads","North India","UG Admission",167681,13225,2990,1842,894,92404.26,6148023.7],["2024-08-19","Instagram","East India","Semester Exchange Program",150411,8934,1854,1043,438,83953.46,3329055.06],["2024-08-20","Google Ads","North India","UG Admission",50916,2686,642,387,160,34435.4,774444.94],["2024-08-20","Instagram","South India","Semester Exchange Program",266600,18274,4074,2224,907,192783.02,4819731.14],["2024-08-21","Google Ads","East India","UG Admission",246115,17238,2715,1569,816,239237.62,5018704.73],["2024-08-21","Instagram","North India","Semester Exchange Program",286047,14611,3332,1656,978,195179.76,5342189.13],["2024-08-22","Google Ads","Pan India","UG Admission",55434,3340,628,299,157,47688.64,567663.31],["2024-08-22","Instagram","South India","Semester Exchange Program",138420,9190,1758,895,476,121775.58,3796435.52],["2024-08-23","Google Ads","South India","UG Admission",212121,8521,1831,1065,523,210422.93,1816349.21],["2024-08-23","Instagram","South India","Semester Exchange Program",174155,7729,1269,726,423,114529.99,1755445.01],["2024-08-24","Google Ads","West India","UG Admission",298055,23238,3774,2035,1015,255249.45,5574248.14],["2024-08-24","Instagram","Pan India","Semester Exchange Program",73433,3246,574,335,163,43645.42,1029954.06],["2024-08-25","Google Ads","West India","UG Admission",273318,12830,2725,1477,719,249800.87,3360100.1],["2024-08-25","Instagram","West India","Semester Exchange Program",190927,8324,1746,1040,502,153681.46,1737263.59],["2024-08-26","Google Ads","Pan India","UG Admission",280548,22400,3381,2001,1115,243363.91,7580435.6],["2024-08-26","Instagram","Pan India","Semester Exchange Program",285397,15333,2569,1619,881,167612.44,5312696.48],["2024-08-27","Google Ads","North India","UG Admission",230587,11780,2103,985,557,170545.05,2172105.58],["2024-08-27","Instagram","South India","Semester Exchange Program",239102,11777,2683,1443,793,178773.39,6237099.54],["2024-08-28","Google Ads","East India","UG Admission",122769,4992,1154,639,335,76198.02,1803614.19],["2024-08-28","Instagram","Pan India","Semester Exchange Program",118445,9312,1796,862,394,53888.89,1248957.41],["2024-08-29","Google Ads","Pan India","UG Admission",176924,6002,1405,726,305,149271.1,1316066.43],["2024-08-29","Instagram","East India","Semester Exchange Program",141835,4781,815,412,201,71163.26,1195976.69],["2024-08-30","Google Ads","East India","UG Admission",89353,3461,777,423,218,68408.44,1404431.2],["2024-08-30","Instagram","West India","Semester Exchange Program",172603,13771,3131,1756,957,123949.96,7284646.5],["2024-08-31","Google Ads","North India","UG Admission",275170,8309,2008,1217,654,116652.11,2196952.4],["2024-08-31","Instagram","North India","Semester Exchange Program",188007,12565,2831,1364,556,100933.35,2063936.01],["2024-09-01","Instagram","East India","Semester Exchange Program",277995,17323,3307,1962,807,119949.55,3907589.22],["2024-09-02","Instagram","Pan India","Semester Exchange Program",204641,14981,3396,1681,682,155414.22,5373759.1],["2024-09-03","Instagram","East India","Semester Exchange Program",80461,5310,1043,626,251,56362.02,988491.69],["2024-09-04","Instagram","South India","Semester Exchange Program",225116,11836,2871,1828,993,145813.18,7254951.42],["2024-09-05","Instagram","South India","Semester Exchange Program",116737,9182,1836,1173,621,99175.68,2537615.16],["2024-09-06","Instagram","Pan India","Semester Exchange Program",63297,4534,954,479,279,50866.84,2142106.16],["2024-09-07","Instagram","West India","Semester Exchange Program",58123,2245,487,238,102,48037.73,806657.5],["2024-09-08","Instagram","West India","Semester Exchange Program",245747,19560,3600,2070,927,200843.09,3867146.21],["2024-09-09","Instagram","East India","Semester Exchange Program",84497,2556,527,306,147,40400.53,517443.61],["2024-09-10","Instagram","East India","Semester Exchange Program",241659,17679,2873,1586,722,135221.61,4879841.23],["2024-09-11","Instagram","West India","Semester Exchange Program",65507,2625,419,269,116,58810.83,812926.32],["2024-09-12","Instagram","Pan India","Semester Exchange Program",89606,3064,523,302,174,82237.51,1090015.64],["2024-09-13","Instagram","North India","Semester Exchange Program",288944,22296,3936,2456,1336,268441.11,10200618.61],["2024-09-14","Instagram","East India","Semester Exchange Program",61065,3349,511,253,103,50674.5,618470.9],["2024-09-15","Instagram","South India","Semester Exchange Program",52998,2691,556,360,169,42374.05,1263776.46],["2024-09-16","Instagram","West India","Semester Exchange Program",188733,6063,1486,848,495,117044.6,1718164.73],["2024-09-17","Instagram","North India","Semester Exchange Program",264523,8422,1397,690,285,174372.08,2190322.56],["2024-09-18","Instagram","East India","Semester Exchange Program",99863,5899,1473,894,463,73758.95,1765141.51],["2024-09-19","Instagram","North India","Semester Exchange Program",76229,4994,1189,748,448,38131.31,2070391.74],["2024-09-20","Instagram","South India","Semester Exchange Program",121757,6018,1136,664,374,107787.88,2220089.24],["2024-09-21","Instagram","North India","Semester Exchange Program",114298,4785,1131,713,345,80918.92,2265577.65],["2024-09-22","Instagram","North India","Semester Exchange Program",105308,7365,1272,726,432,43967.23,2323390.45],["2024-09-23","Instagram","South India","Semester Exchange Program",136857,9505,1522,788,362,65108.72,1489069.41],["2024-09-24","Instagram","West India","Semester Exchange Program",134230,8702,1365,650,332,124821.77,1474440.35],["2024-09-25","Instagram","North India","Semester Exchange Program",262940,21020,4963,2852,1664,200318.65,7439846.28],["2024-09-26","Instagram","South India","Semester Exchange Program",273481,17743,3097,1835,1000,262907.98,7305475.89],["2024-09-27","Instagram","North India","Semester Exchange Program",81135,4547,1123,543,325,72931.67,1570056.62],["2024-09-28","Instagram","West India","Semester Exchange Program",177065,8511,1962,1141,682,126930.36,4613730.38],["2024-09-29","Instagram","South India","Semester Exchange Program",120820,8446,1398,808,382,96604.45,1911053.53],["2024-09-30","Instagram","Pan India","Semester Exchange Program",108200,3265,588,270,146,90135.86,550296.55],["2024-10-01","Instagram","South India","Semester Exchange Program",181393,7776,1216,691,308,116710.52,955852.67],["2024-10-02","Instagram","North India","Semester Exchange Program",188107,11836,2751,1255,668,83985.35,3644883.8],["2024-10-03","Instagram","South India","Semester Exchange Program",136913,4144,997,508,257,88554.32,1706756.01],["2024-10-04","Instagram","Pan India","Semester Exchange Program",275383,21966,4741,2231,912,239728.52,3926372.14],["2024-10-05","Instagram","North India","Semester Exchange Program",287478,15296,2824,1485,658,273924.01,2298553.78],["2024-10-06","Instagram","Pan India","Semester Exchange Program",177706,6076,1461,913,494,142058.98,1710667.68],["2024-10-07","Instagram","East India","Semester Exchange Program",295188,8972,1635,877,449,209783.61,3330514.34],["2024-10-08","Instagram","North India","Semester Exchange Program",142451,6326,1430,782,396,65523.4,2443483.47],["2024-10-09","Instagram","East India","Semester Exchange Program",54463,3186,540,317,161,38378.96,865326.9],["2024-10-10","Instagram","East India","Semester Exchange Program",139686,5412,1042,509,290,75836.12,1654751.42],["2024-10-11","Instagram","East India","Semester Exchange Program",120409,4489,780,484,246,110563.17,1888857.04],["2024-10-12","Instagram","South India","Semester Exchange Program",216016,10639,1987,1050,475,139364.0,1826451.72],["2024-10-13","Instagram","South India","Semester Exchange Program",58912,4326,782,498,295,48216.62,1214180.74],["2024-10-14","Instagram","West India","Semester Exchange Program",202717,6817,1069,693,358,116988.99,1522257.6],["2024-10-15","Instagram","South India","Semester Exchange Program",251656,18834,3343,1918,1080,241798.27,7037867.27],["2024-10-16","Instagram","South India","Semester Exchange Program",199622,6041,993,525,228,176721.83,988512.45],["2024-10-17","Instagram","Pan India","Semester Exchange Program",69381,3391,607,363,166,49757.02,578094.77],["2024-10-18","Instagram","North India","Semester Exchange Program",287101,12759,2552,1493,878,208157.08,4202662.82],["2024-10-19","Instagram","East India","Semester Exchange Program",184878,12850,2357,1514,788,119293.73,4620820.81],["2024-10-20","Instagram","West India","Semester Exchange Program",92994,4254,1025,663,325,63509.98,1979290.65],["2024-10-21","Instagram","East India","Semester Exchange Program",122794,7849,1907,1022,609,115044.95,2146534.46],["2024-10-22","Instagram","West India","Semester Exchange Program",91570,6739,1285,721,353,79415.47,2003387.48],["2024-10-23","Instagram","West India","Semester Exchange Program",136044,5700,1277,576,315,81289.85,1260959.52],["2024-10-24","Instagram","East India","Semester Exchange Program",167984,5400,1206,563,278,99048.93,1366324.42],["2024-10-25","Instagram","North India","Semester Exchange Program",95036,5272,948,435,238,52509.6,1552232.36],["2024-10-26","Instagram","West India","Semester Exchange Program",59294,3218,771,376,216,51407.62,827192.52],["2024-10-27","Instagram","North India","Semester Exchange Program",130677,9462,1831,969,562,89431.65,2487761.4],["2024-10-28","Instagram","Pan India","Semester Exchange Program",97058,3274,651,375,190,45063.28,895881.61],["2024-10-29","Instagram","North India","Semester Exchange Program",179478,6773,1044,667,270,91661.15,2080724.29],["2024-10-30","Instagram","South India","Semester Exchange Program",281673,15379,3271,1753,1035,204309.98,3459761.8],["2024-10-31","Instagram","South India","Semester Exchange Program",116450,6235,1558,824,360,65629.02,1949668.5],["2024-11-01","Instagram","North India","Semester Exchange Program",225961,14171,3221,1819,993,168277.96,3222207.73],["2024-11-02","Instagram","Pan India","Semester Exchange Program",106756,7681,1748,926,405,72448.35,1950812.15],["2024-11-03","Instagram","South India","Semester Exchange Program",232832,9147,1633,749,397,193724.4,3007990.84],["2024-11-04","Instagram","Pan India","Semester Exchange Program",283483,9399,2257,1289,646,152209.39,2606457.79],["2024-11-05","Instagram","North India","Semester Exchange Program",239123,8684,1946,1221,722,204001.7,2714132.08],["2024-11-06","Instagram","East India","Semester Exchange Program",276380,16064,2534,1232,551,170390.62,3092023.95],["2024-11-07","Instagram","West India","Semester Exchange Program",270180,14454,3258,1917,990,268873.26,6443869.42],["2024-11-08","Instagram","East India","Semester Exchange Program",286662,11043,1712,779,318,131184.55,1392508.14],["2024-11-09","Instagram","Pan India","Semester Exchange Program",181568,10036,2164,1043,557,105288.6,2943846.76],["2024-11-10","Instagram","North India","Semester Exchange Program",55161,1674,327,182,93,27683.46,419254.85],["2024-11-11","Instagram","East India","Semester Exchange Program",146332,7956,1417,687,389,145598.6,1883807.49],["2024-11-12","Instagram","East India","Semester Exchange Program",283452,10161,2461,1357,599,241562.24,2333253.91],["2024-11-13","Instagram","East India","Semester Exchange Program",266279,21175,3231,1568,646,219965.47,2905813.4],["2024-11-14","Instagram","Pan India","Semester Exchange Program",126096,4710,786,422,172,75860.32,757098.6],["2024-11-15","Instagram","West India","Semester Exchange Program",72191,4406,911,578,345,56628.01,1560935.41],["2024-11-16","Instagram","Pan India","Semester Exchange Program",102772,7546,1445,670,401,91991.98,2282140.1],["2024-11-17","Instagram","Pan India","Semester Exchange Program",110873,5990,1401,803,465,86112.93,2382488.17],["2024-11-18","Instagram","South India","Semester Exchange Program",204362,14066,3141,1562,659,184747.29,3568654.0],["2024-11-19","Instagram","West India","Semester Exchange Program",180572,12720,2814,1384,578,137201.61,3495163.5],["2024-11-20","Instagram","West India","Semester Exchange Program",193929,13873,3062,1471,874,161155.16,6776185.69],["2024-11-21","Instagram","North India","Semester Exchange Program",82283,2921,481,235,130,76726.47,415137.55],["2024-11-22","Instagram","West India","Semester Exchange Program",192091,11604,2347,1104,643,125058.01,4406790.35],["2024-11-23","Instagram","South India","Semester Exchange Program",65161,2390,561,334,173,46009.7,825433.67],["2024-11-24","Instagram","Pan India","Semester Exchange Program",273486,9563,1760,876,515,230126.27,3733798.06],["2024-11-25","Instagram","South India","Semester Exchange Program",69058,3605,672,383,211,46789.73,1676078.02],["2024-11-26","Instagram","North India","Semester Exchange Program",91853,6881,1240,672,277,44008.16,1877093.83],["2024-11-27","Instagram","East India","Semester Exchange Program",90600,5028,1186,602,308,73545.38,1650695.41],["2024-11-28","Instagram","South India","Semester Exchange Program",175761,5318,1233,657,374,116485.8,2032416.22],["2024-11-29","Instagram","West India","Semester Exchange Program",255808,20215,4403,2084,1238,219725.73,5687975.93],["2024-11-30","Instagram","Pan India","Semester Exchange Program",80454,5850,1090,544,298,70151.88,1542618.67],["2024-12-01","Instagram","East India","Semester Exchange Program",197437,15661,3170,2036,967,126999.65,3380862.13],["2024-12-02","Instagram","East India","Semester Exchange Program",89542,6519,1086,697,285,60866.25,1813988.18],["2024-12-03","Instagram","North India","Semester Exchange Program",264827,17541,3210,1832,918,239779.4,4492737.47],["2024-12-04","Instagram","North India","Semester Exchange Program",246484,15426,3748,2056,1100,197907.72,3733897.51],["2024-12-05","Instagram","Pan India","Semester Exchange Program",166847,6747,1403,818,471,125046.51,1803264.94],["2024-12-06","Instagram","Pan India","Semester Exchange Program",159764,8942,1411,644,294,90588.72,1354157.21],["2024-12-07","Instagram","West India","Semester Exchange Program",102163,5048,1064,661,327,60848.34,2575367.84],["2024-12-08","Instagram","West India","Semester Exchange Program",126853,7221,1286,797,398,50966.79,2508469.86],["2024-12-09","Instagram","East India","Semester Exchange Program",220003,12964,2716,1272,714,149924.94,5270433.16],["2024-12-10","Instagram","Pan India","Semester Exchange Program",201824,7307,1450,689,362,150905.55,1905071.16],["2024-12-11","Instagram","West India","Semester Exchange Program",250260,19853,3492,1798,784,135506.91,2906425.19],["2024-12-12","Instagram","West India","Semester Exchange Program",135664,4928,1186,699,396,57125.92,2556577.29],["2024-12-13","Instagram","Pan India","Semester Exchange Program",160397,9855,1850,945,509,66687.61,2358767.81],["2024-12-14","Instagram","Pan India","Semester Exchange Program",79723,3466,546,277,162,45007.68,714695.19],["2024-12-15","Instagram","North India","Semester Exchange Program",152326,8620,2136,1366,558,144403.81,4066244.11],["2024-12-16","Instagram","North India","Semester Exchange Program",215008,12718,3010,1775,928,185494.55,5966828.56],["2024-12-17","Instagram","East India","Semester Exchange Program",226154,6787,1355,775,413,127284.48,3048285.96],["2024-12-18","Instagram","East India","Semester Exchange Program",65380,3622,886,466,197,38280.77,618935.67],["2024-12-19","Instagram","South India","Semester Exchange Program",64816,4503,783,385,198,36917.17,1292747.35],["2024-12-20","Instagram","North India","Semester Exchange Program",129732,6744,1532,866,459,59861.08,3616448.38],["2024-12-21","Instagram","East India","Semester Exchange Program",191010,6685,1113,682,386,84242.54,2143080.95],["2024-12-22","Instagram","West India","Semester Exchange Program",68302,2222,383,243,139,55070.2,866752.39],["2024-12-23","Instagram","North India","Semester Exchange Program",148429,6118,1413,782,344,93856.35,1316377.62],["2024-12-24","Instagram","South India","Semester Exchange Program",130005,7572,1183,758,342,52249.34,2407660.84],["2024-12-25","Instagram","West India","Semester Exchange Program",188671,14836,3690,2154,921,187239.3,5745146.2],["2024-12-26","Instagram","South India","Semester Exchange Program",210372,8399,1694,973,468,119550.69,3244204.25],["2024-12-27","Instagram","Pan India","Semester Exchange Program",242821,11287,2295,1202,698,99352.03,4449421.1],["2024-12-28","Instagram","West India","Semester Exchange Program",203553,16070,3160,1749,804,85165.18,4136749.5],["2024-12-29","Instagram","West India","Semester Exchange Program",76603,5356,1267,651,332,45529.69,1938587.1],["2024-12-30","Instagram","South India","Semester Exchange Program",170097,6950,1199,740,397,123129.23,2422516.68],["2024-12-31","Instagram","Pan India","Semester Exchange Program",131701,9179,1437,927,505,59393.39,3247013.45],["2025-01-01","LinkedIn","South India","Placements",279530,19894,3599,2203,1218,273389.72,8583247.3],["2025-01-02","LinkedIn","West India","Placements",107357,3850,660,404,170,64297.75,639111.06],["2025-01-03","LinkedIn","West India","Placements",234568,11507,2233,1415,677,228209.58,3116134.9],["2025-01-04","LinkedIn","West India","Placements",118873,6602,1257,706,337,88250.44,1510928.16],["2025-01-05","LinkedIn","Pan India","Placements",65935,3337,635,299,144,33688.76,618176.8],["2025-01-06","LinkedIn","East India","Placements",98052,5653,1278,620,365,66527.79,2071736.22],["2025-01-07","LinkedIn","Pan India","Placements",131378,7546,1518,715,293,83251.47,1142012.75],["2025-01-08","LinkedIn","West India","Placements",262420,14446,3479,2040,966,119191.61,6335108.83],["2025-01-09","LinkedIn","Pan India","Placements",153266,6717,1640,966,430,153149.87,2013145.18],["2025-01-10","LinkedIn","South India","Placements",70209,2239,511,331,185,54632.02,1173022.89],["2025-01-11","LinkedIn","South India","Placements",125823,6100,1244,598,263,78509.29,1955712.94],["2025-01-12","LinkedIn","West India","Placements",203716,6420,1047,499,199,165278.22,840797.82],["2025-01-13","LinkedIn","North India","Placements",146482,4711,931,572,338,141930.1,2174371.93],["2025-01-14","LinkedIn","Pan India","Placements",266480,8507,1449,740,346,179057.44,2625757.68],["2025-01-15","LinkedIn","East India","Placements",119877,5157,853,489,196,55662.12,601879.73],["2025-01-16","LinkedIn","East India","Placements",258617,11130,2706,1265,634,220388.72,3969227.91],["2025-01-17","LinkedIn","North India","Placements",286009,20719,3174,1988,1183,159981.23,5016566.76],["2025-01-18","LinkedIn","South India","Placements",143217,6695,1166,607,327,67853.55,1547240.6],["2025-01-19","LinkedIn","East India","Placements",72167,3593,602,351,197,70366.31,1134508.65],["2025-01-20","LinkedIn","Pan India","Placements",239490,16490,2821,1500,857,231252.5,2591070.74],["2025-01-21","LinkedIn","Pan India","Placements",114858,8995,2140,1042,585,109054.25,3742051.97],["2025-01-22","LinkedIn","West India","Placements",287469,15650,3709,1899,784,253282.64,2874025.11],["2025-01-23","LinkedIn","Pan India","Placements",160382,12822,2675,1467,670,98850.69,3011981.4],["2025-01-24","LinkedIn","East India","Placements",87341,6016,1290,669,315,35138.72,2092169.31],["2025-01-25","LinkedIn","North India","Placements",184938,6118,1450,865,478,132226.89,1439934.34],["2025-01-26","LinkedIn","North India","Placements",63670,3261,779,463,260,57921.04,1810450.96],["2025-01-27","LinkedIn","North India","Placements",182711,13431,2341,1427,816,123017.03,5356819.38],["2025-01-28","LinkedIn","South India","Placements",228212,18002,4371,2526,1404,140065.3,6510695.7],["2025-01-29","LinkedIn","East India","Placements",258910,20306,3105,1415,615,196117.34,4520782.34],["2025-01-30","LinkedIn","Pan India","Placements",90143,2803,540,314,175,40656.59,1007449.12],["2025-01-31","LinkedIn","Pan India","Placements",85144,3382,587,296,155,42903.25,564840.05],["2025-02-01","LinkedIn","East India","Placements",247492,18132,4384,2710,1613,189072.19,6367802.47],["2025-02-02","LinkedIn","East India","Placements",131901,8460,1385,816,412,123943.03,2536624.06],["2025-02-03","LinkedIn","East India","Placements",228466,8425,1286,782,385,169210.25,1194707.96],["2025-02-04","LinkedIn","West India","Placements",224736,14914,3722,2167,1264,217968.09,3957313.4],["2025-02-05","LinkedIn","West India","Placements",169022,13204,3261,1590,892,147597.12,2727577.06],["2025-02-06","LinkedIn","North India","Placements",171440,12089,2871,1782,734,118811.98,2681533.2],["2025-02-07","LinkedIn","North India","Placements",157459,9897,2312,1209,650,142696.95,2825372.26],["2025-02-08","LinkedIn","Pan India","Placements",65423,3275,709,417,179,31628.24,642830.89],["2025-02-09","LinkedIn","East India","Placements",194699,6867,1321,634,310,138099.75,2251050.92],["2025-02-10","LinkedIn","South India","Placements",258921,15451,3155,1580,846,123848.52,2990116.79],["2025-02-11","LinkedIn","East India","Placements",127232,9034,1736,1112,517,111616.5,3367905.35],["2025-02-12","LinkedIn","Pan India","Placements",183701,10838,1745,807,469,163799.75,2978652.97],["2025-02-13","LinkedIn","South India","Placements",61637,4452,790,460,264,35763.23,1837127.99],["2025-02-14","LinkedIn","East India","Placements",115475,6434,1594,911,456,55074.85,1536942.26],["2025-02-15","LinkedIn","North India","Placements",242487,10557,1644,940,476,137455.2,2658068.14],["2025-02-16","LinkedIn","East India","Placements",236585,7923,1495,848,467,129801.04,3083695.93],["2025-02-17","LinkedIn","Pan India","Placements",109605,8284,1935,1132,663,61086.21,2830034.76],["2025-02-18","LinkedIn","North India","Placements",59185,4390,1044,588,283,39767.6,1548093.27],["2025-02-19","LinkedIn","Pan India","Placements",183593,5650,1015,541,288,78874.38,867564.82],["2025-02-20","LinkedIn","South India","Placements",115658,6141,1182,685,302,81667.73,2031836.19],["2025-02-21","LinkedIn","South India","Placements",125536,6373,1242,763,414,81484.23,3091570.59],["2025-02-22","LinkedIn","North India","Placements",279784,19574,4822,2939,1343,143229.35,6633392.34],["2025-02-23","LinkedIn","South India","Placements",141610,8320,1667,1053,595,71547.48,4297339.82],["2025-02-24","LinkedIn","South India","Placements",145064,7505,1364,661,346,74277.51,1181975.04],["2025-02-25","LinkedIn","East India","Placements",298028,20642,4696,2781,1630,284889.28,11577295.93],["2025-02-26","LinkedIn","East India","Placements",82925,5003,1088,544,317,49214.3,2410736.98],["2025-02-27","LinkedIn","North India","Placements",113983,4651,940,445,184,79830.66,692151.2],["2025-02-28","LinkedIn","North India","Placements",103093,3235,665,347,181,70779.6,1258576.42],["2025-03-01","LinkedIn","East India","Placements",53653,2463,459,282,149,37104.88,1030118.97],["2025-03-02","LinkedIn","West India","Placements",231442,13709,2805,1555,749,207424.01,4028445.09],["2025-03-03","LinkedIn","West India","Placements",134246,8250,1329,727,429,78289.58,2346719.0],["2025-03-04","LinkedIn","South India","Placements",131176,5409,1273,750,449,67190.07,3326521.1],["2025-03-05","LinkedIn","South India","Placements",75507,4191,800,373,220,68079.25,1653602.64],["2025-03-06","LinkedIn","East India","Placements",188977,11714,2647,1690,798,113365.21,5029867.79],["2025-03-07","LinkedIn","North India","Placements",252677,9888,1997,964,578,105630.8,3700568.66],["2025-03-08","LinkedIn","East India","Placements",146366,8269,1633,979,429,108116.05,2625145.22],["2025-03-09","LinkedIn","West India","Placements",134757,6182,1265,682,294,74426.89,1368570.59],["2025-03-10","LinkedIn","North India","Placements",258417,18909,4020,2269,1059,140621.96,7367765.46],["2025-03-11","LinkedIn","Pan India","Placements",209874,11904,2886,1634,908,156283.1,4945752.52],["2025-03-12","LinkedIn","Pan India","Placements",142999,4752,762,444,200,92318.66,795253.41],["2025-03-13","LinkedIn","Pan India","Placements",250958,19914,4316,2505,1303,101670.82,4200194.37],["2025-03-14","LinkedIn","North India","Placements",286615,14860,3405,1582,809,174370.56,6056441.37],["2025-03-15","LinkedIn","North India","Placements",184520,9112,2248,1022,476,93561.23,2941652.56],["2025-03-16","LinkedIn","Pan India","Placements",143329,8242,2029,1135,533,135105.23,2328047.63],["2025-03-17","LinkedIn","South India","Placements",265195,10327,2049,1182,589,179628.87,4703747.8],["2025-03-18","LinkedIn","South India","Placements",122661,9777,2435,1113,594,87088.41,4550062.67],["2025-03-19","LinkedIn","East India","Placements",256063,19097,2939,1547,914,201254.06,5172875.5],["2025-03-20","LinkedIn","West India","Placements",107546,4153,907,465,194,97757.51,602706.81],["2025-03-21","LinkedIn","Pan India","Placements",171811,7500,1283,812,351,97292.61,2485360.11],["2025-03-22","LinkedIn","East India","Placements",299755,10495,1933,948,547,136254.79,3682668.74],["2025-03-23","LinkedIn","North India","Placements",196757,9869,2126,1008,595,188439.06,4032011.13],["2025-03-24","LinkedIn","Pan India","Placements",99084,7882,1585,875,446,56260.32,3403228.57],["2025-03-25","LinkedIn","Pan India","Placements",151038,4667,856,417,238,81008.29,1443400.51],["2025-03-26","LinkedIn","Pan India","Placements",261569,10863,2582,1521,869,245885.34,3687397.28],["2025-03-27","LinkedIn","Pan India","Placements",242681,16801,3043,1834,1029,237908.01,7686272.07],["2025-03-28","LinkedIn","South India","Placements",141344,6626,1362,827,451,134141.85,1833931.99],["2025-03-29","LinkedIn","East India","Placements",229820,11047,2019,1120,565,204934.93,2057874.91],["2025-03-30","LinkedIn","North India","Placements",67576,2896,633,348,156,59665.14,761451.63],["2025-03-31","LinkedIn","North India","Placements",203412,13404,3282,1607,645,201828.55,2389203.56],["2025-04-01","LinkedIn","West India","Placements",188004,6449,1209,590,328,130079.38,1460235.88],["2025-04-02","LinkedIn","Pan India","Placements",126338,5512,1277,670,387,68197.68,1772957.17],["2025-04-03","LinkedIn","North India","Placements",183191,6099,1415,770,397,74337.41,1467961.39],["2025-04-04","LinkedIn","Pan India","Placements",84849,3217,556,340,176,58482.3,1379402.49],["2025-04-05","LinkedIn","Pan India","Placements",197504,8509,1516,789,455,104867.15,3305228.65],["2025-04-06","LinkedIn","West India","Placements",69154,4707,1042,628,284,35916.58,1254290.1],["2025-04-07","LinkedIn","Pan India","Placements",289761,22640,4750,2972,1259,178162.37,4800373.55],["2025-04-08","LinkedIn","North India","Placements",110803,4456,876,468,219,101061.77,951963.17],["2025-04-09","LinkedIn","North India","Placements",239425,15902,2926,1870,851,148342.78,5872468.48],["2025-04-10","LinkedIn","South India","Placements",70240,5540,925,577,307,40196.1,1662472.27],["2025-04-11","LinkedIn","East India","Placements",138678,6834,1173,590,294,98499.51,1157268.05],["2025-04-12","LinkedIn","West India","Placements",263247,19300,3627,2251,1126,214028.74,8518494.32],["2025-04-13","LinkedIn","East India","Placements",171458,10003,1964,1248,648,93164.51,4778046.81],["2025-04-14","LinkedIn","North India","Placements",172696,13622,2087,1215,682,172286.34,4380214.3],["2025-04-15","LinkedIn","Pan India","Placements",254916,18774,2891,1575,935,166572.55,5819811.44],["2025-04-16","LinkedIn","South India","Placements",297311,12824,2266,1065,566,177196.19,4455320.86],["2025-04-17","LinkedIn","Pan India","Placements",187876,14537,3326,1964,1057,100656.39,4478372.76],["2025-04-18","LinkedIn","South India","Placements",286470,17503,2821,1744,734,214086.95,2364928.66],["2025-04-19","LinkedIn","Pan India","Placements",162404,11970,2624,1217,633,107823.72,4731468.72],["2025-04-20","LinkedIn","South India","Placements",70773,2354,502,320,137,37944.95,641296.64],["2025-04-21","LinkedIn","West India","Placements",92159,7283,1706,985,420,83018.34,3155986.73],["2025-04-22","LinkedIn","East India","Placements",214210,12044,2322,1116,510,92410.0,4047072.48],["2025-04-23","LinkedIn","East India","Placements",89597,3957,914,497,220,56902.12,917613.33],["2025-04-24","LinkedIn","Pan India","Placements",219815,15931,2530,1544,888,106057.04,6164863.67],["2025-04-25","LinkedIn","East India","Placements",155800,6865,1272,765,363,69361.47,1831892.26],["2025-04-26","LinkedIn","Pan India","Placements",78865,2545,595,378,152,70156.08,1136108.87],["2025-04-27","LinkedIn","Pan India","Placements",106441,7731,1827,1072,449,93059.67,1626663.82],["2025-04-28","LinkedIn","South India","Placements",108582,6075,1445,861,472,61991.73,2863429.47],["2025-04-29","LinkedIn","West India","Placements",203313,15538,2353,1144,655,145045.48,4987053.71],["2025-04-30","LinkedIn","Pan India","Placements",220384,8142,1402,907,369,152034.62,2102559.65],["2025-05-01","Facebook","Pan India","MBA Admission",240139,11309,1987,1165,696,180456.12,4208817.85],["2025-05-01","LinkedIn","East India","Placements",289903,22942,4003,2536,1136,276281.53,6468438.06],["2025-05-02","Facebook","West India","MBA Admission",145953,6934,1681,974,435,80170.2,2531628.96],["2025-05-02","LinkedIn","Pan India","Placements",224774,8087,1510,927,437,144246.98,2806122.06],["2025-05-03","Facebook","North India","MBA Admission",125764,4601,978,630,302,67771.58,2349380.39],["2025-05-03","LinkedIn","East India","Placements",283215,9156,1720,956,382,274488.3,1491751.11],["2025-05-04","Facebook","North India","MBA Admission",254360,11109,2734,1480,668,226644.84,2792259.85],["2025-05-04","LinkedIn","South India","Placements",67770,4813,744,355,155,62523.21,1032514.49],["2025-05-05","Facebook","West India","MBA Admission",208578,12706,2381,1311,655,116823.1,2987311.77],["2025-05-05","LinkedIn","East India","Placements",104892,8197,1255,616,347,51518.58,2149275.48],["2025-05-06","Facebook","West India","MBA Admission",174201,12488,2889,1838,796,133968.34,4993434.23],["2025-05-06","LinkedIn","South India","Placements",204932,9551,2028,1175,688,119604.48,2530463.62],["2025-05-07","Facebook","Pan India","MBA Admission",281251,18428,4606,2913,1585,223349.7,7253636.47],["2025-05-07","LinkedIn","Pan India","Placements",126647,7408,1738,883,464,97271.17,1785615.46],["2025-05-08","Facebook","East India","MBA Admission",97979,3175,583,301,168,58564.33,529563.73],["2025-05-08","LinkedIn","South India","Placements",154994,5796,1347,863,431,121038.69,2196417.22],["2025-05-09","Facebook","North India","MBA Admission",258980,19662,3598,1763,758,228071.85,4909073.61],["2025-05-09","LinkedIn","East India","Placements",108431,6177,1134,595,240,100523.61,897404.11],["2025-05-10","Facebook","Pan India","MBA Admission",51259,3592,541,312,131,24423.78,722680.3],["2025-05-10","LinkedIn","Pan India","Placements",128908,5068,994,535,273,101891.88,1320648.36],["2025-05-11","Facebook","South India","MBA Admission",107884,5598,1238,596,240,51643.69,862353.37],["2025-05-11","LinkedIn","Pan India","Placements",281759,18036,3182,2035,1042,149263.62,7035403.19],["2025-05-12","Facebook","Pan India","MBA Admission",109219,6309,1002,621,302,80141.73,1535750.35],["2025-05-12","LinkedIn","Pan India","Placements",56655,3075,664,314,152,22689.88,1129547.78],["2025-05-13","Facebook","North India","MBA Admission",127468,5926,1247,622,336,101926.37,1859496.88],["2025-05-13","LinkedIn","East India","Placements",263989,20499,4960,3112,1581,241710.75,10422582.66],["2025-05-14","Facebook","North India","MBA Admission",216556,14437,2858,1623,754,187567.69,2602263.33],["2025-05-14","LinkedIn","North India","Placements",176419,6312,1409,877,517,156086.32,3922073.17],["2025-05-15","Facebook","West India","MBA Admission",104288,4814,768,360,179,86527.19,937902.93],["2025-05-15","LinkedIn","Pan India","Placements",246319,18568,2933,1874,956,223803.59,5348861.97],["2025-05-16","Facebook","East India","MBA Admission",272620,19195,3980,1800,723,190013.67,4634332.36],["2025-05-16","LinkedIn","West India","Placements",135416,9754,1804,831,444,111777.17,2526118.07],["2025-05-17","Facebook","Pan India","MBA Admission",205846,16047,2839,1461,602,109111.63,3266642.53],["2025-05-17","LinkedIn","West India","Placements",277369,9937,2473,1558,780,197982.71,4085031.86],["2025-05-18","Facebook","North India","MBA Admission",73028,3043,537,345,157,45541.08,698667.79],["2025-05-18","LinkedIn","South India","Placements",154431,8758,1526,770,401,67378.69,3182834.15],["2025-05-19","Facebook","East India","MBA Admission",129271,8596,1731,909,413,61223.52,3212616.4],["2025-05-19","LinkedIn","Pan India","Placements",294707,9304,1777,925,464,171711.35,1435655.76],["2025-05-20","Facebook","North India","MBA Admission",163842,7426,1233,778,374,74194.66,2531863.85],["2025-05-20","LinkedIn","Pan India","Placements",170906,10548,1817,1173,608,123281.41,2911291.7],["2025-05-21","Facebook","Pan India","MBA Admission",61054,3895,951,543,240,25073.99,1266941.77],["2025-05-21","LinkedIn","South India","Placements",121352,4064,696,357,180,54958.71,941034.3],["2025-05-22","Facebook","North India","MBA Admission",109881,4764,991,450,232,99134.91,1580447.82],["2025-05-22","LinkedIn","Pan India","Placements",228338,16682,2885,1390,593,202855.34,4698879.46],["2025-05-23","Facebook","East India","MBA Admission",138950,8247,1433,743,371,87585.26,2275198.26],["2025-05-23","LinkedIn","North India","Placements",81571,6335,1288,609,288,69379.64,1003969.21],["2025-05-24","Facebook","North India","MBA Admission",261935,11611,1967,1027,604,209519.18,3096991.33],["2025-05-24","LinkedIn","Pan India","Placements",107849,6825,1489,749,394,81201.03,1255931.71],["2025-05-25","Facebook","East India","MBA Admission",199889,7676,1181,628,295,160449.25,1422894.37],["2025-05-25","LinkedIn","North India","Placements",221701,9472,2148,1063,587,167627.5,3363822.07],["2025-05-26","Facebook","Pan India","MBA Admission",95432,7312,1525,799,461,75781.68,2142553.82],["2025-05-26","LinkedIn","Pan India","Placements",258060,19102,4745,2505,1316,149089.16,8726521.35],["2025-05-27","Facebook","North India","MBA Admission",161958,8826,1937,906,520,70025.64,3944515.61],["2025-05-27","LinkedIn","West India","Placements",298878,16202,3092,1903,1055,156885.58,7149953.98],["2025-05-28","Facebook","West India","MBA Admission",107903,3524,729,457,206,103430.57,1353200.37],["2025-05-28","LinkedIn","North India","Placements",173020,10599,1880,1217,720,77910.38,3240631.4],["2025-05-29","Facebook","West India","MBA Admission",208326,16547,2535,1311,579,128714.62,2105892.51],["2025-05-29","LinkedIn","Pan India","Placements",254367,11373,2455,1286,523,144783.34,3534997.28],["2025-05-30","Facebook","East India","MBA Admission",221642,16515,3805,2059,1044,213043.67,5794495.52],["2025-05-30","LinkedIn","West India","Placements",171248,12218,1850,1118,623,161173.5,4380151.08],["2025-05-31","Facebook","Pan India","MBA Admission",172441,10888,1929,985,439,111414.3,2807015.16],["2025-05-31","LinkedIn","North India","Placements",79898,3387,708,348,144,46053.63,664446.17],["2025-06-01","Facebook","East India","MBA Admission",179655,5969,1158,725,292,107637.78,1673092.65],["2025-06-02","Facebook","Pan India","MBA Admission",112007,7687,1249,590,333,69690.34,1849660.24],["2025-06-03","Facebook","East India","MBA Admission",77080,2952,558,255,145,53641.08,668676.1],["2025-06-04","Facebook","Pan India","MBA Admission",247271,13740,2356,1075,541,224942.73,3479855.38],["2025-06-05","Facebook","West India","MBA Admission",228774,15253,3595,2264,989,192239.45,3767177.71],["2025-06-06","Facebook","West India","MBA Admission",140336,10973,2525,1411,738,101941.71,3405726.7],["2025-06-07","Facebook","South India","MBA Admission",255443,9636,2306,1082,528,108919.31,1641515.54],["2025-06-08","Facebook","North India","MBA Admission",153084,4907,999,538,307,97654.25,1586488.03],["2025-06-09","Facebook","South India","MBA Admission",114699,4802,801,375,175,79599.73,1126490.56],["2025-06-10","Facebook","West India","MBA Admission",228607,11316,2761,1577,831,199079.5,5513047.86],["2025-06-11","Facebook","South India","MBA Admission",115246,7658,1593,756,338,111946.04,2482396.52],["2025-06-12","Facebook","West India","MBA Admission",265508,9396,1593,898,489,184408.86,2219084.95],["2025-06-13","Facebook","South India","MBA Admission",52092,2486,570,350,191,35363.69,1423038.59],["2025-06-14","Facebook","East India","MBA Admission",287149,12655,2180,1116,601,241881.98,4227409.95],["2025-06-15","Facebook","West India","MBA Admission",149833,7012,1494,738,297,131425.41,1614620.18],["2025-06-16","Facebook","West India","MBA Admission",255927,12698,2565,1291,774,163441.21,4081467.0],["2025-06-17","Facebook","East India","MBA Admission",234335,11764,1932,992,435,164277.08,1544374.71],["2025-06-18","Facebook","North India","MBA Admission",146202,11655,2425,1140,460,79710.71,2166582.31],["2025-06-19","Facebook","West India","MBA Admission",169807,5900,1002,543,271,167493.6,1293759.11],["2025-06-20","Facebook","Pan India","MBA Admission",51060,2259,559,276,121,41121.18,556625.17],["2025-06-21","Facebook","East India","MBA Admission",299910,23654,5219,2461,1471,147276.92,7040894.91],["2025-06-22","Facebook","East India","MBA Admission",118757,6909,1251,711,363,97100.84,2733839.18],["2025-06-23","Facebook","Pan India","MBA Admission",215965,16744,3264,1645,772,138966.8,3706914.65],["2025-06-24","Facebook","Pan India","MBA Admission",251296,15390,3332,1741,721,235593.68,5070650.21],["2025-06-25","Facebook","Pan India","MBA Admission",58479,3449,525,332,138,36555.38,944561.57],["2025-06-26","Facebook","Pan India","MBA Admission",89905,4837,875,550,241,51333.26,1062504.38],["2025-06-27","Facebook","Pan India","MBA Admission",92090,5092,879,474,260,84474.07,1445950.1],["2025-06-28","Facebook","North India","MBA Admission",118966,6945,1680,1063,602,86687.2,1924916.2],["2025-06-29","Facebook","Pan India","MBA Admission",54787,2701,414,256,108,23226.4,639599.7],["2025-06-30","Facebook","East India","MBA Admission",81314,3799,757,427,191,47760.64,1085518.31],["2025-07-01","Facebook","Pan India","MBA Admission",92036,5655,1370,718,314,63223.93,1366952.36],["2025-07-02","Facebook","South India","MBA Admission",269403,18663,4144,2502,1360,150891.95,8181786.32],["2025-07-03","Facebook","Pan India","MBA Admission",56759,4315,975,572,279,47812.04,1401844.34],["2025-07-04","Facebook","East India","MBA Admission",294725,14169,3083,1956,783,267573.94,2450851.61],["2025-07-05","Facebook","Pan India","MBA Admission",284349,9408,1926,1228,734,145135.47,3166144.83],["2025-07-06","Facebook","East India","MBA Admission",215773,11011,2592,1638,787,114990.31,3955862.49],["2025-07-07","Facebook","Pan India","MBA Admission",265814,18135,3413,1802,979,178983.87,4945617.34],["2025-07-08","Facebook","North India","MBA Admission",254425,11942,2510,1384,700,163582.32,5486851.24],["2025-07-09","Facebook","South India","MBA Admission",259369,9336,2252,1107,588,154589.95,3499060.17],["2025-07-10","Facebook","North India","MBA Admission",221044,13069,2745,1298,558,160690.05,3236187.64],["2025-07-11","Facebook","Pan India","MBA Admission",94706,5747,890,494,278,65416.27,2144560.42],["2025-07-12","Facebook","East India","MBA Admission",176503,10957,1846,985,397,145083.42,1468396.6],["2025-07-13","Facebook","South India","MBA Admission",237358,14516,2484,1272,548,133175.25,4227791.02],["2025-07-14","Facebook","West India","MBA Admission",50848,3877,825,405,190,43221.5,1323600.99],["2025-07-15","Facebook","Pan India","MBA Admission",96272,7109,1160,673,373,61170.4,1645196.91],["2025-07-16","Facebook","South India","MBA Admission",163136,7760,1293,616,309,81536.18,1996807.57],["2025-07-17","Facebook","South India","MBA Admission",224881,13220,2919,1678,726,209811.4,4054985.75],["2025-07-18","Facebook","East India","MBA Admission",107896,6609,1436,892,459,104215.29,2367563.22],["2025-07-19","Facebook","East India","MBA Admission",100529,3042,580,326,173,52428.0,1269806.24],["2025-07-20","Facebook","North India","MBA Admission",59847,4601,734,338,157,24579.52,524652.69],["2025-07-21","Facebook","East India","MBA Admission",183044,9780,2113,1094,518,149648.03,2135225.13],["2025-07-22","Facebook","North India","MBA Admission",295519,20154,3461,1995,1138,221471.19,8555769.92],["2025-07-23","Facebook","North India","MBA Admission",102281,7277,1524,814,398,41674.82,2247547.73],["2025-07-24","Facebook","North India","MBA Admission",69228,2248,378,231,127,47888.71,980730.14],["2025-07-25","Facebook","North India","MBA Admission",195078,11378,2824,1362,720,101190.07,4473021.84],["2025-07-26","Facebook","East India","MBA Admission",98148,6924,1556,839,415,82010.11,2689713.42],["2025-07-27","Facebook","West India","MBA Admission",288669,16685,2685,1692,697,197363.38,2266273.4],["2025-07-28","Facebook","South India","MBA Admission",228940,7307,1297,812,445,100965.24,1835902.46],["2025-07-29","Facebook","Pan India","MBA Admission",103373,6280,1324,665,319,91234.94,1337659.86],["2025-07-30","Facebook","Pan India","MBA Admission",183663,7335,1401,843,357,159534.43,2405412.18],["2025-07-31","Facebook","North India","MBA Admission",125289,5916,1354,610,295,81381.38,2009705.99],["2025-08-01","Facebook","Pan India","MBA Admission",82289,2865,627,344,153,72603.02,791070.5],["2025-08-02","Facebook","South India","MBA Admission",122204,4702,1151,571,334,64654.83,1107200.51],["2025-08-03","Facebook","North India","MBA Admission",282568,20991,3160,1720,1027,254928.95,4693041.45],["2025-08-04","Facebook","West India","MBA Admission",276741,8329,2013,1048,550,241422.3,3218248.07],["2025-08-05","Facebook","West India","MBA Admission",276190,8837,1345,850,400,258734.91,1603909.43],["2025-08-06","Facebook","West India","MBA Admission",157823,7462,1653,1051,551,152142.2,2267468.26],["2025-08-07","Facebook","West India","MBA Admission",168164,12919,3045,1753,778,141390.11,3060297.73],["2025-08-08","Facebook","South India","MBA Admission",196818,10477,1940,1106,531,148549.07,4182575.02],["2025-08-09","Facebook","North India","MBA Admission",87549,4272,877,466,259,55978.68,1264912.83],["2025-08-10","Facebook","West India","MBA Admission",209975,7033,1633,987,489,104015.44,3787589.47],["2025-08-11","Facebook","North India","MBA Admission",248579,16137,3772,2122,1032,155529.26,3706021.15],["2025-08-12","Facebook","North India","MBA Admission",105929,6513,1176,544,290,45471.22,1842642.34],["2025-08-13","Facebook","North India","MBA Admission",285906,22490,5143,2920,1595,142184.53,5142498.68],["2025-08-14","Facebook","West India","MBA Admission",114829,6699,1279,675,334,87179.3,2116901.47],["2025-08-15","Facebook","East India","MBA Admission",139439,8820,2115,1244,610,68482.23,2965372.21],["2025-08-16","Facebook","North India","MBA Admission",156143,12051,2488,1574,776,67878.95,6203499.93],["2025-08-17","Facebook","East India","MBA Admission",240812,8480,1398,794,351,97560.76,2504594.84],["2025-08-18","Facebook","South India","MBA Admission",138243,8910,1845,909,537,101458.77,3422258.08],["2025-08-19","Facebook","East India","MBA Admission",218087,9347,2279,1102,475,204860.79,2934887.01],["2025-08-20","Facebook","East India","MBA Admission",120567,7874,1738,882,513,85980.89,2514070.68],["2025-08-21","Facebook","North India","MBA Admission",60672,4419,871,435,245,51458.58,887743.91],["2025-08-22","Facebook","South India","MBA Admission",100402,5050,816,428,214,59444.37,833256.71],["2025-08-23","Facebook","East India","MBA Admission",182510,10026,2101,1067,537,125713.35,3892044.05],["2025-08-24","Facebook","East India","MBA Admission",91784,5762,1342,834,453,53692.75,2444731.5],["2025-08-25","Facebook","West India","MBA Admission",277958,10817,2519,1222,546,258352.11,3167583.01],["2025-08-26","Facebook","South India","MBA Admission",192183,10955,1911,982,531,99989.22,2721879.68],["2025-08-27","Facebook","West India","MBA Admission",263391,15760,2389,1303,686,138918.72,3426291.48],["2025-08-28","Facebook","Pan India","MBA Admission",272021,16255,3053,1496,719,201326.36,2668478.92],["2025-08-29","Facebook","North India","MBA Admission",156442,5047,1081,616,364,81569.7,1780402.59],["2025-08-30","Facebook","North India","MBA Admission",247071,14991,3641,1717,746,196671.42,5676011.44],["2025-08-31","Facebook","East India","MBA Admission",250143,13827,2421,1432,812,246806.14,4206184.57],["2025-09-01","Facebook","South India","MBA Admission",107058,3243,768,451,183,93964.07,1201913.08],["2025-09-02","Facebook","South India","MBA Admission",70747,4626,1107,534,275,61069.08,943623.62],["2025-09-03","Facebook","Pan India","MBA Admission",239227,14680,3320,1838,874,144170.21,6122970.76],["2025-09-04","Facebook","East India","MBA Admission",205200,14587,2970,1688,853,110816.95,5569954.66],["2025-09-05","Facebook","South India","MBA Admission",281976,15138,3583,1682,882,184334.8,5829281.55],["2025-09-06","Facebook","Pan India","MBA Admission",137599,10631,2329,1429,624,116671.7,1995280.37],["2025-09-07","Facebook","North India","MBA Admission",197813,9162,1467,664,331,126646.91,2242704.03],["2025-09-08","Facebook","West India","MBA Admission",183517,8806,1894,1152,607,156011.44,3701255.37],["2025-09-09","Facebook","East India","MBA Admission",92749,6844,1354,704,396,68351.57,1710346.58],["2025-09-10","Facebook","South India","MBA Admission",242936,9558,1983,1172,687,221405.22,3264776.12],["2025-09-11","Facebook","East India","MBA Admission",99617,3517,638,340,165,43282.33,505160.33],["2025-09-12","Facebook","Pan India","MBA Admission",76637,3191,733,446,203,74481.25,656000.98],["2025-09-13","Facebook","East India","MBA Admission",166151,7773,1561,853,511,164748.2,4031732.04],["2025-09-14","Facebook","West India","MBA Admission",107335,5840,883,548,311,91579.99,1951223.87],["2025-09-15","Facebook","South India","MBA Admission",132078,9148,2250,1070,580,89794.27,2201670.15],["2025-09-16","Facebook","West India","MBA Admission",101493,6771,1085,554,279,77121.89,992341.27],["2025-09-17","Facebook","North India","MBA Admission",111983,6950,1441,658,268,90692.09,1466996.16],["2025-09-18","Facebook","North India","MBA Admission",215192,7975,1358,818,362,93531.85,2116994.93],["2025-09-19","Facebook","Pan India","MBA Admission",261009,19792,4855,2851,1191,193741.4,8258758.73],["2025-09-20","Facebook","Pan India","MBA Admission",197776,11695,1855,1099,619,120118.79,3111027.07],["2025-09-21","Facebook","Pan India","MBA Admission",272006,16516,2535,1364,637,121243.02,4131056.57],["2025-09-22","Facebook","Pan India","MBA Admission",130283,4990,834,405,218,106682.68,987967.58],["2025-09-23","Facebook","North India","MBA Admission",135555,6016,1132,528,291,61223.53,2126629.76],["2025-09-24","Facebook","North India","MBA Admission",170800,9993,1997,1153,565,123954.87,3933314.72],["2025-09-25","Facebook","Pan India","MBA Admission",216281,12275,2743,1436,761,153644.3,4620519.83],["2025-09-26","Facebook","East India","MBA Admission",288814,15144,3229,1667,717,184629.3,5541722.66],["2025-09-27","Facebook","West India","MBA Admission",63287,2103,392,234,105,40525.23,774682.1],["2025-09-28","Facebook","South India","MBA Admission",84362,5530,851,502,294,70942.7,1046903.01],["2025-09-29","Facebook","East India","MBA Admission",183268,7046,1579,810,481,179224.85,2698270.88],["2025-09-30","Facebook","South India","MBA Admission",262678,8632,1659,1014,452,114033.33,3043417.73],["2025-10-01","Facebook","West India","MBA Admission",96963,4818,1033,523,239,77182.98,921080.74],["2025-10-02","Facebook","South India","MBA Admission",238932,17897,3400,1696,835,154238.89,3986006.43],["2025-10-03","Facebook","South India","MBA Admission",86613,4270,804,520,293,81879.25,2002746.27],["2025-10-04","Facebook","East India","MBA Admission",133105,6571,1269,758,414,125866.36,2149460.89],["2025-10-05","Facebook","North India","MBA Admission",277734,16825,4065,1971,1056,248427.75,5043350.97],["2025-10-06","Facebook","West India","MBA Admission",116985,8242,1752,845,384,92101.9,2994088.87],["2025-10-07","Facebook","East India","MBA Admission",229002,17513,3683,2365,1189,161077.87,9344118.66],["2025-10-08","Facebook","Pan India","MBA Admission",190424,10827,2153,1389,633,105225.0,3490888.31],["2025-10-09","Facebook","East India","MBA Admission",110972,4268,982,454,200,97229.71,1191628.0],["2025-10-10","Facebook","Pan India","MBA Admission",90691,6497,1168,594,242,54234.25,815080.48],["2025-10-11","Facebook","East India","MBA Admission",58157,3232,534,257,110,53956.0,475326.81],["2025-10-12","Facebook","Pan India","MBA Admission",135976,10257,1702,1092,457,95285.12,1968745.07],["2025-10-13","Facebook","East India","MBA Admission",75257,2399,411,199,112,34218.43,450838.11],["2025-10-14","Facebook","West India","MBA Admission",198364,13118,1984,1175,480,91490.04,2452250.17],["2025-10-15","Facebook","West India","MBA Admission",295919,17609,3372,1885,798,153865.02,5620586.36],["2025-10-16","Facebook","East India","MBA Admission",219192,9561,2253,1253,681,111858.16,2520660.98],["2025-10-17","Facebook","North India","MBA Admission",274932,19134,4243,2579,1097,235450.39,5481451.67],["2025-10-18","Facebook","East India","MBA Admission",73891,5322,940,560,325,30551.39,1890046.69],["2025-10-19","Facebook","North India","MBA Admission",78968,2541,471,249,121,54841.39,399316.55],["2025-10-20","Facebook","West India","MBA Admission",260789,14483,2729,1300,685,217576.56,2824586.55],["2025-10-21","Facebook","South India","MBA Admission",134380,6252,1300,685,354,132525.26,2665107.49],["2025-10-22","Facebook","Pan India","MBA Admission",287916,10349,1738,838,398,115613.02,1867784.24],["2025-10-23","Facebook","East India","MBA Admission",216575,12444,2477,1587,674,147196.81,4576963.63],["2025-10-24","Facebook","North India","MBA Admission",71172,4222,908,490,236,46274.85,1760206.67],["2025-10-25","Facebook","South India","MBA Admission",198682,8609,1832,1094,574,80603.11,1777848.23],["2025-10-26","Facebook","Pan India","MBA Admission",87021,6502,1617,998,494,46482.66,2244803.69],["2025-10-27","Facebook","South India","MBA Admission",277676,18342,3757,2032,1017,242232.32,5399981.27],["2025-10-28","Facebook","West India","MBA Admission",132019,9429,2004,1029,542,129503.53,3403497.0],["2025-10-29","Facebook","West India","MBA Admission",89527,5616,865,507,215,79011.86,1224216.24],["2025-10-30","Facebook","East India","MBA Admission",232419,17670,3031,1638,975,200506.15,7007981.3],["2025-10-31","Facebook","Pan India","MBA Admission",267804,19472,4863,2431,1100,251059.32,6675311.68]]};
+  const root = document.getElementById("marketing-dashboard-20260720");
+  if (!root) return;
+
+  const I = { date: 0, platform: 1, region: 2, campaign: 3, impressions: 4, clicks: 5, leads: 6, applications: 7, enrollments: 8, cost: 9, revenue: 10 };
+  const rows = payload.rows;
+  const byId = (id) => root.querySelector("#" + id);
+  const platformSelect = byId("md-platform");
+  const regionSelect = byId("md-region");
+  const campaignSelect = byId("md-campaign");
+  const clearButton = byId("md-clear");
+  const numberFmt = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
+  const compactFmt = new Intl.NumberFormat("en-IN", { notation: "compact", maximumFractionDigits: 1 });
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const svgNS = "http://www.w3.org/2000/svg";
+  let current = null;
+  let previousLinePoints = null;
+  let previousPlatformValues = new Map();
+  let previousFunnelValues = [];
+
+  const sum = (items, index) => items.reduce((total, row) => total + row[index], 0);
+  const moneyCompact = (value) => "₹" + compactFmt.format(value || 0);
+  const count = (value) => numberFmt.format(Math.round(value || 0));
+  const roas = (value) => Number.isFinite(value) ? value.toFixed(2) + "x" : "—";
+  const percent = (value) => Number.isFinite(value) ? (value * 100).toFixed(2) + "%" : "—";
+  const monthLabel = (value) => value.replace("-", "/");
+  const rangeText = (items) => items.length ? items[0][I.date] + " — " + items[items.length - 1][I.date] : "—";
+
+  function svgEl(tag, attrs, text) {
+    const node = document.createElementNS(svgNS, tag);
+    Object.entries(attrs || {}).forEach(([key, value]) => node.setAttribute(key, value));
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function addSvgTitle(svg, text) {
+    svg.appendChild(svgEl("title", {}, text));
+    svg.setAttribute("aria-label", text);
+  }
+
+  function fillSelect(select, index) {
+    const values = [...new Set(rows.map((row) => row[index]))].sort((a, b) => a.localeCompare(b));
+    select.appendChild(new Option("全部", ""));
+    values.forEach((value) => select.appendChild(new Option(value, value)));
+  }
+
+  function filteredRows() {
+    const platform = platformSelect.value;
+    const region = regionSelect.value;
+    const campaign = campaignSelect.value;
+    return rows.filter((row) =>
+      (!platform || row[I.platform] === platform) &&
+      (!region || row[I.region] === region) &&
+      (!campaign || row[I.campaign] === campaign)
+    );
+  }
+
+  function metrics(items) {
+    const cost = sum(items, I.cost);
+    const revenue = sum(items, I.revenue);
+    const enrollments = sum(items, I.enrollments);
+    const applications = sum(items, I.applications);
+    return {
+      items,
+      cost,
+      revenue,
+      enrollments,
+      applications,
+      roas: cost ? revenue / cost : NaN
+    };
+  }
+
+  function groupByPlatform(items) {
+    const groups = new Map();
+    items.forEach((row) => {
+      const group = groups.get(row[I.platform]) || { name: row[I.platform], cost: 0, revenue: 0, applications: 0, enrollments: 0 };
+      group.cost += row[I.cost];
+      group.revenue += row[I.revenue];
+      group.applications += row[I.applications];
+      group.enrollments += row[I.enrollments];
+      groups.set(group.name, group);
+    });
+    return [...groups.values()].map((group) => ({
+      ...group,
+      roas: group.cost ? group.revenue / group.cost : NaN,
+      enrollmentRate: group.applications ? group.enrollments / group.applications : NaN
+    })).sort((a, b) => b.roas - a.roas);
+  }
+
+  function groupByMonth(items) {
+    const groups = new Map();
+    items.forEach((row) => {
+      const month = row[I.date].slice(0, 7);
+      groups.set(month, (groups.get(month) || 0) + row[I.revenue]);
+    });
+    return [...groups].sort((a, b) => a[0].localeCompare(b[0])).map(([month, revenue]) => ({ month, revenue }));
+  }
+
+  function setKpis(data) {
+    byId("md-total-cost").textContent = moneyCompact(data.cost);
+    byId("md-total-revenue").textContent = moneyCompact(data.revenue);
+    byId("md-total-enrollments").textContent = count(data.enrollments);
+    byId("md-roas").textContent = roas(data.roas);
+  }
+
+  function setInsights(data, platformGroups) {
+    if (!data.items.length) {
+      byId("md-fact").textContent = "目前篩選組合沒有資料。";
+      byId("md-interpretation").textContent = "無法在零筆資料下比較效率或轉換表現。";
+      byId("md-next-step").textContent = "清除或放寬篩選條件後再檢視。";
+      return;
+    }
+
+    const bestRoas = platformGroups[0];
+    const bestEnrollment = [...platformGroups].sort((a, b) => b.enrollmentRate - a.enrollmentRate)[0];
+    const revenueLeader = [...platformGroups].sort((a, b) => b.revenue - a.revenue)[0];
+    byId("md-fact").textContent =
+      count(data.items.length) + " 筆 · ROAS " + roas(data.roas) + " · 效率最佳 " +
+      bestRoas.name + " " + roas(bestRoas.roas) + " · 入學率最佳 " +
+      bestEnrollment.name + " " + percent(bestEnrollment.enrollmentRate);
+
+    const leadersMatch = bestRoas.name === bestEnrollment.name;
+    byId("md-interpretation").textContent =
+      (leadersMatch
+        ? bestRoas.name + " 同時領先效率與轉換。"
+        : "效率由 " + bestRoas.name + " 領先，轉換由 " + bestEnrollment.name + " 領先。") +
+      " 營收冠軍為 " + revenueLeader.name + "；描述性結果，非因果。";
+
+    const remaining = [];
+    if (!platformSelect.value) remaining.push("Platform");
+    if (!regionSelect.value) remaining.push("Region");
+    if (!campaignSelect.value) remaining.push("CampaignName");
+    byId("md-next-step").textContent = remaining.length
+      ? "下鑽 " + remaining.slice(0, 2).join("、") + "，確認樣本量與月度穩定性，再以增量測試驗證。"
+      : "確認此組合的樣本量與月度穩定性，再以增量測試驗證。";
+  }
+
+  function setEmptyChart(svg, label) {
+    svg.replaceChildren();
+    svg.setAttribute("viewBox", "0 0 320 180");
+    addSvgTitle(svg, label + "：目前篩選沒有資料");
+    svg.appendChild(svgEl("text", { x: 160, y: 90, "text-anchor": "middle", class: "axis-label" }, "目前篩選沒有資料"));
+  }
+
+  function pathFor(points) {
+    return points.map((point, index) => (index ? "L" : "M") + point[0].toFixed(2) + "," + point[1].toFixed(2)).join(" ");
+  }
+
+  function resample(points, size) {
+    if (!points.length) return Array.from({ length: size }, () => [0, 0]);
+    if (points.length === 1) return Array.from({ length: size }, () => points[0]);
+    return Array.from({ length: size }, (_, index) => {
+      const position = index * (points.length - 1) / Math.max(1, size - 1);
+      const left = Math.floor(position);
+      const right = Math.min(points.length - 1, left + 1);
+      const t = position - left;
+      return [
+        points[left][0] + (points[right][0] - points[left][0]) * t,
+        points[left][1] + (points[right][1] - points[left][1]) * t
+      ];
+    });
+  }
+
+  function animatePath(path, oldPoints, newPoints, animate) {
+    if (!animate || reduceMotion.matches || !oldPoints || !oldPoints.length) {
+      path.setAttribute("d", pathFor(newPoints));
+      return;
+    }
+    const size = Math.max(oldPoints.length, newPoints.length, 2);
+    const startPoints = resample(oldPoints, size);
+    const endPoints = resample(newPoints, size);
+    const started = performance.now();
+    function frame(now) {
+      const raw = Math.min(1, (now - started) / 260);
+      const t = 1 - Math.pow(1 - raw, 3);
+      const points = startPoints.map((point, index) => [
+        point[0] + (endPoints[index][0] - point[0]) * t,
+        point[1] + (endPoints[index][1] - point[1]) * t
+      ]);
+      path.setAttribute("d", pathFor(points));
+      if (raw < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function animateAttrs(node, start, end, animate) {
+    if (!animate || reduceMotion.matches) {
+      Object.entries(end).forEach(([name, value]) => node.setAttribute(name, value));
+      return;
+    }
+    const started = performance.now();
+    function frame(now) {
+      const raw = Math.min(1, (now - started) / 260);
+      const t = 1 - Math.pow(1 - raw, 3);
+      Object.keys(end).forEach((name) => node.setAttribute(name, start[name] + (end[name] - start[name]) * t));
+      if (raw < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function renderRevenue(items, animate) {
+    const svg = byId("md-revenue-chart");
+    const months = groupByMonth(items);
+    if (!months.length) {
+      previousLinePoints = null;
+      byId("md-revenue-summary").textContent = "";
+      setEmptyChart(svg, "月度 Revenue 趨勢");
+      return;
+    }
+
+    const width = Math.max(300, byId("md-revenue-wrap").clientWidth || 640);
+    const height = 230;
+    const margin = { top: 18, right: 18, bottom: 38, left: 68 };
+    const plotWidth = width - margin.left - margin.right;
+    const plotHeight = height - margin.top - margin.bottom;
+    const maxValue = Math.max(...months.map((month) => month.revenue), 1);
+    const x = (index) => margin.left + (months.length === 1 ? plotWidth / 2 : index * plotWidth / (months.length - 1));
+    const y = (value) => margin.top + plotHeight - value / maxValue * plotHeight;
+    const points = months.map((month, index) => [x(index), y(month.revenue)]);
+    svg.replaceChildren();
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    addSvgTitle(svg, "月度 Revenue 趨勢，共 " + months.length + " 個月份");
+
+    for (let tick = 0; tick <= 4; tick += 1) {
+      const value = maxValue * tick / 4;
+      const tickY = y(value);
+      svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: tickY, y2: tickY, class: "gridline" }));
+      svg.appendChild(svgEl("text", { x: margin.left - 8, y: tickY + 4, "text-anchor": "end", class: "axis-label" }, moneyCompact(value)));
+    }
+
+    const labelEvery = Math.max(1, Math.ceil(months.length / 5));
+    months.forEach((month, index) => {
+      if (index % labelEvery === 0 || index === months.length - 1) {
+        svg.appendChild(svgEl("text", { x: x(index), y: height - 10, "text-anchor": "middle", class: "axis-label" }, monthLabel(month.month)));
+      }
+    });
+
+    const path = svgEl("path", { class: "revenue-line" });
+    svg.appendChild(path);
+    animatePath(path, previousLinePoints, points, animate);
+    points.forEach((point) => svg.appendChild(svgEl("circle", { cx: point[0], cy: point[1], r: 3, class: "revenue-point" })));
+    previousLinePoints = points;
+
+    const maxMonth = months.reduce((best, month) => month.revenue > best.revenue ? month : best);
+    const latest = months[months.length - 1];
+    byId("md-revenue-summary").textContent =
+      "Peak " + monthLabel(maxMonth.month) + " " + moneyCompact(maxMonth.revenue) +
+      " · Latest " + monthLabel(latest.month) + " " + moneyCompact(latest.revenue);
+  }
+
+  function renderPlatforms(groups, animate) {
+    const svg = byId("md-platform-chart");
+    if (!groups.length) {
+      previousPlatformValues = new Map();
+      setEmptyChart(svg, "Platform ROAS 比較");
+      return;
+    }
+
+    const width = Math.max(300, byId("md-platform-wrap").clientWidth || 360);
+    const height = Math.max(210, groups.length * 34 + 34);
+    const margin = { top: 8, right: 58, bottom: 30, left: 92 };
+    const plotWidth = width - margin.left - margin.right;
+    const maxValue = Math.max(...groups.map((group) => group.roas), 1);
+    const rowHeight = (height - margin.top - margin.bottom) / groups.length;
+    svg.replaceChildren();
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    addSvgTitle(svg, "Platform ROAS 比較，最高為 " + groups[0].name + " " + roas(groups[0].roas));
+
+    [0, 0.5, 1].forEach((ratio) => {
+      const tickX = margin.left + plotWidth * ratio;
+      svg.appendChild(svgEl("line", { x1: tickX, x2: tickX, y1: margin.top, y2: height - margin.bottom, class: "gridline" }));
+      svg.appendChild(svgEl("text", { x: tickX, y: height - 8, "text-anchor": "middle", class: "axis-label" }, (maxValue * ratio).toFixed(1) + "x"));
+    });
+
+    groups.forEach((group, index) => {
+      const y = margin.top + index * rowHeight + rowHeight * 0.2;
+      const barHeight = rowHeight * 0.6;
+      const endWidth = group.roas / maxValue * plotWidth;
+      const oldValue = previousPlatformValues.get(group.name) || 0;
+      const startWidth = oldValue / maxValue * plotWidth;
+      svg.appendChild(svgEl("text", { x: margin.left - 8, y: y + barHeight / 2 + 4, "text-anchor": "end" }, group.name));
+      const rect = svgEl("rect", { x: margin.left, y, height: barHeight, width: startWidth, rx: 3, class: "platform-bar" + (index === 0 ? " is-best" : "") });
+      svg.appendChild(rect);
+      animateAttrs(rect, { width: startWidth }, { width: endWidth }, animate);
+      svg.appendChild(svgEl("text", { x: Math.min(width - 4, margin.left + endWidth + 6), y: y + barHeight / 2 + 4 }, roas(group.roas)));
+    });
+    previousPlatformValues = new Map(groups.map((group) => [group.name, group.roas]));
+  }
+
+  function renderFunnel(items, animate) {
+    const svg = byId("md-funnel-chart");
+    if (!items.length) {
+      previousFunnelValues = [];
+      setEmptyChart(svg, "行銷漏斗");
+      return;
+    }
+
+    const stages = [
+      ["Impressions", sum(items, I.impressions)],
+      ["Clicks", sum(items, I.clicks)],
+      ["Leads", sum(items, I.leads)],
+      ["Applications", sum(items, I.applications)],
+      ["Enrollments", sum(items, I.enrollments)]
+    ];
+    const width = Math.max(300, byId("md-funnel-wrap").clientWidth || 360);
+    const height = 230;
+    const margin = { top: 10, right: 78, bottom: 10, left: 86 };
+    const plotWidth = width - margin.left - margin.right;
+    const rowHeight = (height - margin.top - margin.bottom) / stages.length;
+    const maxValue = Math.max(stages[0][1], 1);
+    svg.replaceChildren();
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    addSvgTitle(svg, "行銷漏斗，從 " + count(stages[0][1]) + " Impressions 到 " + count(stages[4][1]) + " Enrollments");
+
+    stages.forEach((stage, index) => {
+      const value = stage[1];
+      const endWidth = Math.max(1, value / maxValue * plotWidth);
+      const oldValue = previousFunnelValues[index] || 0;
+      const startWidth = Math.max(1, oldValue / maxValue * plotWidth);
+      const y = margin.top + index * rowHeight + rowHeight * 0.14;
+      const barHeight = rowHeight * 0.72;
+      const endX = margin.left + (plotWidth - endWidth) / 2;
+      const startX = margin.left + (plotWidth - startWidth) / 2;
+      const stepRate = index ? value / stages[index - 1][1] : 1;
+      svg.appendChild(svgEl("text", { x: margin.left - 8, y: y + barHeight / 2 + 4, "text-anchor": "end" }, stage[0]));
+      const rect = svgEl("rect", { x: startX, y, width: startWidth, height: barHeight, rx: 2, class: "funnel-bar", "fill-opacity": 1 - index * 0.12 });
+      svg.appendChild(rect);
+      animateAttrs(rect, { x: startX, width: startWidth }, { x: endX, width: endWidth }, animate);
+      svg.appendChild(svgEl("text", { x: width - margin.right + 8, y: y + barHeight / 2 - 2 }, count(value)));
+      svg.appendChild(svgEl("text", { x: width - margin.right + 8, y: y + barHeight / 2 + 12, class: "axis-label" }, index ? percent(stepRate) : "100%"));
+    });
+    previousFunnelValues = stages.map((stage) => stage[1]);
+  }
+
+  function renderCharts(data, platformGroups, animate) {
+    renderRevenue(data.items, animate);
+    renderPlatforms(platformGroups, animate);
+    renderFunnel(data.items, animate);
+  }
+
+  function update(animate) {
+    const items = filteredRows().sort((a, b) => a[I.date].localeCompare(b[I.date]));
+    const data = metrics(items);
+    const platformGroups = groupByPlatform(items);
+    current = { data, platformGroups };
+    setKpis(data);
+    setInsights(data, platformGroups);
+    renderCharts(data, platformGroups, animate);
+    const activeRange = items.length ? rangeText(items) : "—";
+    byId("md-filter-status").textContent = count(items.length) + " / " + count(rows.length) + " 筆 · " + activeRange;
+    clearButton.disabled = !platformSelect.value && !regionSelect.value && !campaignSelect.value;
+  }
+
+  fillSelect(platformSelect, I.platform);
+  fillSelect(regionSelect, I.region);
+  fillSelect(campaignSelect, I.campaign);
+  byId("md-meta-note").textContent =
+    "Source: " + payload.source + " / " + payload.sheet + " · " + payload.startDate + " — " + payload.endDate +
+    " · Currency: ₹（INR assumed） · Hypothetical demo data; descriptive use only.";
+
+  [platformSelect, regionSelect, campaignSelect].forEach((select) => select.addEventListener("change", () => update(true)));
+  clearButton.addEventListener("click", () => {
+    platformSelect.value = "";
+    regionSelect.value = "";
+    campaignSelect.value = "";
+    update(true);
+  });
+
+  let resizeFrame = 0;
+  new ResizeObserver(() => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      if (current) renderCharts(current.data, current.platformGroups, false);
+    });
+  }).observe(root);
+
+  update(false);
+})();
+</script>
+
+</body>
+</html>
