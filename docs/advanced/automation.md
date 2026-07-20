@@ -8,6 +8,12 @@ outline: [2, 3]
 
 Scheduled task 適合把**已經測通**的工作，在未來某個時間或固定頻率重新執行。它不會替模糊需求補完細節，而是把清楚、可驗收的流程交給 Codex 在背景重跑。
 
+前面已經依序建立工作方法、外部連線與可安裝的能力包；本章不再增加新的處理方法，而是把手動驗證完成的工作流交給時間觸發。
+
+::: tip 核心路線的最後一章
+時間有限時完成本章即可。後面的 Subagents 與 Hooks 分別處理平行協作與 lifecycle 強制控制，不影響 Scheduled tasks 的使用。
+:::
+
 <section class="lesson-goals" aria-labelledby="automation-goals-title">
   <div class="lesson-goals__intro">
     <span class="lesson-eyebrow">LEARNING GOALS</span>
@@ -339,24 +345,9 @@ Prompt：完整保存剛才測通的結構化 Prompt，
 
 不再使用這份早報、資料來源更換，或寄送內容開始失真時，應先暫停排程，再修改與重新測試。
 
-## 7｜進階補充：與 Skills 結合
+## 7｜進階補充：沿用已學過的 Skills
 
-當一個排程的 Prompt 愈寫愈長，或同一套流程會被多個任務重複使用，可以把穩定的「怎麼做」移到 Skill，讓排程只負責「何時執行」與「要呼叫哪個 Skill」。
-
-<section class="automation-skill-split" aria-label="Scheduled task 與 Skill 的責任分工">
-  <article>
-    <span>SCHEDULED TASK</span>
-    <strong>負責「何時執行」</strong>
-    <p>保存執行時間、每次輸入、要呼叫的 Skill，以及結果去向。</p>
-  </article>
-  <article class="is-skill">
-    <span>SKILL</span>
-    <strong>負責「怎麼完成」</strong>
-    <p>保存固定步驟、判斷規則、所需工具、驗證方式與停止條件。</p>
-  </article>
-</section>
-
-> **Scheduled task 決定何時重跑；Skill 保存可重複使用的工作方法。**
+[Skills](/advanced/skills) 已經把固定方法和本次任務分開。套用到排程時，Skill 保存步驟、規則與驗證方式；Scheduled task 只保存執行時間、當次範圍、要呼叫的 Skill 與結果去向。當排程 Prompt 愈寫愈長，先把反覆出現的「怎麼做」移回 Skill。
 
 ### 案例一｜定期建立或更新個人 Skills
 
@@ -399,4 +390,5 @@ Check my commits from the last 24h and submit a $recent-code-bugfix.
 - [OpenAI：Combining scheduled tasks with skills](https://learn.chatgpt.com/docs/automations#combining-scheduled-tasks-with-skills-to-fix-your-own-bugs)
 - [遠見：Codex 每日自動收集案例](https://www.gvm.com.tw/article/130317)
 - [OpenAI Academy：Automations](https://openai.com/academy/codex-automations/)
-- [下一章：Subagents](/advanced/worktrees)
+- [上一章：Plugins](/advanced/plugins) — 先把方法與連線組成可驗證的工作流。
+- [選修下一章：Subagents](/advanced/worktrees) — 需要拆分與平行處理時再繼續。

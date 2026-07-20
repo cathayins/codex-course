@@ -9464,6 +9464,10 @@ html:not(.dark) .vp-doc .vp-code span {
   margin: 24px 0 28px;
 }
 
+.mcp-surface-grid.is-compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .mcp-surface-grid article {
   --mcp-surface-accent: #65798b;
   display: grid;
@@ -9963,6 +9967,7 @@ html:not(.dark) .vp-doc .vp-code span {
   .mcp-integration-compare,
   .mcp-transport-grid,
   .mcp-surface-grid,
+  .mcp-surface-grid.is-compact,
   .mcp-lab-checklist,
   .mcp-troubleshooting {
     grid-template-columns: 1fr;

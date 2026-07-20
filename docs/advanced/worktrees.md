@@ -10,6 +10,10 @@ Subagent 是由主 agent 派出去處理**特定子任務**的輔助 agent。每
 
 你可以把它想成一位組長帶著幾位專員：組長保存完整需求與做決定，專員則各自調查一個清楚的小問題。
 
+::: tip 選修章
+核心路線已在 Scheduled tasks 完成。只有需要平行探索、多角色審查或重複分工時，才繼續本章；小型任務或有強烈前後依賴的工作可以直接跳過。
+:::
+
 <section class="lesson-goals" aria-labelledby="subagents-goals-title">
   <div class="lesson-goals__intro">
     <span class="lesson-eyebrow">LEARNING GOALS</span>
@@ -24,7 +28,7 @@ Subagent 是由主 agent 派出去處理**特定子任務**的輔助 agent。每
   </div>
 </section>
 
-<nav class="lesson-flow subagents-lesson-flow" aria-label="本章六階段學習流程">
+<nav class="lesson-flow subagents-lesson-flow" aria-label="本章學習流程">
   <span><b>01</b> 工作原理</span>
   <span><b>02</b> 基礎配置</span>
   <span><b>03</b> 如何使用</span>
@@ -315,5 +319,5 @@ developer_instructions = """ # [!code highlight]
 - [OpenAI 官方文件：Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 - [菜鳥教程：Codex 子代理（Subagents）](https://www.runoob.com/codex/codex-subagents.html)
 - [CSDN：Codex Subagents 原理、時機與實戰](https://blog.csdn.net/qq_24256877/article/details/161925043)
-- [上一章：Scheduled tasks](/advanced/automation)
-- [下一章：Hooks](/advanced/hooks)
+- [核心路線終點：Scheduled tasks](/advanced/automation)
+- [選修下一章：Hooks](/advanced/hooks) — 需要 lifecycle 強制控制時再繼續。
