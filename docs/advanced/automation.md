@@ -216,15 +216,30 @@ Prompt：完整保存剛才測通的結構化 Prompt，
 如果時區或收件者不明確，先不要建立。
 ```
 
-<figure class="automation-screenshot" aria-labelledby="automation-shot-create-title">
-  <div class="automation-screenshot__placeholder" role="img" aria-label="待補：建立 Scheduled task 並核對時間、時區與結果去向的畫面">
-    <span>SCREENSHOT PLACEHOLDER · CREATE</span>
-    <strong id="automation-shot-create-title">建立並核對排程時間</strong>
-    <code>docs/public/images/automation/create-scheduled-task.webp</code>
-    <p>拍攝能辨認執行頻率、時間、時區、收件者與 next run 的畫面；遮蔽信箱地址、公司名稱、私人待辦與通知內容。</p>
-  </div>
-  <figcaption>建立後核對 next run，確認系統理解的時間與預期一致。</figcaption>
-</figure>
+建立後先看 Codex 回覆，再打開排程設定；下面兩個畫面分別對應這兩個核對點。
+
+<MediaTabs
+  class="automation-media-tabs"
+  aria-label="Scheduled task 的建立結果與設定畫面"
+  :items="[
+    {
+      label: '建立結果',
+      title: '先核對建立結果與 next run',
+      description: '送出建立指令後，先確認 Codex 回報的執行頻率、時區、寄送模式、收件者與 next run。若任一欄位不正確，先不要讓排程長期執行。',
+      image: '/images/automation/create_task.png',
+      alt: 'Codex 回報已建立每日待辦早報 scheduled task，列出每日 08:00、Asia/Taipei、寄送模式與 next run',
+      fit: 'compact'
+    },
+    {
+      label: '排程設定',
+      title: '打開排程，檢查 Prompt 與重複設定',
+      description: '從已建立的「每日待辦早報」打開設定，確認保存的 Prompt、Runs in、Project、Model、Reasoning，以及每天重複與通知規則。這些欄位應與手動測通的版本一致。',
+      image: '/images/automation/preview_task.png',
+      alt: '每日待辦早報 scheduled task 的設定頁，顯示保存的 Prompt、Project、Model、Reasoning、Repeat 與 Notifications',
+      fit: 'compact'
+    },
+  ]"
+/>
 
 ## 5｜管理 Scheduled 結果與常見問題
 
@@ -236,15 +251,28 @@ Prompt：完整保存剛才測通的結構化 Prompt，
 | Paused | 保留設定但暫不執行 | 工作或資料是否已準備好恢復 |
 | Completed | 單次工作已完成 | 最後結果是否需要補充或另建排程 |
 
-<figure class="automation-screenshot" aria-labelledby="automation-shot-runs-title">
-  <div class="automation-screenshot__placeholder" role="img" aria-label="待補：Scheduled 清單與 recent runs 的管理畫面">
-    <span>SCREENSHOT PLACEHOLDER · MANAGE</span>
-    <strong id="automation-shot-runs-title">檢查 Scheduled 與 Recent runs</strong>
-    <code>docs/public/images/automation/scheduled-runs.webp</code>
-    <p>拍攝可辨認 Active／Paused、next run、未讀結果與最近執行的畫面；使用練習資料，避免顯示真實工作進度或私人行程。</p>
-  </div>
-  <figcaption>至少檢查前幾次結果，再決定是否長期保留。</figcaption>
-</figure>
+<MediaTabs
+  class="automation-media-tabs"
+  aria-label="Scheduled task 的狀態與生命週期管理"
+  :items="[
+    {
+      label: '建立排程',
+      title: '從已測通的 Prompt 建立 standalone task',
+      description: '在原本的 task 中指定頻率、時區、收件者與輸出模式。建立完成後，先核對回覆中的頻率、模式與 next run，再從右側設定確認保存的 Prompt。',
+      image: '/images/automation/task_status.png',
+      alt: 'Scheduled 的 All 清單列出每日待辦早報，顯示 Daily at 8:00 AM 與 In progress，並列出 Suggestions',
+      fit: 'compact'
+    },
+    {
+      label: '暫停或恢復',
+      title: '工作運行時可暫停，必要時再恢復',
+      description: '在 Paused 清單打開排程的操作選單，可以立即 Run now、Resume 或 Delete。暫停適合暫時停止寄送並保留設定；恢復前先確認資料來源與收件者仍然正確，確認永久不再使用才 Delete。',
+      image: '/images/automation/task_pasue&resume.png',
+      alt: 'Scheduled 的 Paused 清單打開每日待辦早報操作選單，顯示 Run now、Resume 與 Delete',
+      fit: 'compact'
+    }
+  ]"
+/>
 
 ### 常見失敗與修正方向
 

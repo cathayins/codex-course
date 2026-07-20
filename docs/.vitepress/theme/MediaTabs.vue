@@ -85,9 +85,9 @@ async function onKeydown(event: KeyboardEvent, index: number) {
   if (event.key === 'Home') next = 0
   if (event.key === 'End') next = last
 
+  const tablist = (event.currentTarget as HTMLElement).parentElement
   await select(next)
-  const target = (event.currentTarget as HTMLElement)
-    .parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]
+  const target = tablist?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]
   target?.focus()
 }
 

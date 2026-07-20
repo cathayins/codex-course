@@ -149,7 +149,7 @@ Subagents 會繼承父 task 當下的 Permission／Sandbox 與可用工具。派
 
 在 App 的 Prompt 清楚指定要平行處理的子任務：
 
-```text
+```md{1}
 請使用 3 個 Subagents 平行審查目前 branch：
 
 1. 一個檢查安全風險。
@@ -161,25 +161,48 @@ Subagents 會繼承父 task 當下的 Permission／Sandbox 與可用工具。派
 每項附上檔案路徑與證據。
 ```
 
-### 執行中如何管理
+### 從派工到追問
 
-<section class="subagents-agent-actions" aria-label="Subagent 執行中的四個管理動作">
-  <article><b>OPEN</b><strong>查看</strong><span>開啟 thread，檢查它使用的證據。</span></article>
-  <article><b>STEER</b><strong>引導</strong><span>要求縮小範圍或補查特定檔案。</span></article>
-  <article><b>STOP</b><strong>停止</strong><span>發現重複、越界或不再需要時終止。</span></article>
-  <article><b>SUMMARIZE</b><strong>彙整</strong><span>回到主 task，等待並整理所需結果。</span></article>
-</section>
+從建立 Agent 到追問結果，跟著下面四個畫面走一次。
 
-<!-- Screenshot asset: /images/subagents/activity-panel.webp -->
-<figure class="subagents-screenshot" aria-labelledby="subagents-shot-activity-title">
-  <div class="subagents-screenshot__placeholder" role="img" aria-label="待補：Codex App 顯示三個 Subagents 狀態的畫面">
-    <span>SCREENSHOT PLACEHOLDER · APP</span>
-    <strong id="subagents-shot-activity-title">查看 Subagent activity</strong>
-    <code>/images/subagents/activity-panel.webp</code>
-    <p>畫面包含 Active／Done 狀態與三個 Subagent threads；Repository 名稱、路徑與私人資料請遮蔽。</p>
-  </div>
-  <figcaption>主 task 顯示整體進度；需要細節時，再開啟個別 Subagent thread。</figcaption>
-</figure>
+<MediaTabs
+  class="subagents-media-tabs"
+  aria-label="Subagent 執行中的管理畫面"
+  :items="[
+    {
+      label: '開始任務',
+      title: '在 Prompt 裡建立分工明確的 Agents',
+      description: '先說明每個 Agent 要處理的問題與最後要交回什麼。這裡一次派出 Architecture、Quality 與 Developer experience 三位 Agent，讓它們平行探索同一個 Repository 的不同面向。',
+      image: '/images/worktrees/start-agent.png',
+      alt: 'Codex 主 task 顯示建立三位 Subagent 的訊息與工作名稱',
+      fit: 'compact'
+    },
+    {
+      label: '查看全體',
+      title: '先從 Subagents 面板掌握全體狀態',
+      description: '右側面板把正在執行的工作放在 Active，完成的放在 Done。從名稱、狀態與摘要先判斷進度，再決定哪一條 thread 值得深入查看。',
+      image: '/images/worktrees/subagent-overview.png',
+      alt: 'Codex 的 Subagents 面板，列出三位已完成的 Agent 與摘要',
+      fit: 'compact'
+    },
+    {
+      label: '開啟 thread',
+      title: '查看單一 Agent 的完整結論',
+      description: '從清單開啟 Architecture thread，就能核對它實際檢查的範圍、引用的檔案與結論。把它當成主 task 的研究材料，而不是不經檢查就直接採用的最終答案。',
+      image: '/images/worktrees/subagent-thread.png',
+      alt: 'Codex 開啟 Architecture Agent thread，顯示完整分析與結論',
+      fit: 'compact'
+    },
+    {
+      label: '追問引導',
+      title: '回到主 task，用 @ 指名 Agent 補查',
+      description: '如果答案還不夠具體，直接在主 task 用 @ 指名要追問的 Agent，補上新的問題或範圍。畫面會同時保留整體狀態，讓你知道其他 Agents 是否已完成。',
+      image: '/images/worktrees/subagent-followup.png',
+      alt: 'Codex 主 task 以 @Architecture 追問，右側 Subagents 面板顯示三位 Agent 狀態',
+      fit: 'compact'
+    }
+  ]"
+/>
 
 ### 使用時機
 
@@ -240,12 +263,12 @@ Codex 內建三種 agent：
 建立 `.codex/agents/data-analyst.toml`：
 
 ```toml
-name = "data_analyst"
-description = "檢查結構化資料品質，並產生有計算依據的分析摘要。"
+name = "data_analyst" # [!code highlight]
+description = "檢查結構化資料品質，並產生有計算依據的分析摘要。" # [!code highlight]
 nickname_candidates = ["Iris", "Nova", "Vega"]
 sandbox_mode = "read-only"
 
-developer_instructions = """
+developer_instructions = """ # [!code highlight]
 像資料分析師一樣檢查資料與計算結果。
 
 分析前先確認：
