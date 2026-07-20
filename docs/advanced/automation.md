@@ -1,121 +1,374 @@
 ---
 title: Scheduled tasks：讓成熟任務定期執行
-description: 先手動測通，再用明確輸入、停止條件與最小權限安排背景工作。
+description: 先手動測通，再用明確輸入、固定輸出與停止條件安排日常背景工作。
 outline: [2, 3]
 ---
 
 # Scheduled tasks：讓成熟任務定期執行
 
-Scheduled task 適合把**已經測通**的工作，在未來某個時間或固定頻率重新執行。它不是用來替模糊需求補完細節，而是把清楚、可驗收的流程交給 Codex 在背景重跑。
+Scheduled task 適合把**已經測通**的工作，在未來某個時間或固定頻率重新執行。它不會替模糊需求補完細節，而是把清楚、可驗收的流程交給 Codex 在背景重跑。
 
-## 什麼時候適合排程
+<section class="lesson-goals" aria-labelledby="automation-goals-title">
+  <div class="lesson-goals__intro">
+    <span class="lesson-eyebrow">LEARNING GOALS</span>
+    <strong id="automation-goals-title" class="lesson-goals__title">完成本章後，你可以</strong>
+    <p>判斷工作是否適合排程，選對結果去向，寫出無人補充說明也能執行的 Prompt，並管理後續 runs。</p>
+  </div>
+  <div class="lesson-goals__grid">
+    <article><strong>判斷是否成熟</strong><span>分清楚重複工作與仍需探索的需求。</span></article>
+    <article><strong>選擇排程型態</strong><span>區分 standalone 與延續既有 task。</span></article>
+    <article><strong>寫好排程 Prompt</strong><span>補齊來源、輸出、例外與停止條件。</span></article>
+    <article><strong>管理背景結果</strong><span>檢查、調整、暫停或結束排程。</span></article>
+  </div>
+</section>
 
-- 每天、每週或每月都要產生相同結構的報告。
-- 定期檢查 PR、測試、文件或外部狀態是否改變。
-- 稍後回到同一個 task，繼續追蹤長時間作業。
-- 已有成熟 Skill，希望定期以相同方法執行。
+<nav class="lesson-flow automation-lesson-flow" aria-label="本章學習流程">
+  <span><b>01</b> 判斷適用性</span>
+  <span><b>02</b> 選擇型態</span>
+  <span><b>03</b> 測通 Prompt</span>
+  <span><b>04</b> 建立排程</span>
+  <span><b>05</b> 管理結果</span>
+</nav>
 
-不適合直接排程：
+<aside class="automation-case-intro" aria-labelledby="automation-case-title">
+  <span>COURSE CASE · DAILY BRIEF</span>
+  <strong id="automation-case-title">每日待辦早報</strong>
+  <p>每天讀取 Outlook 與 Planner／Notion 的目前資料，整理並排序優先事項，再把早報寄到自己的信箱，讓一天從清楚的行動清單開始。</p>
+</aside>
 
-- 第一次執行、輸入與輸出尚未確認。
-- 每次都需要重大人工判斷或重新定義需求。
-- 會無人審查地對外發送、刪除資料、部署或修改 Production。
-- 沒有停止條件，可能無限重複或持續產生噪音。
+## 1｜判斷工作是否值得排程
 
-## 獨立排程或延續既有 task
+一個完整排程至少要回答四個問題；如果其中一項仍不確定，先留在一般 task 釐清。
 
-| 類型 | 適合情境 | Context 與結果 |
-| --- | --- | --- |
-| Standalone scheduled task | 每次執行彼此獨立、固定產生新報告 | 每次建立獨立 task，結果集中在 **Scheduled** |
-| 從既有 task 排程 | 需要沿用目前討論、反覆追蹤同一件事 | 回到同一個 task，保留既有 context |
+<section class="automation-schedule-parts" aria-label="排程的四個構成要素">
+  <article>
+    <span>01 · TARGET</span>
+    <strong>目標對象</strong>
+    <p>要延續哪個 task，或使用哪些資料？</p>
+    <small><b>本章案例</b> Outlook 與 Planner／Notion</small>
+  </article>
+  <article>
+    <span>02 · TRIGGER</span>
+    <strong>觸發時機</strong>
+    <p>何時、多久執行一次？使用哪個時區？</p>
+    <small><b>本章案例</b> 每天 08:00</small>
+  </article>
+  <article>
+    <span>03 · ACTION</span>
+    <strong>每次動作</strong>
+    <p>每一輪都要重新做什麼？</p>
+    <small><b>本章案例</b> 彙整待辦並評估優先度</small>
+  </article>
+  <article>
+    <span>04 · DESTINATION</span>
+    <strong>結果去向</strong>
+    <p>結果要獨立保存，還是回到原 task？</p>
+    <small><b>本章案例</b> 寄到自己的信箱</small>
+  </article>
+</section>
 
-例如「每週一產生 Repository 摘要」適合獨立排程；「每 15 分鐘檢查這次 deployment，成功或失敗就停止」則適合延續既有 task。
+### 適合與不適合的工作
 
-## 建立前先手動測試
+| 適合排程 | 先不要排程 |
+| --- | --- |
+| 每週工作回顧、固定格式報告 | 第一次執行，輸入與輸出都未驗證 |
+| 定期整理格式一致的資料 | 只有「整理一下」等模糊指示 |
+| 會議前回顧已知議題 | 每次都需要重大人工判斷或協商 |
+| 持續追蹤同一組待辦 | 無人審查地寄給他人、刪除、付款或發布 |
 
-1. 在一般 task 執行完整 Prompt。
-2. 確認來源、工具與權限都可用。
-3. 檢查輸出是否能快速判讀。
-4. 刻意測試「沒有變更」「工具失敗」「資料不足」等情況。
-5. 補上停止條件與需要人工介入的條件。
-6. 再建立排程，並檢查前幾次執行結果。
-
-::: warning
-如果普通 task 尚未穩定，排程只會定期重複不穩定結果。
+::: warning 自動重跑不會自動改善流程
+如果一般 task 尚未穩定，排程只會定期重複不穩定結果。先把一次工作做好，再決定多久重做一次。
 :::
 
-## 一個可排程的 Prompt
+## 2｜選擇排程型態
 
-```text
-每週一 09:00 檢查這個專案過去一週 docs/ 的變更。
+結果是否需要沿用目前對話，是最重要的第一個選擇。先問：「下一次執行是否需要看見這次對話累積的資料？」
 
-輸出：
-1. 新增或大幅修改的課程頁面
-2. 可能失效的連結或過期說明
-3. 本週建議優先檢查的 3 件事
+<section class="automation-type-compare" aria-label="兩種排程型態比較">
+  <article>
+    <header>
+      <span>INDEPENDENT RUN</span>
+      <strong>Standalone scheduled task</strong>
+    </header>
+    <dl>
+      <div><dt>適合情境</dt><dd>每次資料彼此獨立，並固定產生一份新報告。</dd></div>
+      <div><dt>Context 與結果</dt><dd>每次從保存的 Prompt 開始，結果集中在 <strong>Scheduled</strong>。</dd></div>
+    </dl>
+  </article>
+  <article class="is-existing-task">
+    <header>
+      <span>CONTINUOUS CONTEXT</span>
+      <strong>從既有 task 排程</strong>
+    </header>
+    <dl>
+      <div><dt>適合情境</dt><dd>需要持續回顧或追蹤同一件事。</dd></div>
+      <div><dt>Context 與結果</dt><dd>回到同一個 task，保留既有對話與前次結果。</dd></div>
+    </dl>
+  </article>
+</section>
 
-規則：
-- 只讀取與分析，不修改檔案。
-- 若沒有變更，明確回報「本週無文件更新」。
-- 若無法取得 Git history，說明原因後停止，不用其他來源猜測。
-- 不要發送訊息或建立 PR。
+例如「每日重新讀取目前資料並寄出一份早報」適合 standalone；「持續追蹤同一段討論」才需要回到既有 task。本章練習採用 standalone。
+
+## 3｜先手動測通，再寫完整的排程 Prompt
+
+寄信會改變外部狀態，因此第一次測試只產生預覽，不寄出郵件：
+
+1. 確認目前 task 能讀取 Outlook，以及 Planner 或 Notion 專案頁面。
+2. 以「預覽模式」手動執行 Prompt，檢查待辦是否抓對、是否重複。
+3. 確認優先度有依據，缺少的期限或利害關係人沒有被猜測。
+4. 確認收件者是自己的信箱，再測試寄出一封。
+5. 郵件內容正確後，才建立每日排程。
+
+### 排程 Prompt 要寫清楚的八件事
+
+| 區塊 | 寫清楚什麼 |
+| --- | --- |
+| 目標 | 這份早報要幫助你做什麼決定 |
+| 資料來源 | Outlook 與哪一個專案管理頁面 |
+| 時間範圍 | 信件與任務要讀取哪段期間 |
+| 待辦判定 | 哪些內容算待辦、哪些只是通知 |
+| 優先度 | 如何判斷 P1、P2、P3，並說明依據 |
+| 固定輸出 | 每項任務必須顯示哪些欄位 |
+| 寄送規則 | 寄給誰、寄幾封、禁止哪些外部動作 |
+| 例外處理 | 無待辦、來源失敗或資料缺漏時怎麼做 |
+
+以下是本章後續練習會沿用的完整 Prompt：
+
+::: code-group
+```text [過度模糊]
+每天整理我的待辦，寄信給我。
 ```
 
-一個耐用的排程 Prompt 應寫清楚：
+```text [結構化版本]
+# 目標
+產出「每日待辦早報」，讓我在早上快速決定今天先做什麼。
 
-- **範圍**：檢查哪個專案、目錄、服務或資料來源。
-- **每次動作**：每一輪都要重新做什麼。
-- **輸出**：收件人能快速判斷的固定格式。
-- **無變更行為**：沒有新狀況時如何回報。
-- **失敗行為**：資料不足或工具失敗時怎麼停止。
-- **副作用**：能否修改、發送、部署或建立 PR。
+# 資料來源與範圍
+- Outlook：過去 24 小時收到，且明確要求我採取行動的信件。
+- Planner 或 Notion：指派給我且尚未完成的任務；
+  優先讀取已逾期、7 天內到期或狀態為進行中的項目。
+- 只使用目前可存取的資料，不從舊摘要補造內容。
 
-## 與 Skill、Plugin 組合
+# 待辦判定與整理
+- 排除電子報、廣告、FYI 通知，以及只需要知道、不需行動的內容。
+- 同一件事若同時出現在信件與專案頁面，只保留一筆並列出兩個來源。
+- 利害關係人只列資料中明確出現的寄件者、負責人或協作者。
+- 最多列出 10 件；其餘只回報件數。
 
-如果每次執行都要遵循固定方法，可在 Prompt 中用 `$skill-name` 明確指定 Skill。需要查詢 GitHub、信件或其他外部服務時，排程也能使用已安裝且完成 Authentication 的 Plugin。
+# 建議優先度
+- P1：已逾期、今天到期、明確標示緊急，或正在阻礙他人。
+- P2：未來 3 天內到期，或需要多人協作才能完成。
+- P3：其餘尚未到期的待辦。
+- 每項都要寫出評估依據；資料不足時標示「無法判定」，不要猜測。
 
-把「怎麼做」放在 Skill，把「何時執行、這次範圍與停止條件」放在 Scheduled task，可讓流程較容易維護與分享。
+# 固定輸出
+先列出資料來源狀態，再依 P1、P2、P3 排序。每項包含：
+- 任務名稱
+- 相關利害關係人
+- 任務內容
+- 到期時間
+- 建議做法
+- 建議優先度與評估依據
+- 來源連結或來源名稱
 
-## 本機專案與 Worktree
+# 寄送規則
+- 目前模式：預覽模式。
+- 預覽模式只在 task 顯示郵件主旨與內文，不寄信。
+- 改為寄送模式後，每次只寄一封到 <自己的信箱地址>。
+- 主旨：[每日待辦早報] YYYY-MM-DD｜P1 X 件、P2 X 件、P3 X 件。
+- 不回覆或轉寄原信，不修改 Planner／Notion，也不寄給其他人。
 
-Scheduled task 需要使用本機檔案時：
+# 例外處理
+- 沒有待辦時，仍產生簡短早報，清楚寫「目前沒有符合條件的待辦」。
+- 任一來源無法讀取時，標示失敗來源；不可把讀取失敗寫成沒有待辦。
+- 無法確認收件者是我本人時，不寄信並回報原因。
+```
+:::
 
-- 電腦需保持開機。
-- ChatGPT desktop app 需持續執行。
-- 排程時間到達時，專案路徑仍需存在。
+::: warning 先預覽，再允許寄信
+確認內容與收件地址後，才把 Prompt 的「目前模式」改為「寄送模式」。如果來源或寄送工具不可用，應停止並回報，不要改寄其他人。
+:::
 
-對 Git Repository，可選擇直接在 local project 執行，或使用隔離的 background [Worktree](/advanced/worktrees)。可能修改檔案時，Worktree 能避免與尚未完成的本機工作互相干擾；非 Git 專案只能直接在專案目錄執行。
+## 4｜建立排程：把時間寫清楚
 
-## 權限與無人值守風險
+排程時間不要只寫「明天」「每週」或「下班前」。比較清楚的寫法，會同時包含：
 
-Scheduled tasks 在背景無人值守執行，會使用預設的 Sandbox 設定。應從能完成任務的最小權限開始：
+> **執行頻率＋日期或星期＋時間＋時區**
 
-- 報告與監控工作優先使用 read-only。
-- 需要修改時，限制在 workspace，並優先使用 Worktree 隔離。
-- 只開啟必要的網路、Plugin 與 MCP tools。
-- 不用 Full access 解決 Prompt 或流程仍不清楚的問題。
-- 對外發送、正式部署與不可逆動作保留人工 review。
+| 模糊寫法 | 建議寫法 |
+| --- | --- |
+| 每天早上 | 每天 08:00（Asia/Taipei） |
+| 明天 | 2026 年 7 月 20 日 09:00（Asia/Taipei），只執行一次 |
+| 下班前 | 每個工作日 17:30（Asia/Taipei） |
 
-## Scheduled 是結果收件匣
+以本章的每日待辦早報為例，在同一個 task 輸入：
 
-在 App 左側開啟 **Scheduled**，可以查看 Active、Paused、Completed、下次執行時間與 Recent runs。排程建立後仍需要維護：
+```text
+請把剛才測通的「每日待辦早報」
+建立為 standalone scheduled task。
 
-1. 檢查最初幾次輸出。
-2. 調整過度頻繁或太少的 cadence。
-3. 暫停已無價值或產生噪音的任務。
-4. 歸檔不再需要的 runs，避免累積大量 Worktrees。
+時間：每天 08:00（Asia/Taipei）
+Prompt：完整保存剛才測通的結構化 Prompt，
+並把「目前模式」改為「寄送模式」。
+收件者：<自己的信箱地址>
 
-## 完成檢查
+建立後告訴我 next run。
+如果時區或收件者不明確，先不要建立。
+```
 
-- [ ] 同一份 Prompt 已先在一般 task 測通。
-- [ ] 已選對 standalone 或既有 task 排程。
-- [ ] Prompt 包含範圍、輸出、無變更與失敗行為。
-- [ ] 有明確停止條件與人工介入條件。
-- [ ] 使用最小 Sandbox、工具與資料權限。
-- [ ] 前幾次 runs 已人工檢查並調整。
+<figure class="automation-screenshot" aria-labelledby="automation-shot-create-title">
+  <div class="automation-screenshot__placeholder" role="img" aria-label="待補：建立 Scheduled task 並核對時間、時區與結果去向的畫面">
+    <span>SCREENSHOT PLACEHOLDER · CREATE</span>
+    <strong id="automation-shot-create-title">建立並核對排程時間</strong>
+    <code>docs/public/images/automation/create-scheduled-task.webp</code>
+    <p>拍攝能辨認執行頻率、時間、時區、收件者與 next run 的畫面；遮蔽信箱地址、公司名稱、私人待辦與通知內容。</p>
+  </div>
+  <figcaption>建立後核對 next run，確認系統理解的時間與預期一致。</figcaption>
+</figure>
+
+## 5｜管理 Scheduled 結果與常見問題
+
+建立排程後，請到 **Scheduled** 做兩件事：確認排程是否仍在執行，以及打開每次的執行結果。前幾次執行後，逐一檢查資料範圍、輸出格式與例外訊息；若時間或內容不正確，就修改排程或 Prompt，工作結束則暫停。
+
+| 狀態 | 代表什麼 | 應檢查什麼 |
+| --- | --- | --- |
+| Active | 等待下一次執行 | 執行頻率、next run 與最近結果 |
+| Paused | 保留設定但暫不執行 | 工作或資料是否已準備好恢復 |
+| Completed | 單次工作已完成 | 最後結果是否需要補充或另建排程 |
+
+<figure class="automation-screenshot" aria-labelledby="automation-shot-runs-title">
+  <div class="automation-screenshot__placeholder" role="img" aria-label="待補：Scheduled 清單與 recent runs 的管理畫面">
+    <span>SCREENSHOT PLACEHOLDER · MANAGE</span>
+    <strong id="automation-shot-runs-title">檢查 Scheduled 與 Recent runs</strong>
+    <code>docs/public/images/automation/scheduled-runs.webp</code>
+    <p>拍攝可辨認 Active／Paused、next run、未讀結果與最近執行的畫面；使用練習資料，避免顯示真實工作進度或私人行程。</p>
+  </div>
+  <figcaption>至少檢查前幾次結果，再決定是否長期保留。</figcaption>
+</figure>
+
+### 常見失敗與修正方向
+
+<section class="automation-troubleshooting" aria-label="四種常見排程問題與修正方式">
+  <article>
+    <span>01 · DELIVERY</span>
+    <strong>沒有在預期時間收到早報</strong>
+    <dl>
+      <div><dt>先檢查</dt><dd>時區、收件者與寄送工具（MCP）。</dd></div>
+      <div><dt>修正方式</dt><dd>修正時間或收件地址，再手動測試一次。</dd></div>
+    </dl>
+  </article>
+  <article>
+    <span>02 · FREQUENCY</span>
+    <strong>執行太頻繁</strong>
+    <dl>
+      <div><dt>先檢查</dt><dd>每次執行是否真的有新資訊。</dd></div>
+      <div><dt>修正方式</dt><dd>降低頻率，或只在重要變化時詳細回報。</dd></div>
+    </dl>
+  </article>
+  <article>
+    <span>03 · LENGTH</span>
+    <strong>結果太長</strong>
+    <dl>
+      <div><dt>先檢查</dt><dd>到期範圍與最多件數。</dd></div>
+      <div><dt>修正方式</dt><dd>限制為 10 件，或縮短到期範圍。</dd></div>
+    </dl>
+  </article>
+  <article>
+    <span>04 · LIFECYCLE</span>
+    <strong>工作結束仍持續執行</strong>
+    <dl>
+      <div><dt>先檢查</dt><dd>這個排程是否仍有價值。</dd></div>
+      <div><dt>修正方式</dt><dd>立即暫停或刪除。</dd></div>
+    </dl>
+  </article>
+</section>
+
+## 6｜動手練習：每日待辦早報
+
+<section class="automation-lab-banner" aria-labelledby="automation-lab-title">
+  <span>PRACTICE · DAILY WORK</span>
+  <strong id="automation-lab-title">每天早上收到一封排好優先度的待辦早報</strong>
+  <p>從 Outlook 與 Planner／Notion 讀取目前資料，先預覽、再寄給自己，最後建立與管理每日排程。</p>
+</section>
+
+### Step 1｜用預覽模式測試
+
+1. 在一般 task 確認 Outlook 與 Planner 或 Notion（擇一）可以讀取。
+2. 把第 3 節 Prompt 中的 `<自己的信箱地址>` 換成自己的地址，但保留「預覽模式」。
+3. 手動執行一次，確認來源狀態、待辦判定、去重與 P1／P2／P3 排序。
+4. 檢查每項都有任務名稱、利害關係人、內容、期限、建議做法與評估依據；缺漏資料應標示未知。
+
+### Step 2｜測試寄到自己的信箱
+
+把「目前模式」改為「寄送模式」，手動執行一次。寄送前再次確認收件者只有自己；收到郵件後，檢查主旨件數與內文是否一致。
+
+### Step 3｜建立並管理每日排程
+
+1. 依第 4 節設定每天 08:00、Asia/Taipei，建立 standalone scheduled task。
+2. 從 Scheduled 核對 Active、next run 與保存的 Prompt。
+3. 檢查前幾次郵件；如果項目太多，縮短期限範圍或提高篩選門檻。
+4. 練習把時間改成 07:30，最後暫停排程並確認顯示 Paused。
+
+不再使用這份早報、資料來源更換，或寄送內容開始失真時，應先暫停排程，再修改與重新測試。
+
+## 7｜進階補充：與 Skills 結合
+
+當一個排程的 Prompt 愈寫愈長，或同一套流程會被多個任務重複使用，可以把穩定的「怎麼做」移到 Skill，讓排程只負責「何時執行」與「要呼叫哪個 Skill」。
+
+<section class="automation-skill-split" aria-label="Scheduled task 與 Skill 的責任分工">
+  <article>
+    <span>SCHEDULED TASK</span>
+    <strong>負責「何時執行」</strong>
+    <p>保存執行時間、每次輸入、要呼叫的 Skill，以及結果去向。</p>
+  </article>
+  <article class="is-skill">
+    <span>SKILL</span>
+    <strong>負責「怎麼完成」</strong>
+    <p>保存固定步驟、判斷規則、所需工具、驗證方式與停止條件。</p>
+  </article>
+</section>
+
+> **Scheduled task 決定何時重跑；Skill 保存可重複使用的工作方法。**
+
+### 案例一｜定期建立或更新個人 Skills
+
+這是一個維護 Skills 的排程：定期檢查最近的 task 記錄，只有在發現具體且反覆出現的問題時，才建立或改善個人 Skill。
+
+```text
+檢查 ~/.codex/sessions 過去 24 小時的記錄：
+
+1. 如果某個個人 Skill 曾造成明確問題，更新它並說明修改原因。
+2. 如果某種工作反覆出現且每次都不順利，建立一個可重複使用的個人 Skill。
+3. 只處理個人 Skills，不修改專案內的 Skills。
+4. 沒有充分證據時，不要建立或修改任何 Skill。
+5. 最後列出變更、依據與驗證方式；若沒有變更，清楚回報。
+```
+
+::: warning 讓人先看過變更
+Skill 會影響之後的工作方式。前幾次執行應檢查修改依據與內容；不確定時，先要求排程只提出建議，不直接更新。
+:::
+
+### 案例二｜把複雜流程放進 Skill
+
+官方範例先建立 `$recent-code-bugfix`，把「找出自己近期造成的問題、確認根因、做最小修正、驗證與回報」完整寫進 Skill。完成手動測試後，排程 Prompt 便可縮短為：
+
+```text
+Check my commits from the last 24h and submit a $recent-code-bugfix.
+```
+
+建立這類排程時，依序確認：
+
+1. 先在一般 task 手動呼叫 Skill，確認流程與停止條件正確。
+2. 排程只保留執行時間、當次範圍、Skill 名稱與結果去向。
+3. 工作方法改變時更新 Skill；只有頻率或時間改變時才調整排程。
+
+如果流程只會用一次，或仍需要每次人工補充判斷，就不必急著做成 Skill。完整建立方式請參考 [Skills 課程](/advanced/skills)。
 
 ## 延伸閱讀
 
 - [OpenAI：Scheduled tasks](https://learn.chatgpt.com/docs/automations)
-- [OpenAI：Worktrees](https://learn.chatgpt.com/docs/environments/git-worktrees)
-- [OpenAI：Sandbox](https://learn.chatgpt.com/docs/sandboxing)
+- [OpenAI：Automatically create new skills](https://learn.chatgpt.com/docs/automations#automatically-create-new-skills)
+- [OpenAI：Combining scheduled tasks with skills](https://learn.chatgpt.com/docs/automations#combining-scheduled-tasks-with-skills-to-fix-your-own-bugs)
+- [遠見：Codex 每日自動收集案例](https://www.gvm.com.tw/article/130317)
+- [OpenAI Academy：Automations](https://openai.com/academy/codex-automations/)
+- [下一章：Subagents](/advanced/worktrees)

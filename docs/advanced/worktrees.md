@@ -1,143 +1,349 @@
 ---
-title: Worktrees：隔離平行與背景工作
-description: 用獨立 Git checkout 隔離多條修改支線，並透過 Handoff 安全移動 task 與 code。
+title: Subagents：拆分、平行處理與彙整
+description: 從工作原理、基礎配置與使用時機開始，實際派出 Subagents，最後建立可重複使用的客製化 Agent。
 outline: [2, 3]
 ---
 
-# Worktrees：隔離平行與背景工作
+# Subagents：拆分、平行處理與彙整
 
-Worktree 解決的是「多條修改如何避免互相干擾」。它讓同一個 Git Repository 擁有多份獨立 checkout，每一份都有自己的檔案與 index，但共用 Git metadata。
+Subagent 是由主 agent 派出去處理**特定子任務**的輔助 agent。每個 Subagent 在自己的 thread 中工作，完成後把精簡結果交回主 task，由主 agent 做最後判斷與交付。
 
-這讓 Codex 可以在背景處理工作，而你繼續使用 Local checkout；也能讓不同任務各自修改與驗證，完成後再決定整合順序。
+你可以把它想成一位組長帶著幾位專員：組長保存完整需求與做決定，專員則各自調查一個清楚的小問題。
 
-## 先認識三個名詞
+<section class="lesson-goals" aria-labelledby="subagents-goals-title">
+  <div class="lesson-goals__intro">
+    <span class="lesson-eyebrow">LEARNING GOALS</span>
+    <strong id="subagents-goals-title" class="lesson-goals__title">完成本章後，你可以</strong>
+    <p>判斷任務是否適合拆分、派出與管理 Subagents，並為團隊建立一個專用的客製化 Agent。</p>
+  </div>
+  <div class="lesson-goals__grid">
+    <article><strong>看懂原理</strong><span>分清楚主 agent、Subagent 與 agent thread。</span></article>
+    <article><strong>正確派工</strong><span>寫清楚子任務、限制與回報格式。</span></article>
+    <article><strong>選對時機</strong><span>只平行處理彼此獨立的工作。</span></article>
+    <article><strong>建立專員</strong><span>用 TOML 定義可重複使用的 Agent。</span></article>
+  </div>
+</section>
 
-- **Local checkout**：平常使用的 Repository 工作目錄，App 中通常簡稱 Local。
-- **Worktree**：從相同 Repository 建立的另一份 checkout。
-- **Handoff**：在 Local 與 Worktree 之間移動 task 與 code 的 App 流程。
+<nav class="lesson-flow subagents-lesson-flow" aria-label="本章六階段學習流程">
+  <span><b>01</b> 工作原理</span>
+  <span><b>02</b> 基礎配置</span>
+  <span><b>03</b> 如何使用</span>
+  <span><b>04</b> 使用時機</span>
+  <span><b>05</b> 實戰</span>
+  <span><b>06</b> 客製 Agent</span>
+</nav>
 
-::: info 使用條件
-App-managed Worktrees 需要 Git Repository，並且只在 ChatGPT desktop app 的 Codex 中使用。非 Git 專案無法建立 Git Worktree。
+## 1｜工作原理
+
+一次 Subagent 工作流可以看成「一對多，再回到一」：主 agent 拆出彼此獨立的子任務，等待多個 Subagents 完成，最後再統一彙整。
+
+<figure class="subagents-model" aria-labelledby="subagents-model-title">
+  <figcaption>
+    <span class="lesson-eyebrow">HOW IT WORKS</span>
+    <strong id="subagents-model-title">一個主 agent，拆成多個 Subagents，再匯聚成一個結果</strong>
+  </figcaption>
+  <div class="subagents-model__flow" role="group" aria-label="一個主 agent 拆分成三個 Subagents，再匯聚結果">
+    <article class="subagents-model__main">
+      <span>MAIN AGENT · DELEGATE</span>
+      <strong>拆出三個獨立問題</strong>
+      <p>主 agent 保存完整需求，為每個子任務指定責任與回報格式。</p>
+    </article>
+    <div class="subagents-model__arrow" aria-hidden="true"><span>拆分並平行執行</span><i>↓</i></div>
+    <div class="subagents-model__workers">
+      <article>
+        <span>SUBAGENT A</span>
+        <strong>探索程式碼</strong>
+        <p>追蹤相關模組與執行路徑。</p>
+      </article>
+      <article>
+        <span>SUBAGENT B</span>
+        <strong>執行測試</strong>
+        <p>檢查失敗案例與測試缺口。</p>
+      </article>
+      <article>
+        <span>SUBAGENT C</span>
+        <strong>查證文件</strong>
+        <p>確認 API 與版本相關行為。</p>
+      </article>
+    </div>
+    <div class="subagents-model__arrow is-merge" aria-hidden="true"><span>等待並匯聚結果</span><i>↓</i></div>
+    <article class="subagents-model__result">
+      <span>MAIN AGENT · SYNTHESIZE</span>
+      <strong>整理成一個可交付結論</strong>
+      <p>比較證據、處理重複或矛盾，完成最後決策與回覆。</p>
+    </article>
+  </div>
+</figure>
+
+### 三個核心名詞
+
+<section class="subagents-concept-grid" aria-label="Subagents 的三個核心名詞">
+  <article><span>MAIN AGENT</span><strong>主 agent</strong><p>保存需求、限制與決策，也是最後對結果負責的人。</p></article>
+  <article><span>SUBAGENT</span><strong>子代理</strong><p>由主 agent 啟動，專心完成一個有邊界的子任務。</p></article>
+  <article><span>AGENT THREAD</span><strong>工作 thread</strong><p>Subagent 的獨立工作空間，可以開啟查看進度與證據。</p></article>
+</section>
+
+### 為什麼不全部放在主 task？
+
+探索筆記、測試 log、stack trace 與大量搜尋結果會佔用主 task 的 context。Subagents 把這些中間過程留在各自的 thread，只把精簡結論帶回來，讓主 agent 繼續專注在需求、判斷與交付。
+
+::: info Subagent 不是另一個完全獨立的 task
+一般 task 彼此沒有自動的派工與彙整關係。Subagent 則是由主 agent 建立與管理，結果會回到原本的主 task。
 :::
 
-## 什麼時候值得使用
+::: warning 平行不等於免費
+每個 Subagent 都會進行自己的 model 與 tool 工作，因此會增加 token、工具與執行時間成本。拆分得越模糊，協調成本越高。
+:::
 
-- 讓 Codex 在背景處理任務，不打擾 Local 的未完成工作。
-- 同時進行兩條可獨立驗證、修改範圍不同的支線。
-- 為 Scheduled task 隔離可能產生的檔案修改。
-- 完成第一輪實作後，再移回日常 IDE 與本機服務環境驗證。
+## 2｜基礎配置
 
-以下情況不一定需要：
+目前的 Codex 已預設啟用 Subagents。一般使用者不需要加入 feature flag，只要在 Prompt 中直接要求 Codex 派出 Subagents 即可。
 
-- 只有一項短小修改，Local 沒有其他未完成工作。
-- 兩條任務必須反覆修改相同 shared files。
-- 專案 setup 無法在第二份 checkout 重現。
-- 工作不是 Git Repository。
+### 先確認使用介面
 
-## 在 App 建立第一個 Worktree task
+Subagent activity 目前可出現在以下 Codex clients：
 
-1. 建立新 task 時，在 composer 下方選擇 **Worktree**。
-2. 選擇要作為起點的 branch。
-3. 確認 base commit 與本機未提交修改是否符合預期。
-4. 送出範圍清楚、可獨立驗證的 Prompt。
-5. 在 Worktree 中檢查 Diff、執行測試並決定後續去向。
+- **ChatGPT desktop app**：在主 task 查看活動，開啟個別 Subagent thread。
+- **Codex CLI**：使用 `/agent` 查看與切換 agent threads。
+- **Codex IDE extension**：從 background-agent panel 查看狀態與 thread。
 
-Codex-managed Worktree 預設可能處於 detached `HEAD`。修改確定要保留時，可以在 task header 使用 **Create branch here**，再 commit、push 或建立 PR。
+### 大多數人不需要改設定
 
-## Handoff：把工作移到前景或背景
+<section class="subagents-config-grid" aria-label="預設設定與選用設定">
+  <article class="is-default">
+    <span>RECOMMENDED</span>
+    <strong>先使用預設值</strong>
+    <p>直接在 Prompt 說明如何拆分、是否等待，以及最後如何彙整。</p>
+    <small>適合第一次使用與大部分日常任務。</small>
+  </article>
+  <article class="is-optional">
+    <span>OPTIONAL</span>
+    <strong>需要時才調整</strong>
+    <p>只有在團隊確實需要限制同時開啟的 threads 或巢狀深度時，才修改設定。</p>
+    <small>設定檔可放在個人或專案範圍。</small>
+  </article>
+</section>
 
-Handoff 不只移動對話 context，也會處理 Local 與 Worktree 之間所需的 Git 操作。
+選用的 `.codex/config.toml` 範例：
 
-### Worktree 移回 Local
-
-適合以下情境：
-
-- 想在慣用 IDE 仔細檢查修改。
-- 只有 Local 能啟動完整開發服務或模擬器。
-- 準備進行整合、人工測試或後續協作。
-
-### Local 交給 Worktree
-
-適合需要把長時間工作移到背景，讓 Local checkout 回到其他任務的情境。
-
-Git 不允許同一個 branch 同時 checkout 在兩個 Worktrees。要在 Local 繼續相同工作時，優先使用 Handoff，不要嘗試讓兩邊同時佔用同一 branch。
-
-## Advanced｜平行前先寫 branch contract
-
-從同一個乾淨 base commit 建立兩個 Worktrees，仍不代表它們能安全平行。每條支線都要先定義：
-
-| 欄位 | Worktree A | Worktree B |
-| --- | --- | --- |
-| 目標 | human-review gate | decision citations |
-| 可修改範圍 | policy、service、對應測試 | schema、repository、對應測試 |
-| 不可修改 | shared migration、無關 API | shared policy、無關 API |
-| 驗證 | unit test A、lint | unit test B、lint |
-| 交付 | 行為、Diff、風險 | 行為、Diff、migration 影響 |
-
-如果兩條支線都必須修改同一組 shared files，平行化的衝突成本可能高於節省的時間。此時應重新切分責任，或改成依序完成。
-
-## 可重現的 Worktree 環境
-
-每個 Worktree 都要能從 Repository 內容重建基本環境。不要假設 Local 已安裝的 dependency、build cache 或 ignored files 會自動存在。
-
-課堂案例可先執行：
-
-```bash
-uv sync
-uv run pytest tests/unit -q
+```toml
+[agents]
+max_threads = 6
+max_depth = 1
 ```
 
-真正命令仍以 Repository 的 `AGENTS.md` 與 README 為準。
+| 設定 | 預設 | 意義 |
+| --- | ---: | --- |
+| `max_threads` | `6` | 同時保持開啟的 agent thread 上限 |
+| `max_depth` | `1` | 只允許主 agent 建立直接的 Subagents |
 
-### 使用 `.worktreeinclude`
+`max_depth = 1` 已適合大部分課程與專案。提高深度會讓 Subagent 繼續派出下一層 Subagent，容易增加成本，也更難掌握工作邊界。
 
-若 App-managed Worktree 確實需要被 Git 忽略的本機測試檔，可在 Repository root 建立 `.worktreeinclude`：
+::: danger 先設定父 task 的權限
+Subagents 會繼承父 task 當下的 Permission／Sandbox 與可用工具。派工前先確認權限；只需要審查時，就不要提供不必要的寫入或外部操作權限。
+:::
+
+## 3｜如何使用
+
+### 第一次派工：直接說出「使用 Subagents」
+
+在 App 的 Prompt 清楚指定要平行處理的子任務：
 
 ```text
-.env.test
+請使用 3 個 Subagents 平行審查目前 branch：
+
+1. 一個檢查安全風險。
+2. 一個檢查測試缺口。
+3. 一個檢查可維護性問題。
+
+三個 Subagents 都只能讀取，不要修改檔案。
+等待全部完成後，再由主 agent 依嚴重度彙整結果，
+每項附上檔案路徑與證據。
 ```
 
-只列入安全、必要、可供隔離測試使用的檔案。不要複製 Production token、客戶資料或個人 credentials。
+### 執行中如何管理
 
-## 與 Scheduled tasks 搭配
+<section class="subagents-agent-actions" aria-label="Subagent 執行中的四個管理動作">
+  <article><b>OPEN</b><strong>查看</strong><span>開啟 thread，檢查它使用的證據。</span></article>
+  <article><b>STEER</b><strong>引導</strong><span>要求縮小範圍或補查特定檔案。</span></article>
+  <article><b>STOP</b><strong>停止</strong><span>發現重複、越界或不再需要時終止。</span></article>
+  <article><b>SUMMARIZE</b><strong>彙整</strong><span>回到主 task，等待並整理所需結果。</span></article>
+</section>
 
-Git Repository 的 Scheduled task 可以直接在 Local 執行，也可以使用隔離的 background Worktree。若排程可能修改檔案，Worktree 能避免與正在編輯的 Local checkout 互相干擾。
+<!-- Screenshot asset: /images/subagents/activity-panel.webp -->
+<figure class="subagents-screenshot" aria-labelledby="subagents-shot-activity-title">
+  <div class="subagents-screenshot__placeholder" role="img" aria-label="待補：Codex App 顯示三個 Subagents 狀態的畫面">
+    <span>SCREENSHOT PLACEHOLDER · APP</span>
+    <strong id="subagents-shot-activity-title">查看 Subagent activity</strong>
+    <code>/images/subagents/activity-panel.webp</code>
+    <p>畫面包含 Active／Done 狀態與三個 Subagent threads；Repository 名稱、路徑與私人資料請遮蔽。</p>
+  </div>
+  <figcaption>主 task 顯示整體進度；需要細節時，再開啟個別 Subagent thread。</figcaption>
+</figure>
 
-排程頻率高時也會累積 Worktrees 與 build cache。定期歸檔不再需要的 runs，不要為了保留歷史而無限制 pin 所有 task。
+### 使用時機
 
-## 整合多條支線
+最簡單的判斷方式是問：**這些子任務能不能彼此獨立完成，最後再一起整理？**
 
-兩條支線完成後，依序：
+<section class="subagents-decision-grid" aria-label="適合與不適合使用 Subagents 的情境">
+  <article class="is-good">
+    <span>GOOD FIT</span>
+    <strong>適合使用</strong>
+    <ul>
+      <li>從不同角度審查同一個 PR。</li>
+      <li>探索大型 codebase 的不同模組。</li>
+      <li>分別執行獨立的測試或 log 分析。</li>
+      <li>比對多份文件並回報精簡摘要。</li>
+      <li>讓專員查證資料，主 agent 繼續規劃。</li>
+    </ul>
+  </article>
+  <article class="is-bad">
+    <span>POOR FIT</span>
+    <strong>先不要使用</strong>
+    <ul>
+      <li>任務很小，一個 agent 很快就能完成。</li>
+      <li>子任務有強烈前後依賴，不能平行。</li>
+      <li>你還無法說清楚每個人的責任。</li>
+      <li>多個 agents 會同時修改相同檔案。</li>
+      <li>協調成本高於實際工作量。</li>
+    </ul>
+  </article>
+</section>
 
-1. 各自回報變更檔案、行為、測試與剩餘風險。
-2. 依 dependency 決定整合順序，例如先 schema／contract，再 service／UI。
-3. 對 shared files 進行語意合併，不直接選擇其中一邊整檔覆蓋。
-4. 在整合後的 branch 重新執行完整 lint、test、type-check 與 build。
-5. PR 說明 branch contract、整合順序、未執行檢查與 rollback 影響。
+::: tip 從讀取型任務開始
+探索、審查、測試、分類與摘要通常衝突較少。多個 agents 同時寫入同一批 shared files，容易互相覆蓋或產生難以整合的修改；初學時把最後寫入集中交給主 agent。
+:::
 
-Worktree 只提供隔離，不會自動證明兩份修改相容；最終整合後的驗證仍不可省略。
+## 4｜實戰：平行比較三個區域的銷售資料
 
-## 常見失敗
+情境：你拿到北、中、南三份彼此獨立的銷售資料：`data/north.csv`、`data/central.csv` 與 `data/south.csv`。三份檔案涵蓋相同期間，也使用相同欄位：`order_date`、`product`、`quantity` 與 `revenue`。
 
-- 兩條支線沒有檔案責任邊界，同時修改 shared core。
-- Worktree 依賴 Local 未追蹤的檔案，導致環境無法重現。
-- 把 Production secrets 放進 `.worktreeinclude`。
-- 忽略 detached `HEAD`，完成後才發現修改沒有對應 branch。
-- 嘗試讓同一個 branch 同時 checkout 在 Local 與 Worktree。
-- 只看各支線測試通過，沒有驗證整合後結果。
+<section class="subagents-case" aria-labelledby="subagents-case-title">
+  <span>CASE STUDY · PARALLEL MAP–REDUCE</span>
+  <strong id="subagents-case-title">一個 Subagent 負責一份資料，完成後再合併</strong>
+  <p>三個 Subagents 使用同一套指標定義，各自分析一份 CSV。彼此不需要等待或使用其他 Subagent 的輸出；主 agent 只在最後把三份摘要合併成比較表。</p>
+</section>
 
-## 完成檢查
+::: tip 為什麼這個案例適合 Subagents？
+北、中、南三份資料可以獨立計算，任何一個 Subagent 失敗都不會阻止另外兩個完成。這是典型的平行工作：先對多份獨立輸入執行相同分析，再由主 agent 匯聚結果。
+:::
 
-- [ ] 平行支線從同一個已確認 base commit 開始。
-- [ ] 每條支線有目標、可修改範圍、驗證與交付格式。
-- [ ] Shared files 與整合順序已事先定義。
-- [ ] Worktree setup 能由 Repository 指示重現。
-- [ ] `.worktreeinclude` 不含 Production secrets 或敏感資料。
-- [ ] 整合後已重新執行完整驗證。
+### Step 1：先寫清楚分工
+
+```text
+# Goal
+比較北、中、南三個區域的銷售表現。
+
+# Shared definitions
+- 訂單筆數：CSV 的資料列數，不含標題列。
+- 總營收：revenue 欄位總和。
+- 平均每筆營收：總營收 ÷ 訂單筆數。
+- 熱門產品：總營收最高的 product。
+
+# Delegation
+請派出 3 個 Subagents 平行工作：
+1. North：只分析 data/north.csv。
+2. Central：只分析 data/central.csv。
+3. South：只分析 data/south.csv。
+
+# Ownership and constraints
+- 每個 Subagent 只能讀取自己負責的 CSV，並執行不會改寫檔案的 Python 指令。
+- 不修改 CSV、不新增分析檔案、不安裝新的套件。
+- 三個 Subagents 不互相等待，也不使用彼此的結果。
+
+# Done when
+- 等待三個 Subagents 全部完成。
+- 每個 Subagent 使用相同格式回報：區域、訂單筆數、總營收、平均每筆營收、熱門產品。
+- 另外列出自己負責檔案的缺失值或重複列數量。
+- 最後由主 agent 合併成區域比較表，不要求 Subagents 重新分析其他檔案。
+```
+
+### Step 2：觀察而不是一直插手
+
+<ol class="subagents-practice-flow" aria-label="Subagents 實戰流程">
+  <li><b>01</b><span><strong>確認三份獨立輸入</strong><small>活動區應顯示 North、Central 與 South threads。</small></span></li>
+  <li><b>02</b><span><strong>開啟其中一個 thread</strong><small>確認它只讀取被分配的 CSV，並使用共同的指標定義。</small></span></li>
+  <li><b>03</b><span><strong>等待全部完成</strong><small>除非範圍錯誤，不需要頻繁打斷。</small></span></li>
+  <li><b>04</b><span><strong>讓主 agent 合併結果</strong><small>檢查三份回報欄位一致，再建立區域比較表。</small></span></li>
+</ol>
+
+## 5｜進階：客製化 Agent
+
+當某種分工會重複出現，例如每週都要檢查 CSV 品質並產生相同格式的摘要，就可以把角色寫成客製化 Agent。
+
+Codex 內建三種 agent：
+
+<section class="subagents-builtins" aria-label="Codex 內建 Agent">
+  <article><span>default</span><strong>通用工作</strong><p>沒有更適合角色時使用的預設 agent。</p></article>
+  <article><span>worker</span><strong>實作與修正</strong><p>偏向執行、修改與完成交付。</p></article>
+  <article><span>explorer</span><strong>讀取與探索</strong><p>偏向搜尋 codebase 與收集證據。</p></article>
+</section>
+
+### 選擇個人或專案範圍
+
+| 放置位置 | 適用範圍 | 適合情境 |
+| --- | --- | --- |
+| `~/.codex/agents/` | 你的所有專案 | 個人的固定資料分析流程 |
+| `.codex/agents/` | 目前 Repository | 團隊共同使用的專案角色 |
+
+每個 `.toml` 檔定義一個 Agent。檔名最好與 Agent 名稱一致，方便維護；真正用來辨識 Agent 的是檔案內的 `name`。
+
+### 建立資料分析 Agent
+
+建立 `.codex/agents/data-analyst.toml`：
+
+```toml
+name = "data_analyst"
+description = "檢查結構化資料品質，並產生有計算依據的分析摘要。"
+nickname_candidates = ["Iris", "Nova", "Vega"]
+sandbox_mode = "read-only"
+
+developer_instructions = """
+像資料分析師一樣檢查資料與計算結果。
+
+分析前先確認：
+- 欄位名稱、資料型別與日期範圍
+- 缺失值、重複列與明顯異常值
+- 指標的定義與計算方式
+
+使用可重現的 Python 計算，並區分資料事實與推論。
+每個結論都要附上支持數據。
+不要修改原始資料，也不要產生新的檔案。
+"""
+```
+
+三個必要欄位是：
+
+| 欄位 | 用途 |
+| --- | --- |
+| `name` | Codex 用來辨識與指派這個 Agent 的名稱 |
+| `description` | 說明什麼情況應該使用它 |
+| `developer_instructions` | 定義它的工作方式、優先順序與限制 |
+
+`nickname_candidates` 與 `sandbox_mode` 是選用欄位。沒有指定 `model`、`model_reasoning_effort`、MCP 或 Skills 時，會繼承父 session 的設定。
+
+### 使用客製化 Data Analyst
+
+```text
+請使用 data_analyst Agent 分析 data/north.csv。
+
+先檢查資料品質，再計算總營收、每月營收與地區表現。
+等待 data_analyst 完成後，由主 agent 將結果整理成摘要，
+不要修改或產生任何檔案。
+```
+
+### 客製化原則
+
+1. **角色要窄**：一個 Agent 專注一類工作，不要變成另一個「什麼都做」的 agent。
+2. **描述要清楚**：讓 Codex 知道何時選擇這個 Agent。
+3. **限制要明確**：寫出能否修改、必須提供的證據與停止條件。
+4. **先用預設設定**：只有品質、速度或工具需求不同時，再指定 model、reasoning、MCP 或 Skills。
+5. **先小範圍驗證**：用一份熟悉的小型資料集測試，檢查計算是否正確後再交給團隊。
 
 ## 延伸閱讀
 
-- [OpenAI：Worktrees](https://learn.chatgpt.com/docs/environments/git-worktrees)
+- [OpenAI 官方文件：Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+- [菜鳥教程：Codex 子代理（Subagents）](https://www.runoob.com/codex/codex-subagents.html)
+- [CSDN：Codex Subagents 原理、時機與實戰](https://blog.csdn.net/qq_24256877/article/details/161925043)
 - [上一章：Scheduled tasks](/advanced/automation)
 - [下一章：Hooks](/advanced/hooks)
-
