@@ -3,7 +3,7 @@ title: Marketing 數據分析｜Excel → HTML Dashboard
 description: 從 GitHub 下載 Marketing Excel，完成 Excel insight 與可互動的本地 HTML Dashboard。
 ---
 
-# Marketing 數據分析：Excel → Insight → HTML Dashboard
+# Marketing 數據分析：打造自己的數據分析 Agent
 
 ## 任務 Summary
 
@@ -19,18 +19,25 @@ description: 從 GitHub 下載 Marketing Excel，完成 Excel insight 與可互�
 這份資料是教學用 hypothetical marketing data，不代表任何學校或公司的真實績效。洞察只用來示範分析流程，不應直接作為預算決策。
 :::
 
-## 資料下載方式
+### 資料下載方式
 
-Kaggle 仍保留作為原始資料 reference：[Marketing Campaign Dataset](https://www.kaggle.com/datasets/minalchoudhary/marketing-campaign-dataset)。如果環境無法登入 Kaggle，請直接使用已放在 GitHub 的 Excel：
-
+資料集使用 [Kaggle Markting Campaign Dataset](https://www.kaggle.com/datasets/minalchoudhary/marketing-campaign-dataset)，可從下面的連結直接下載目標資料集。
 - [下載 Marketing_Campaign_Data.xlsx](https://github.com/example/codex-course-demo-cases/raw/refs/heads/main/data-analyst/Marketing_Campaign_Data.xlsx)
-- [查看 GitHub demo repo](https://github.com/example/codex-course-demo-cases/tree/main/data-analyst)
 
-下載後把 Excel 放到 workspace，或直接拖入 Codex App 對話。這個 workbook 已整理成三張原始 sheet，不需要另外下載或合併三個檔案。
+下載後把 Excel 放到 demo 資料夾中，完成 demo 任務前置作業!
 
-## 資料說明
+### 資料說明
 
-### Sheet overview
+這是一份為教育機構行銷分析情境設計的合成資料，模擬 2024 年 1 月至 2025 年 10 月間，Google Ads、Facebook、Instagram、LinkedIn 與 YouTube 等平台的數位行銷活動。資料涵蓋曝光、點擊、名單、申請到入學的完整轉換流程，並包含成本與營收（₹）、目標受眾、活動目標及投放區域。
+
+資料由 ChatGPT 生成，不含真實機構資料或個人資訊，可用來練習：
+
+- 比較 Campaign 成效、ROI 與轉換效率。
+- 建立 Star Schema、事實表與維度表，練習 DAX 計算。
+- 製作 Power BI 或 HTML Dashboard，練習圖表與互動設計。
+- 進行機器學習、Kaggle Notebook、教學與作品集專案。
+
+#### Sheet overview
 
 | Sheet | 筆數 | 用途 |
 | --- | ---: | --- |
@@ -38,7 +45,7 @@ Kaggle 仍保留作為原始資料 reference：[Marketing Campaign Dataset](http
 | `CampaignMeta` | 5 筆資料列 | Campaign 的目標、期間、預算、類型、負責人、渠道與轉換目標 |
 | `ChannelRates` | 5 筆資料列 | 各渠道的 AvgCPM、AvgCPC 與備註，作為成本效率的參考 |
 
-### 欄位定義
+#### 欄位定義
 
 以下用水平分頁查看三張 sheet 的欄位；Task 1 與 Task 2 都應以這些實際欄位為準，不要自行發明欄位名稱。
 
@@ -108,15 +115,14 @@ Kaggle 仍保留作為原始資料 reference：[Marketing Campaign Dataset](http
   ]"
 />
 
-## Task 1 說明
+## Task 1
 
 ### 任務目標說明
 
-不要只看總營收。請以 Platform 為單位，找出成本效率與入學轉換表現最值得優先檢視的平台。
-
+讓 Codex 可以依照分析目標，直接編輯 Excel，產製公式與圖表，並透過 Data Analytics Skills 提供數據分析 Insight。<br>
 請在 Excel 新增 `Task1_Analysis` 工作表，用公式產生分析指標，並繪製一張 ROAS by Platform 的水平長條圖。最後用數據寫出「資料事實、解讀、下一步」的 insight。
 
-### 指標說明
+#### 指標說明
 
 | 指標 | 公式 | 意思與判讀方式 |
 | --- | --- | --- |
@@ -127,24 +133,24 @@ Kaggle 仍保留作為原始資料 reference：[Marketing Campaign Dataset](http
 
 判讀時不要只找單一最高或最低值，要把效率、轉換率與實際產出放在一起比較。
 
-## Task 1 可以直接複製貼上的 Prompt
+### 範例 Prompt
 
 ```text
-請使用 Spreadsheet skill 分析目前提供的 Marketing_Campaign_Data.xlsx，完成 Task 1。請直接修改並另存為 Marketing_Campaign_Data_Task1.xlsx，不要覆蓋原始檔。
+請使用 @Spreadsheet 分析 @Marketing_Campaign_Data.xlsx
+新增 `Task1_Analysis` sheet，以 Platform 彙總資料，使用 Excel 公式計算：
 
-問題：以 Platform 為單位，哪一個平台的成本效率與入學轉換表現最值得優先檢視？不要只用總營收下結論，請同時比較 ROAS、CTR、Enrollment Rate 與 Cost per Enrollment。
+- Impressions、Clicks、Applications、Enrollments
+- Cost、Revenue
+- CTR
+- ROAS
+- Enrollment Rate
 
-請完成：
-1. 先檢查三張原始 sheet 的欄位、資料列數、空值與日期範圍；不要修改 CampaignPerformance、CampaignMeta、ChannelRates 的原始資料。
-2. 新增工作表 Task1_Analysis，以 Platform 彙總 CampaignPerformance。
-3. 在 Task1_Analysis 用 Excel 公式建立以下欄位：Platform、Impressions、Clicks、Applications、Enrollments、Cost (₹)、Revenue (₹)、CTR、Enrollment Rate、Cost per Enrollment、ROAS。計算欄要用公式引用原始 sheet，不要把結果寫成固定數字；除法遇到 0 時用 IFERROR 或等價方式處理。
-4. 使用正確的跨工作表引用，例如 ='CampaignPerformance'!A2；請避免把原始資料複製成另一份 hardcode 表。
-5. 新增一張以 ROAS 為數值、Platform 為分類的水平長條圖。圖表要有標題、數值單位，並在圖表旁標註資料期間。
-6. 在分析區下方寫出一段簡短 insight，分成「資料事實、解讀、下一步」。不要把相關性寫成因果；如果樣本量或資料定義不足，請明確標註限制。
-7. 驗證 Task1_Analysis 的 Cost、Revenue、Enrollments 總額能回勾 CampaignPerformance，並掃描 #REF!、#DIV/0!、#VALUE! 等錯誤。最後回報新增工作表、公式欄、圖表與輸出檔案路徑。
+請加入一張「ROAS by Platform」水平長條圖，回答：
+「哪一個平台的成本效率與入學轉換表現最值得優先檢視？」
+在圖表旁以「資料事實、解讀、下一步」寫出簡短 insight。不要只依總營收下結論，也不要將相關性描述為因果。
 ```
 
-### 期待結果說明
+### 期待結果
 
 - Excel 新增 `Task1_Analysis` 工作表。
 - 每個 Platform 有可追溯的公式欄：CTR、Enrollment Rate、Cost per Enrollment、ROAS。
@@ -159,7 +165,7 @@ Kaggle 仍保留作為原始資料 reference：[Marketing Campaign Dataset](http
 
 ### 任務目標說明
 
-把同一份 Excel 做成一個本地互動 Dashboard，讓觀眾不用打開工作表，也能回答「目前哪個平台／區域／Campaign 表現較好」。
+來實作網頁吧! 透過 Codex 把這份 Excel 做成一個本地互動 Dashboard，變成精美的可互動數據儀表板。<br>
 
 Dashboard 至少要有：
 
@@ -169,22 +175,18 @@ Dashboard 至少要有：
 - Insight 區塊：根據目前篩選結果更新資料事實、解讀與下一步。
 - 頁尾：資料來源、資料期間、幣別與 hypothetical data 限制。
 
-## Task 2 可以直接複製貼上的 Prompt
+### 範例 Prompt
 
 ```text
-請使用 Spreadsheet skill 與 Data Analytics skill，讀取目前提供的 Marketing_Campaign_Data.xlsx，完成 Task 2。請不要修改原始 Excel，輸出一個可以直接在地端打開、可互動的 marketing_dashboard.html。
+請讀取 `Marketing_Campaign_Data.xlsx`，產出可地端離線開啟的 `marketing_dashboard.html`。
 
-請先確認三張 sheet 的欄位與資料範圍：CampaignPerformance、CampaignMeta、ChannelRates。不要連線到 Kaggle，也不要捏造資料；Dashboard 的資料必須來自這份 Excel。
+Dashboard 請包含：
 
-請建立一個可離線運作的 HTML Dashboard：
-1. 將需要的資料以安全、可追溯的方式嵌入 HTML；不要依賴外部 CDN、遠端 API、內網服務或需要登入的資料源，完成後可直接雙擊檔案開啟。
-2. 頁首顯示資料標題、資料期間、幣別（₹）與資料來源檔名。
-3. 建立 KPI cards：Total Cost、Total Revenue、Total Enrollments、ROAS。
-4. 建立三個互動篩選器：Platform、Region、CampaignName。任一篩選改變時，KPI、圖表與 insight 都要同步更新；提供 Clear filters。
-5. 建立三個圖表：月度 Revenue 趨勢、Platform ROAS 水平比較、Impressions → Clicks → Leads → Applications → Enrollments 漏斗。圖表標題、單位與計算定義要清楚。
-6. 建立 Insight 區塊。針對目前篩選結果，列出「資料事實、解讀、下一步」；請避免把相關性寫成因果，並顯示樣本量或資料限制。
-7. 優先使用簡單、可離線運作的 HTML／CSS／JavaScript；手機寬度不可水平溢出，空資料篩選要顯示友善提示。
-8. 完成後驗證：HTML 可以用瀏覽器直接開啟、篩選器會更新所有 KPI 與圖表、主要 KPI 能與 Excel 原始資料對上，且 Console 沒有錯誤。回報輸出路徑與驗證結果。
+* KPI：Total Cost、Total Revenue、Total Enrollments、ROAS
+* 篩選器：Platform、Region、CampaignName，以及 Clear filters
+* 圖表：月度 Revenue 趨勢、Platform ROAS 比較、行銷漏斗
+* Insight：依目前篩選結果更新「資料事實、解讀、下一步」
+* 資料來源、日期範圍、幣別與 hypothetical data 限制
 ```
 
 ### 期待結果說明

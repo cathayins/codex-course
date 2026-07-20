@@ -20,7 +20,7 @@ pageClass: quickstart-story
   <section><span>右側</span><h3>工作站台</h3><p>看檔案、終端機、網站預覽與本次修改的差異。</p></section>
 </div>
 
-## 左側：開始任務
+## 左側開始｜New thread
 
 <div class="sidebar-guide">
   <div class="refined-media refined-media--tall refined-media--sidebar-compact">
@@ -35,15 +35,15 @@ pageClass: quickstart-story
   </div>
 </div>
 
-## 右側：工作站
+## 側邊欄｜Side Panel
 
-按右上角的側邊面板圖示，就能叫出這組工具。macOS 畫面顯示的快捷鍵是 <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>B</kbd>；若你改過快捷鍵，以自己 App 裡顯示的為準。
+透過側邊欄，可隨時檢視 Codex 生成的文件、程式、簡報、網站或是其他文件。
 
 <MediaTabs
   aria-label="Codex App 右側面板"
   :items="[
     {
-      label: '檢閱（審查）｜Diff',
+      label: '檢閱（審查）',
       title: '先看這次到底改了什麼',
       description: '在 Git 專案裡，可以用檢閱畫面比較新增與刪除的內容。Codex 說「已完成」之後，先看變更範圍是否符合交辦，再決定要不要繼續調整。',
       image: '/images/quick-start/app-right-review.webp',
@@ -52,7 +52,7 @@ pageClass: quickstart-story
       fit: 'compact'
     },
     {
-      label: '終端機｜Terminal',
+      label: '終端機',
       title: '看指令、測試與錯誤訊息',
       description: 'Codex 執行安裝、測試或建置時，終端會留下實際輸出。網站跑不起來或測試失敗，不必只看最後一句摘要，打開終端通常更快找到原因。',
       image: '/images/quick-start/app-right-terminal.webp',
@@ -60,7 +60,7 @@ pageClass: quickstart-story
       fit: 'compact'
     },
     {
-      label: '瀏覽器｜Browser',
+      label: '瀏覽器',
       title: '直接看網站現在長什麼樣子',
       description: '做網站或互動頁面時，可以在 App 裡預覽結果，也能操作按鈕、表單與不同頁面。畫面和需求不一樣，就留在原本任務裡繼續說要改哪裡。',
       image: '/images/quick-start/app-right-browser.webp',
@@ -68,7 +68,7 @@ pageClass: quickstart-story
       fit: 'compact'
     },
     {
-      label: '檔案｜Files',
+      label: '檔案',
       title: '打開 Codex 建立或修改的檔案',
       description: '報告、Markdown、CSV 或其他成果，都可以從檔案面板直接打開。除了確認檔名，也要抽查數字、段落與格式，確定內容真的符合這次交辦。',
       image: '/images/quick-start/app-right-files.webp',
