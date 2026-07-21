@@ -41,7 +41,7 @@ pageClass: quickstart-story ide-official-page
 
 ## 開始使用
 
-安裝或啟用 Codex、登入帳號，便能從編輯器裡已開啟的脈絡開始對話。
+安裝或啟用 Codex 並登入帳號後，就能直接從編輯器裡已開啟的內容開始對話。
 
 <div class="ide-quickstart" aria-label="Codex IDE 開始使用步驟">
   <section><span>1</span><h3>安裝或啟用 Codex</h3><p>VS Code、Cursor 與 Windsurf 使用 Codex extension；Xcode 與 JetBrains 使用各自的整合入口。</p></section>
@@ -49,7 +49,7 @@ pageClass: quickstart-story ide-official-page
   <section><span>3</span><h3>開始第一段對話</h3><p>開啟專案後，先請 Codex 說明程式、做一個聚焦修改，或協助追查錯誤。</p></section>
 </div>
 
-<figure class="ide-install-shot"><img src="/images/quick-start/install-codex-extension-vscode.webp" width="1672" height="941" alt="VS Code Marketplace 中的 Codex extension 安裝頁面" loading="lazy" decoding="async"><figcaption>VS Code Marketplace 中的官方 Codex extension；安裝後重新啟用 extension，即可從側邊欄開啟。</figcaption></figure>
+<figure class="ide-install-shot"><img src="/images/quick-start/install-codex-extension-vscode.webp" width="1672" height="941" alt="VS Code Marketplace 中的 Codex extension 安裝頁面" loading="lazy" decoding="async"><figcaption>VS Code Marketplace 中的官方 Codex extension；安裝並重新啟用 extension 後，就能從側邊欄開啟 Codex。</figcaption></figure>
 
 ::: tip 先留下 Git checkpoint
 開始修改前先確認工作區狀態；完成後再查看 Diff。這樣更容易比較、保留或還原變更。
@@ -65,14 +65,14 @@ pageClass: quickstart-story ide-official-page
 ## 02｜在程式碼旁檢查修改
 
 <div class="ide-story-grid ide-story-grid--review">
-  <div class="ide-story-copy"><p>Codex 完成工作後，先讀摘要，再查看實際改動的行。來源、修改原因與後續對話放在同一個畫面，比只看「完成」訊息更容易判斷結果是否符合需求。</p><ol><li><b>摘要：</b>確認任務目的、修改檔案與驗證結果。</li><li><b>Diff：</b>逐行檢查新增與刪除，留意是否超出範圍。</li><li><b>追問：</b>方向正確但細節不對時，留在同一段對話補充條件。</li></ol><p>需要檢查目前 Git 變更時，也可以輸入 <code>/review</code>。</p></div>
+  <div class="ide-story-copy"><p>Codex 完成工作後，先讀摘要，再查看實際修改的程式碼。來源、修改原因和後續對話都在同一個畫面，比只看一句「完成」更容易判斷結果。</p><ol><li><b>摘要：</b>確認任務目的、修改檔案與驗證結果。</li><li><b>Diff：</b>逐行檢查新增與刪除，留意是否超出範圍。</li><li><b>追問：</b>方向正確但細節不對時，留在同一段對話補充條件。</li></ol><p>需要檢查目前 Git 變更時，也可以輸入 <code>/review</code>。</p></div>
   <figure class="ide-review-shot"><img src="/images/quick-start/codex-ide-official.webp" width="1600" height="900" alt="Codex IDE 顯示程式碼 Diff、修改摘要與 Review 按鈕" loading="lazy" decoding="async"><figcaption>官方示意：摘要、Diff、修改檔案與後續輸入框都留在 IDE 裡。</figcaption></figure>
 </div>
 
 ## 03｜任務變大時再交出去
 
 <div class="ide-story-grid">
-  <div class="ide-story-copy"><p>快速、需要立即互動的修改適合留在 IDE。若任務範圍更廣、需要較長時間或你想先處理別的事，可以連接 Codex Web，把工作交給 cloud 執行，再回到可檢查的結果。</p><p>交付前仍要寫清楚目標、驗收方式與不要改動的範圍；切換執行位置不會自動補上缺少的背景。</p></div>
+  <div class="ide-story-copy"><p>需要立即來回調整的小修改，適合留在 IDE。任務範圍較廣、需要跑一段時間，或你想先處理別的事時，可以把工作交給 Codex cloud，完成後再回來檢查結果。</p><p>交付前仍要寫清楚目標、驗收方式與不要改動的範圍；切換執行位置不會自動補上缺少的背景。</p></div>
   <div class="ide-delegate-panel"><small>CONTINUE IN</small><div><section><span>⌘</span><b>Work locally</b><p>快速修改、逐步追問、立即檢查 Diff。</p></section><i>→</i><section><span>☁</span><b>Cloud</b><p>較長任務、較大範圍、背景持續執行。</p></section></div><footer><span>openai / codex-course</span><b>Ready to delegate ✓</b></footer></div>
 </div>
 
@@ -93,7 +93,7 @@ pageClass: quickstart-story ide-official-page
 | Xcode | 開啟 coding assistant、新增對話，選擇 Codex agent |
 | JetBrains | 開啟 AI Chat，選擇 Codex |
 
-入口可能依 IDE、版本與帳號設定不同。第一次使用時先完成 **Sign in with ChatGPT**，再確認 Codex 能讀到目前的 Workspace。
+不同 IDE、版本和帳號設定，看到的入口可能不一樣。第一次使用時先完成 **Sign in with ChatGPT**，再確認 Codex 能讀到目前的 Workspace。
 
 ## 下一步
 
