@@ -45,7 +45,6 @@ export default defineConfig({
               { text: 'Prompting', link: '/quick-start/prompting' },
               { text: 'Slash Commands', link: '/quick-start/using-slash' },
               { text: 'Follow Up', link: '/quick-start/follow-up' },
-              { text: 'Using Goals in Codex', link: '/quick-start/goals' },
               { text: 'Credits 精打細算', link: '/quick-start/token-efficiency' }
             ]
           }
@@ -110,7 +109,6 @@ export default defineConfig({
                 { text: 'Prompting', link: '/quick-start/prompting' },
                 { text: 'Slash Commands', link: '/quick-start/using-slash' },
                 { text: 'Follow Up', link: '/quick-start/follow-up' },
-                { text: 'Using Goals in Codex', link: '/quick-start/goals' },
                 { text: 'Credits 精打細算', link: '/quick-start/token-efficiency' }
               ]
             }
