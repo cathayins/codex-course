@@ -13,8 +13,8 @@ pageClass: quickstart-story
 ## 先判斷：改現在，還是排下一步？
 
 <div class="work-while-running">
-  <section><span>Steer｜引導</span><h3>現在就要修正方向</h3><p>網站檢查到一半，發現區塊太大、元素間距不對，或文案偏離需求，就直接補充。Codex 會當下調整，不用等完成後整包重做。</p></section>
-  <section><span>Queue｜排入佇列</span><h3>目前先做完，下一步接著做</h3><p>網站還在審查，但你已經知道下一步要整理預覽連結與待確認項目。先把訊息排進 Queue，眼前的工作不會被打斷。</p></section>
+  <section><span>Steer｜引導</span><h3>現在就要修正方向</h3><p>旅遊行程正在製作，這時才決定最後要交付成一份 HTML，就立刻補充。Codex 會沿用目前的規劃，改用新的格式繼續完成。</p></section>
+  <section><span>Queue｜排入佇列</span><h3>目前先做完，下一步接著做</h3><p>HTML 還在建立，但你已經知道下一步要檢查手機版與待確認項目。先把驗收訊息排進 Queue，眼前的工作不會被打斷。</p></section>
 </div>
 
 補充內容和目前任務無關時，另外開新任務。例如行銷分析還在跑，你卻想整理另一場會議的筆記，兩邊分開會比較清楚。
@@ -34,7 +34,7 @@ pageClass: quickstart-story
       steps: [
         {
           title: '看見偏差',
-          description: '畫面尺寸、間距、文案或處理方式不符合需求。'
+          description: '目前產出方向和真正想要的交付格式不同。'
         },
         {
           title: '補上具體指令',
@@ -45,7 +45,7 @@ pageClass: quickstart-story
           description: 'Codex 套用補充內容，接著完成目前的工作。'
         }
       ],
-      code: '這個區塊太大，請縮小 20%，並把兩個按鈕的間距改為 16px。'
+      code: '提供給我一份可以直接打開的 HTML 旅遊計畫。請建立 `tokyo-travel-plan.html`。'
     },
     {
       label: 'Queue｜排入佇列',
@@ -66,7 +66,7 @@ pageClass: quickstart-story
           description: '目前工作結束後，Codex 再依序處理佇列訊息。'
         }
       ],
-      code: '這件事完成後，請整理預覽連結與待確認項目。',
+      code: '網站我想要有事前 checklist 功能。',
       note: 'Queue 不是平行執行。如果 B 與 A 無關，就另外開新任務。'
     }
   ]"
@@ -77,8 +77,8 @@ pageClass: quickstart-story
 判斷時看目標、檔案與 Context 是否相同，不用看訊息長短。
 
 <div class="review-flow">
-  <section><span>Steer｜現在</span><b>同一目標，立即修正</b><p>剛補上的限制會改變眼前結果，例如尺寸、文案或檔案處理方式要立刻調整。用 Steer 中斷原本方向，直接套用新指令。</p></section>
-  <section><span>Queue｜下一步</span><b>同一目標，稍後接續</b><p>下一步需要用到目前產出，例如分析完成後再整理摘要。先排進 Queue，等這一輪完成後接著做。</p></section>
+  <section><span>Steer｜現在</span><b>同一目標，立即修正</b><p>旅遊內容不變，但交付格式要從一般文字改成 HTML。用 Steer 補上新方向，Codex 會沿用目前素材與行程繼續製作。</p></section>
+  <section><span>Queue｜下一步</span><b>同一目標，稍後接續</b><p>下一步需要用到目前產出，例如 HTML 完成後再檢查手機版與按鈕。先排進 Queue，等這一輪完成後接著做。</p></section>
   <section><span>New Thread｜獨立</span><b>不同目標，分開執行</b><p>工作跟目前結果無關、需要不同脈絡，或想平行處理，就開新 Thread。不要把兩件事的指示塞在同一段對話裡。</p></section>
 </div>
 

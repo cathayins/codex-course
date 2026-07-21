@@ -19,6 +19,10 @@ pageClass: quickstart-story
 
 官方目前的預設 Power 使用 **5.6 Sol + Medium reasoning**。需要更深分析時往 Smarter 調整；希望更快或降低使用量時往 Faster 調整。Advanced 可以指定模型與 reasoning effort。
 
+::: tip 東京旅遊 Demo 先沿用預設值
+這次會讀需求、蒐集資料，再規劃一趟短旅行。先用畫面上的預設 Model 與 reasoning 就好；若資料整理或行程取捨明顯太淺，再提高 reasoning。課堂上不用逐一比較所有模型。
+:::
+
 ## 官方推薦模型
 
 <div class="recommended-models" aria-label="OpenAI 官方推薦模型比較">

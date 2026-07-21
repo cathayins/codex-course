@@ -2418,6 +2418,193 @@ body {
   line-height: 1.5;
 }
 
+/* Engineer lesson: make the human-to-agent handoff feel like one composed system. */
+.engineer-role-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  margin: 28px 0 36px;
+}
+
+.engineer-role-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 264px;
+  flex-direction: column;
+  margin: 0;
+  padding: 27px;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+}
+
+.engineer-role-card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--engineer-role-accent);
+  content: "";
+}
+
+.engineer-role-card::after {
+  position: absolute;
+  top: -24px;
+  right: 8px;
+  color: var(--engineer-role-number);
+  font-family: var(--vp-font-family-mono);
+  font-size: 108px;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.engineer-role-card.is-human {
+  --engineer-role-accent: #8fc7f4;
+  --engineer-role-number: rgb(255 255 255 / 5%);
+  border-color: #29465f;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(77 146 205 / 24%), transparent 40%),
+    linear-gradient(145deg, #182d40, #0f1d2a 74%);
+  box-shadow: 0 16px 34px rgb(15 29 42 / 18%);
+}
+
+.engineer-role-card.is-human::after {
+  content: "01";
+}
+
+.engineer-role-card.is-agent {
+  --engineer-role-accent: var(--vp-c-brand-1);
+  --engineer-role-number: rgb(22 119 210 / 6%);
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 34%, var(--vp-c-divider));
+  background:
+    radial-gradient(circle at 100% 0%, rgb(22 119 210 / 14%), transparent 40%),
+    linear-gradient(145deg, #edf7ff, var(--vp-c-bg) 72%);
+  box-shadow: 0 16px 34px rgb(23 88 145 / 12%);
+}
+
+.engineer-role-card.is-agent::after {
+  content: "02";
+}
+
+.engineer-role-card__eyebrow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--vp-c-brand-1);
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .09em;
+}
+
+.engineer-role-card__eyebrow::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentcolor;
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentcolor 14%, transparent);
+  content: "";
+}
+
+.engineer-role-card.is-human .engineer-role-card__eyebrow {
+  color: #9ed2fb;
+}
+
+.engineer-role-card h3 {
+  position: relative;
+  z-index: 1;
+  margin: 19px 0 0;
+  color: var(--vp-c-text-1);
+  font-size: clamp(23px, 2.4vw, 28px);
+  line-height: 1.3;
+}
+
+.engineer-role-card.is-human h3 {
+  color: #f7fbff;
+}
+
+.vp-doc .engineer-role-card > p {
+  position: relative;
+  z-index: 1;
+  margin: 14px 0 0;
+  color: var(--vp-c-text-2);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.vp-doc .engineer-role-card.is-human > p {
+  color: #c7d7e4;
+}
+
+.engineer-role-card__tags {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.engineer-role-card__tags span {
+  padding: 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 24%, var(--vp-c-divider));
+  border-radius: 999px;
+  color: #225f96;
+  background: rgb(255 255 255 / 70%);
+  font-family: var(--vp-font-family-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.2;
+}
+
+.engineer-role-card.is-human .engineer-role-card__tags span {
+  border-color: rgb(158 210 251 / 28%);
+  color: #d8edfd;
+  background: rgb(255 255 255 / 7%);
+}
+
+.engineer-role-split__handoff {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  align-self: center;
+  place-items: center;
+  margin: 0;
+  border: 1px solid #b9cee0;
+  border-radius: 50%;
+  color: var(--vp-c-brand-1);
+  background: #fff;
+  box-shadow: 0 8px 20px rgb(23 88 145 / 14%);
+  font-family: var(--vp-font-family-mono);
+  font-size: 17px;
+  font-weight: 750;
+}
+
+@media (max-width: 720px) {
+  .engineer-role-split {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .engineer-role-card {
+    min-height: 0;
+    padding: 24px;
+  }
+
+  .engineer-role-split__handoff {
+    margin: -1px 0;
+    transform: rotate(90deg);
+  }
+}
+
 .syntax-grid kbd {
   display: inline-flex;
   min-width: 42px;
@@ -3941,6 +4128,125 @@ body {
 .screen-zones section,
 .model-grid section {
   min-height: 190px;
+}
+
+.agent-readable-grid section:nth-child(2) {
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 34%, var(--vp-c-divider));
+  background:
+    radial-gradient(circle at 100% 0%, rgb(22 119 210 / 11%), transparent 38%),
+    linear-gradient(150deg, #edf7ff, var(--vp-c-bg) 74%);
+  box-shadow: 0 12px 28px rgb(23 88 145 / 9%);
+}
+
+.agent-readable-loop {
+  margin: 28px 0 38px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 27%, var(--vp-c-divider));
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(22 119 210 / 11%), transparent 32%),
+    linear-gradient(145deg, #f1f8fd, var(--vp-c-bg) 68%);
+  box-shadow: 0 14px 32px rgb(23 88 145 / 9%);
+}
+
+.agent-readable-loop > span,
+.agent-readable-loop > strong {
+  display: block;
+}
+
+.agent-readable-loop > span {
+  color: var(--vp-c-brand-1);
+  font-family: var(--vp-font-family-mono);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .1em;
+}
+
+.agent-readable-loop > strong {
+  margin-top: 7px;
+  color: var(--vp-c-text-1);
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.vp-doc .agent-readable-loop ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vp-doc .agent-readable-loop li {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 18%, var(--vp-c-divider));
+  border-radius: 9px;
+  background: rgb(255 255 255 / 78%);
+}
+
+.vp-doc .agent-readable-loop li:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: -9px;
+  z-index: 2;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 1px solid #c1d4e4;
+  border-radius: 50%;
+  color: var(--vp-c-brand-1);
+  background: #fff;
+  content: "→";
+  font-family: var(--vp-font-family-mono);
+  font-size: 10px;
+  font-weight: 750;
+  transform: translateY(-50%);
+}
+
+.agent-readable-loop li b {
+  color: var(--vp-c-text-1);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.agent-readable-loop li small {
+  color: var(--vp-c-text-2);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.vp-doc .agent-readable-loop > p {
+  margin: 19px 0 0;
+  padding-top: 17px;
+  border-top: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 15%, var(--vp-c-divider));
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+@media (max-width: 720px) {
+  .agent-readable-loop {
+    padding: 20px;
+  }
+
+  .vp-doc .agent-readable-loop ol {
+    grid-template-columns: 1fr;
+  }
+
+  .vp-doc .agent-readable-loop li:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -9px;
+    transform: translateX(50%) rotate(90deg);
+  }
 }
 
 .codex-use-case-gallery {

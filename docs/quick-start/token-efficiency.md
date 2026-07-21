@@ -48,8 +48,8 @@ pageClass: quickstart-story credit-savings-page
       description: '說明目標、範圍、已知問題、完成條件與限制，可以減少 Codex 猜測和重試的次數。',
       visual: 'prompt',
       steps: [
-        { title: '建議 Prompt', description: '只檢查 src/checkout 的付款錯誤；完成後執行指定測試，回覆修改檔案與測試結果。' },
-        { title: '避免的 Prompt', description: '請把整個專案看過，順便把所有問題都修好。' }
+        { title: '建議 Prompt', description: '先依 tokyo-trip-brief.txt 蒐集需要的資訊，再用新的研究素材規劃行程。' },
+        { title: '避免的 Prompt', description: '幫我查完整個東京，把所有景點、餐廳和交通都放進去。' }
       ],
       note: '建議先給目標、範圍、完成條件與驗收方式；避免一次塞進整個 Repository，也不要只給模糊需求。'
     },
@@ -114,6 +114,8 @@ pageClass: quickstart-story credit-savings-page
 </div>
 
 要省 Token，就縮小 Context、減少重複、控制輸出，並讓同一個 Session 只累積和目前目標有關的進度。
+
+東京旅遊 Demo 的每一輪只做一件事：先蒐集資料，再確認規劃方向與準則，接著製作計畫書，最後決定交付格式。這比一開始同時要求搜尋、排行程、做網頁，更容易檢查，也能減少整份重做。
 
 ## 參考資料
 

@@ -43,20 +43,20 @@ pageClass: quickstart-story
   aria-label="Codex App 右側面板"
   :items="[
     {
+      label: '檔案',
+      title: '打開 Codex 建立或修改的檔案',
+      description: '報告、Markdown、CSV 或其他成果，都可以從檔案面板直接打開。除了確認檔名，也要抽查數字、段落與格式，確定內容真的符合這次交辦。',
+      image: '/images/quick-start/app-right-files-zh-tw.png',
+      alt: 'Codex App 主任務與右側檔案面板，顯示工作資料夾的檔案樹',
+      fit: 'compact'
+    },
+    {
       label: '檢閱（審查）',
       title: '先看這次到底改了什麼',
       description: '在 Git 專案裡，可以用檢閱畫面比較新增與刪除的內容。Codex 說「已完成」之後，先看變更範圍是否符合交辦，再決定要不要繼續調整。',
       image: '/images/quick-start/app-right-review-zh-tw.png',
       alt: 'Codex App 主任務與右側檢閱面板，顯示分支差異和變更檔案',
       note: '一般文件或試算表不一定會顯示程式碼 Diff；這時改用「檔案」直接打開成品。',
-      fit: 'compact'
-    },
-    {
-      label: '終端機',
-      title: '看指令、測試與錯誤訊息',
-      description: 'Codex 執行安裝、測試或建置時，終端會留下實際輸出。網站跑不起來或測試失敗，不必只看最後一句摘要，打開終端通常更快找到原因。',
-      image: '/images/quick-start/app-right-terminal-zh-tw.png',
-      alt: 'Codex App 主任務與右側終端，顯示目前工作資料夾與命令列輸出',
       fit: 'compact'
     },
     {
@@ -68,11 +68,11 @@ pageClass: quickstart-story
       fit: 'compact'
     },
     {
-      label: '檔案',
-      title: '打開 Codex 建立或修改的檔案',
-      description: '報告、Markdown、CSV 或其他成果，都可以從檔案面板直接打開。除了確認檔名，也要抽查數字、段落與格式，確定內容真的符合這次交辦。',
-      image: '/images/quick-start/app-right-files-zh-tw.png',
-      alt: 'Codex App 主任務與右側檔案面板，顯示工作資料夾的檔案樹',
+      label: '終端機',
+      title: '看指令、測試與錯誤訊息',
+      description: 'Codex 執行安裝、測試或建置時，終端會留下實際輸出。網站跑不起來或測試失敗，不必只看最後一句摘要，打開終端通常更快找到原因。',
+      image: '/images/quick-start/app-right-terminal-zh-tw.png',
+      alt: 'Codex App 主任務與右側終端，顯示目前工作資料夾與命令列輸出',
       fit: 'compact'
     }
   ]"

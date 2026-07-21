@@ -21,12 +21,15 @@
 
 ## App QuickStart 檔案
 
-在一個名為 `codex-quickstart` 的資料夾中準備：
+在一個名為 `tokyo-travel-demo` 的資料夾中準備：
 
-- `quickstart-sharepoint-brief.txt`：可從 [`docs/public/demo-assets/quickstart-sharepoint-brief.txt`](docs/public/demo-assets/quickstart-sharepoint-brief.txt) 複製。
-- 不要預先放入 `workshop-plan.md`，讓學員看見 Codex 從來源檔建立新成果。
+- `tokyo-trip-brief.txt`：可從 [`docs/public/demo-assets/tokyo-trip-brief.txt`](docs/public/demo-assets/tokyo-trip-brief.txt) 複製。
+- 不要預先放入 `tokyo-travel-research.md` 或 `tokyo-travel-plan.html`，讓學員看見 Codex 先蒐集素材，再建立最後成果。
 
-完成版備援：預先準備一份 `workshop-plan.md`，但放在另一個不會被現場 task 讀到的資料夾。
+備援素材放在另一個不會被現場 task 讀到的資料夾：
+
+- 搜尋太慢時，將 [`docs/public/demo-assets/tokyo-travel-research-fallback.md`](docs/public/demo-assets/tokyo-travel-research-fallback.md) 複製成 `tokyo-travel-research.md`，再繼續 `/plan`。
+- HTML 產生太慢時，打開 [`docs/public/demo-assets/tokyo-travel-plan-fallback.html`](docs/public/demo-assets/tokyo-travel-plan-fallback.html)。
 
 ## Marketing Demo 檔案
 
@@ -112,7 +115,7 @@
 >
 > 左邊還有一個常見混淆：Project 會綁定一個資料夾，適合需要持續留下成果的工作；Task 可以是一次性的對話。今天要建立檔案，所以我們從 Project 開始。
 
-【操作】依序點一下右側的 Review、Terminal、Browser、Files；每個只停三到五秒。
+【操作】依序點一下右側的 Files、Review、Browser、Terminal；每個只停三到五秒。
 
 【講】
 
@@ -126,7 +129,7 @@
 
 ### 9:00–10:30｜選資料夾
 
-【操作】在「專案」旁按 **＋** → **使用現有資料夾** → 選擇 `codex-quickstart`。
+【操作】在「專案」旁按 **＋** → **使用現有資料夾** → 選擇 `tokyo-travel-demo`。
 
 【講】
 
@@ -142,49 +145,84 @@
 
 ### 11:00–15:30｜送出第一個任務
 
-【操作】用 `@` 從選單選取 `quickstart-sharepoint-brief.txt`，貼上並送出：
+【操作】用 `@` 從選單選取 `tokyo-trip-brief.txt`，貼上並送出：
 
 ```text
-請根據 @quickstart-sharepoint-brief.txt 建立 `workshop-plan.md`。
+請讀取 @tokyo-trip-brief.txt，蒐集規劃這趟東京旅行會用到的資訊。
 
-內容依序包含：
-1. 活動摘要
-2. 60 分鐘議程
-3. 課前準備
-4. 風險與待確認事項
+可以搜尋網路，優先參考官方或可信的來源。
+請把蒐集到的內容整理成 `tokyo-travel-research.md`，
+保留來源連結與查詢日期；還不能確認的內容請清楚標示。
 
-只使用來源檔已提供的資訊；缺少的內容標示「待確認」。
-不要修改來源檔，也不要上傳或發布任何內容。
+這一輪只做資料蒐集與整理，先不要安排每天的行程。
 ```
 
 【講】
 
-> 回頭看這段 Prompt，其實就四件事：我要它做工作坊計畫；來源是剛才用 `@` 選的檔案；成品要有指定章節和檔名；最後補上不能猜、不能改來源、不能發布。
+> 第一步先蒐集資料，不急著排行程。來源是剛才用 `@` 選的需求檔，再讓 Codex 找到規劃會用到的最新資訊，整理成一份新的研究素材。外部資料要保留來源，後面才能核對。
 >
 > `@` 不只是把檔名打進句子。我會從選單選取，讓 Codex 確實帶入這份檔案或能力。
 
-【看點】Codex 是否讀到正確檔案、是否建立 `workshop-plan.md`、是否把來源沒寫的資訊標成待確認。
-
-## 15:30–18:30｜驗收與 Follow-up
-
-【操作】從 Files 打開 `workshop-plan.md`，快速檢查標題、活動時間、預算、限制與「待確認」。
-
-【講】
-
-> 現在直接打開檔案，先查日期、時間、預算和限制。這幾個地方最不能出錯。
->
-> 內容大致正確，只是格式不好用，留在原任務裡改就好。
-
-【操作】送出一則 Follow-up：
+【操作】從 Files 確認 `tokyo-travel-research.md` 已建立，再送出：
 
 ```text
-請把議程改成表格，欄位為「時間、活動、負責人、完成標準」。
-來源沒有負責人的項目維持「待確認」，不要自行指定人名。
+/plan
+
+請讀取 @tokyo-trip-brief.txt 與 @tokyo-travel-research.md，
+規劃如何產出一份完整的東京旅遊規劃計畫書。
+
+請先提出這趟旅程的規劃方向、安排行程時要遵守的準則、
+遇到衝突時的取捨原則、計畫書應包含的內容，以及完成後的檢查方式。
+
+最終成果要是一份可以實際使用的旅遊規劃計畫書，
+但這個階段先確認規劃方法與計畫書架構，
+先不要建立最終成品。
 ```
 
 【講】
 
-> 第一句 Prompt 不用寫到完美。先拿到第一版，再用 Follow-up 把它改到能用。現在就會改變眼前結果，用 Steer；想讓這輪先做完、下一步再接著做，用 Queue；如果是不同目標，就開 New Task。
+> Plan 會同時參考原始需求和剛蒐集的新素材，但這時還不直接排行程。先確認它打算依照哪些方向與準則規劃，以及最後的計畫書會包含什麼；方向不對，可以在動手前修正。
+
+【操作】確認 Plan 後送出：
+
+```text
+請依照剛才確認的規劃方向與準則，
+開始製作完整的東京旅遊規劃計畫書。
+```
+
+【看點】Codex 是否同時使用需求檔與研究素材，並依照剛確認的方向與準則開始製作計畫書。
+
+## 15:30–18:30｜用 Steer 改成交付 HTML，再驗收
+
+【操作】趁 Codex 還在製作行程時，用 Steer 送出：
+
+```text
+我希望最後交付的是一份可以直接打開的 HTML 旅遊計畫。
+請改成建立 `tokyo-travel-plan.html`，並繼續完成目前的工作。
+```
+
+【講】
+
+> 行程內容沒有換題，但我現在才補上真正需要的交付格式。這會直接改變眼前成果，所以用 Steer，不用等一般文字做完再重來。
+
+【操作】從 Files 打開 `tokyo-travel-plan.html`，再用 Browser 預覽。快速檢查日期、航班、住宿、預約、飲食限制與「出發前確認」。
+
+【講】
+
+> 現在直接打開檔案，先查日期、航班、住宿、預約和飲食限制。這幾個地方最不能出錯。
+>
+> 內容大致正確，只是格式不好用，留在原任務裡改就好。
+
+【操作】把下一步排進 Queue：
+
+```text
+這一版完成後，請檢查手機版是否能正常閱讀、互動是否可操作，
+並列出仍需要出發前確認的資訊。
+```
+
+【講】
+
+> 第一句 Prompt 不用把後面所有要求都塞進去。要改變眼前結果，用 Steer；要等目前成果完成後再驗收，就用 Queue；如果是不同目標，再開 New Task。
 
 如果第一個任務已完成，Follow-up 直接送出即可，不必為了展示 Steer 人為拖長任務。
 
@@ -200,9 +238,9 @@
 
 ### QuickStart 超時版（剩 60 秒時）
 
-立刻停止等待，打開課前完成的 `workshop-plan.md`：
+立刻停止等待，打開課前準備的 `tokyo-travel-plan-fallback.html`：
 
-> 還在跑，我們直接切完成版。來源是同一份 brief，檔案也留在同一個 Project；來源沒寫負責人，它就保留「待確認」。這三件事有做到，示範就成立。
+> 還在跑，我們直接切完成版。來源是同一份旅遊需求，成果是可以操作的 HTML；還沒核對的資訊集中放在「出發前確認」。這三件事有做到，示範就成立。
 
 ### QuickStart 課後閱讀
 
