@@ -29,19 +29,27 @@ pageClass: quickstart-story
     </div>
   </div>
   <div class="sidebar-guide__copy">
-    <h3>專案 vs 任務｜長期工作或是臨時任務</h3>
-    <p><strong>專案</strong> <br> 專案下的對話都屬於一個特定的資料夾。Codex 可以讀取、建立或修改裡面的檔案，適合網站、報告、資料整理等需要持續留下成果的工作。</p>
-    <p><strong>任務</strong> <br> 任務像是臨時對話，不用指定資料夾。適合先問問題、整理想法或做一次性的內容；確定要動到本機檔案時，再從專案開始會比較清楚。</p>
+    <h3>專案 vs 任務｜持續工作或臨時對話</h3>
+    <p><strong>專案</strong> <br> 專案會綁定一個資料夾。Codex 可以讀取、建立或修改裡面的檔案，適合網站、報告、資料整理等需要持續留下成果的工作。</p>
+    <p><strong>任務</strong> <br> 任務不用指定資料夾，適合先問問題、整理想法或處理一次性內容。確定要修改本機檔案時，再建立專案會更清楚。</p>
   </div>
 </div>
 
 ## 側邊欄｜Side Panel
 
-透過側邊欄，可隨時檢視 Codex 生成的文件、程式、簡報、網站或是其他文件。
+側邊欄集中顯示 Codex 建立的文件、程式、簡報、網站，以及執行過程留下的資訊。
 
 <MediaTabs
   aria-label="Codex App 右側面板"
   :items="[
+    {
+      label: '檔案',
+      title: '打開 Codex 建立或修改的檔案',
+      description: '報告、Markdown、CSV 或其他成果，都可以從檔案面板直接打開。除了確認檔名，也要抽查數字、段落與格式，確定內容真的符合這次交辦。',
+      image: '/images/quick-start/app-right-files-zh-tw.png',
+      alt: 'Codex App 主任務與右側檔案面板，顯示工作資料夾的檔案樹',
+      fit: 'compact'
+    },
     {
       label: '檢閱（審查）',
       title: '先看這次到底改了什麼',
@@ -49,14 +57,6 @@ pageClass: quickstart-story
       image: '/images/quick-start/app-right-review-zh-tw.png',
       alt: 'Codex App 主任務與右側檢閱面板，顯示分支差異和變更檔案',
       note: '一般文件或試算表不一定會顯示程式碼 Diff；這時改用「檔案」直接打開成品。',
-      fit: 'compact'
-    },
-    {
-      label: '終端機',
-      title: '看指令、測試與錯誤訊息',
-      description: 'Codex 執行安裝、測試或建置時，終端會留下實際輸出。網站跑不起來或測試失敗，不必只看最後一句摘要，打開終端通常更快找到原因。',
-      image: '/images/quick-start/app-right-terminal-zh-tw.png',
-      alt: 'Codex App 主任務與右側終端，顯示目前工作資料夾與命令列輸出',
       fit: 'compact'
     },
     {
@@ -68,11 +68,11 @@ pageClass: quickstart-story
       fit: 'compact'
     },
     {
-      label: '檔案',
-      title: '打開 Codex 建立或修改的檔案',
-      description: '報告、Markdown、CSV 或其他成果，都可以從檔案面板直接打開。除了確認檔名，也要抽查數字、段落與格式，確定內容真的符合這次交辦。',
-      image: '/images/quick-start/app-right-files-zh-tw.png',
-      alt: 'Codex App 主任務與右側檔案面板，顯示工作資料夾的檔案樹',
+      label: '終端機',
+      title: '看指令、測試與錯誤訊息',
+      description: 'Codex 執行安裝、測試或建置時，終端會留下實際輸出。網站跑不起來或測試失敗，不必只看最後一句摘要，打開終端通常更快找到原因。',
+      image: '/images/quick-start/app-right-terminal-zh-tw.png',
+      alt: 'Codex App 主任務與右側終端，顯示目前工作資料夾與命令列輸出',
       fit: 'compact'
     }
   ]"
@@ -87,7 +87,7 @@ pageClass: quickstart-story
     {
       label: '一般',
       title: '一般常用設定',
-      description: '一般設定會影響檔案怎麼打開、長對話是否顯示 Context 使用量，以及工作進行中送出的下一則訊息要立即介入還是先排隊。下面三項是課程示範建議，不是唯一正確的設定。',
+      description: '一般設定會決定檔案從哪裡開啟、是否顯示 Context 使用量，以及 Codex 工作時，新訊息要立即介入還是先排隊。下面是課程建議的設定，你也可以依自己的工作方式調整。',
       image: '/images/quick-start/settings-general-zh-tw.png',
       alt: 'Codex App 中文一般設定，檔案預設開啟目的地設為 File Explorer',
       settingsDemo: 'general',
@@ -114,7 +114,7 @@ pageClass: quickstart-story
     {
       label: '寵物',
       title: '為了您的心情好，可以喚起一隻寵物',
-      description: 'Pet 可以浮在其他視窗上方，讓你不用一直切回 Codex 也能看到任務狀態。它會分成 Running、Needs input、Ready 與 Blocked；同時有多個任務時，會先提醒需要你回覆或核准的那一個。選哪隻只改外觀，不會改變 Codex 的能力。',
+      description: 'Pet 會浮在其他視窗上方，不必切回 Codex 也能看到任務狀態。狀態分成 Running、Needs input、Ready 與 Blocked；同時有多個任務時，它會先提醒需要你回覆或核准的那一個。選哪隻只會改變外觀，不會影響 Codex 的能力。',
       image: '/images/quick-start/settings-pets-zh-tw.png',
       alt: 'Codex App 中文寵物設定，顯示 Codex、Dewey、Fireball 與 Hoots 等角色',
       note: '可從 Settings > Pets 選擇角色，再輸入 /pet 叫出或收起。Pet 位置會保留到下次開啟 App。',
@@ -123,7 +123,7 @@ pageClass: quickstart-story
     {
       label: '個人化',
       title: '如何讓 Codex 更懂你',
-      description: '記憶會把過去任務產生的偏好與脈絡帶到新任務。課程示範重視每次操作都能重現，建議先關閉「啟用記憶」，讓結果主要依照當次 Prompt、檔案與設定產生。日常長期使用時，再依需要開啟。',
+      description: '目前記憶功能仍在實驗階段（Beta），建議可先關閉。關閉後，結果會以當次 Prompt、檔案與設定為主；之後可再依需要開啟。',
       image: '/images/quick-start/settings-memory-zh-tw.png',
       alt: 'Codex App 中文個人化設定，顯示自訂指示與記憶選項，啟用記憶目前關閉',
       settingsDemo: 'memory',
@@ -163,7 +163,7 @@ pageClass: quickstart-story
     {
       label: '使用量',
       title: '查看使用量狀況',
-      description: '一般月訂閱帳號主要看到週期還剩多少百分比，以及下一次重設時間。採 Credits 計費的 Enterprise／Edu Workspace 會從公司的共享額度扣除；管理員可以設定 Workspace、群組或個別使用者的月額度，所以每位使用者看到的是自己目前可用的 Credits 上限與已使用量。',
+      description: '一般月訂閱帳號會顯示本週期的剩餘百分比和下次重設時間。採 Credits 計費的 Enterprise／Edu Workspace 則使用公司共享額度；管理員可以替 Workspace、群組或個別使用者設定月額度。',
       image: '/images/quick-start/settings-usage.webp',
       alt: 'Codex App 使用量與帳單設定，顯示方案、點數與使用上限',
       table: {
@@ -181,7 +181,7 @@ pageClass: quickstart-story
   ]"
 />
 
-課程先把「後續跟進行為」設為 Queue；一般補充會等目前工作完成，真的需要立即改方向時再切換成 Steer。下一頁會用實際任務比較兩者。
+課程會先把「後續跟進行為」設為 Queue，讓一般補充等目前工作完成後再執行；需要立刻改方向時，才切換成 Steer。
 
 ## 參考資料
 

@@ -1,6 +1,6 @@
 ---
 title: What Is Codex
-description: 從工作環境與交付方式理解 ChatGPT、Codex，以及 Codex 為何不再只屬於工程師。
+description: 從工作環境與交付方式理解 ChatGPT 和 Codex 的差別，以及 Codex 為什麼不只適合工程師。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story chatgpt-vs-codex
@@ -8,20 +8,42 @@ pageClass: quickstart-story chatgpt-vs-codex
 
 # ChatGPT vs Codex
 
-<p class="lesson-lead">Codex 剛推出時，我們很容易這樣分：開發程式用 Codex，整理知識用 ChatGPT。這個說法曾經好懂，但現在已經不夠準確。</p>
+<p class="lesson-lead">Codex 剛推出時，大家常用一句話區分：寫程式用 Codex，整理知識用 ChatGPT。這個說法很好記，現在卻不太準確了。</p>
 
-## 別在用是不是工程師區分
+## 別再用「是不是工程師」區分
 
-<div class="story-contrast story-contrast--projector">
-  <section><span>THEN｜以前</span><h3>用職稱分工具</h3><p>工程師寫程式，所以去用 Codex；顧問、企劃或研究人員整理知識，所以留在 ChatGPT。</p><b>好記，卻把兩邊的能力切得太窄。</b></section>
-  <section><span>NOW｜現在</span><h3>用工作環境分入口</h3><p>ChatGPT 能連接檔案與工具；Codex 也能處理文件、資料、圖片與研究工作。重點不再是你會不會寫程式。</p><b>先看工作從哪裡開始，以及結果要留在哪裡。</b></section>
+<div class="work-entry-contrast">
+  <section class="work-entry-card work-entry-card--legacy">
+    <header><span>THEN｜以前</span><em>舊分法</em></header>
+    <h3>看職稱選工具</h3>
+    <div class="work-entry-legacy-rule" aria-label="以前用職稱選擇工具">
+      <span>工程師 <b>→ 用 Codex</b></span>
+      <span>不是工程師 <b>→ 用 ChatGPT</b></span>
+    </div>
+    <p>工程師寫程式就開 Codex；顧問、企劃和研究人員則留在 ChatGPT，做研究、整理想法。</p>
+    <strong>這樣分很簡單，現在已經不夠用了。</strong>
+  </section>
+  <section class="work-entry-card work-entry-card--current">
+    <header><span>NOW｜現在</span><em>換個分法</em></header>
+    <h3>先看工作在哪裡</h3>
+    <p class="work-entry-card__lead">先別管職稱。看看這次要在哪裡動手，最後要留下什麼。</p>
+    <ol class="work-entry-questions">
+      <li><b>01</b><span><strong>你會先從哪裡動手？</strong><small>先查資料、討論想法，還是直接打開檔案和專案？</small></span></li>
+      <li><b>02</b><span><strong>做完要留下什麼？</strong><small>一個答案，還是能繼續編輯的檔案或工具？</small></span></li>
+    </ol>
+    <div class="work-entry-routes" aria-label="依工作環境選擇入口">
+      <span><small>先查資料、整理想法</small><b>先用 ChatGPT</b></span>
+      <i aria-hidden="true">或</i>
+      <span><small>直接處理檔案或專案</small><b>先用 Codex</b></span>
+    </div>
+  </section>
 </div>
 
-現在 ChatGPT 與 Codex 都能使用檔案、搜尋資料，也能透過 Plugin 連接 GitHub、Figma 或 Atlassian／Jira 這類工作工具；實際可用項目會依安裝、帳號與 Workspace 權限而定。兩邊不再是互斥選項，差別更像是：**哪一個工作空間最接近你手上的任務？**
+現在 ChatGPT 和 Codex 都能讀取檔案、搜尋資料，也能用 Plugin 連接 GitHub、Figma 或 Atlassian／Jira 等工作工具；實際能用哪些項目，取決於安裝狀態、帳號和 Workspace 權限。兩者不是非此即彼。你要判斷的是：**哪個工作空間離手上的任務最近？**
 
 ## 顧問 vs 能進工作環境的同事
 
-顧問可以先在 ChatGPT 做調研與推演，再把方法交給 Codex 做成可重複產生報告的小工具；產品經理也可以先討論需求，再讓 Codex 把截圖、規格與資料做成能操作的 Web App。
+顧問可以先在 ChatGPT 研究、推演，再把確認過的方法交給 Codex，做成能重複產生報告的小工具。產品經理也可以先談清楚需求，再讓 Codex 把截圖、規格與資料做成能操作的 Web App。
 
 一個簡單的選法是：
 
@@ -29,13 +51,15 @@ pageClass: quickstart-story chatgpt-vs-codex
 - 主要在處理本機檔案、專案資料夾或需要執行工具：**先從 Codex 開始**。
 
 <div class="outcome-examples">
-  <section>
-    <div class="outcome-example__icon outcome-example__icon--chatgpt" aria-hidden="true"><img src="/images/quick-start/chatgpt-icon.webp" width="256" height="256" decoding="async" alt=""></div>
-    <div><span>CHATGPT｜從知識與對話開始</span><h3>研究、理解與整理</h3><p>例如顧問要調研市場、比較多方觀點、整理訪談，或和 AI 一起推敲策略。資料主要來自提問、網路與已連接的知識來源。</p><b>常見交付：分析、觀點、摘要與決策建議</b></div>
+  <section class="outcome-example outcome-example--chatgpt">
+    <header><div class="outcome-example__icon outcome-example__icon--chatgpt" aria-hidden="true"><img src="/images/quick-start/chatgpt-icon.webp" width="256" height="256" decoding="async" alt=""></div><div><span>CHATGPT｜從知識與對話開始</span><h3>研究、理解與整理</h3></div></header>
+    <p>例如顧問要調研市場、比較多方觀點、整理訪談，或和 AI 一起推敲策略。資料主要來自提問、網路與已連接的知識來源。</p>
+    <b>常見交付：分析、觀點、摘要與決策建議</b>
   </section>
-  <section>
-    <div class="outcome-example__icon outcome-example__icon--codex" aria-hidden="true"><img src="/images/quick-start/codex-icon.webp" width="256" height="256" decoding="async" alt=""></div>
-    <div><span>CODEX｜從本機工作環境開始</span><h3>讀檔案、做出成品</h3><p>工作任務主要在各專案資料夾裡，包含 PDF、Excel、CSV、簡報、圖片、逐字稿或程式碼；你希望 AI 批次整理、修改並留下檔案。</p><b>常見交付：整理後的文件、Web App 或自動化工作流</b></div>
+  <section class="outcome-example outcome-example--codex">
+    <header><div class="outcome-example__icon outcome-example__icon--codex" aria-hidden="true"><img src="/images/quick-start/codex-icon.webp" width="256" height="256" decoding="async" alt=""></div><div><span>CODEX｜從本機工作環境開始</span><h3>讀檔案、做出成品</h3></div></header>
+    <p>工作任務主要在各專案資料夾裡，包含 PDF、Excel、CSV、簡報、圖片、逐字稿或程式碼；你希望 AI 批次整理、修改並留下檔案。</p>
+    <b>常見交付：整理後的文件、Web App 或自動化工作流</b>
   </section>
 </div>
 
@@ -43,7 +67,7 @@ pageClass: quickstart-story chatgpt-vs-codex
 
 ## Codex for (Almost) Everything
 
-最容易理解 Codex 的方式，不是背功能，而是看它最後能交出什麼。以下案例選自 OpenAI 官方的 [Use cases](https://learn.chatgpt.com/use-cases) 與 [Showcase](https://developers.openai.com/showcase)：前者示範一般工作怎麼做，後者展示能做成什麼樣的成品。
+不用急著背 Codex 的功能，先看它能交出哪些成果。以下案例選自 OpenAI 官方的 [Use cases](https://learn.chatgpt.com/use-cases) 與 [Showcase](https://developers.openai.com/showcase)：前者示範日常工作流程，後者展示完成的作品。
 
 <div class="codex-use-case-gallery">
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/daily-work-brief" target="_blank" rel="noreferrer">
@@ -64,15 +88,15 @@ pageClass: quickstart-story chatgpt-vs-codex
   </a>
   <a class="codex-use-case-card" href="https://developers.openai.com/showcase/waveform-studio" target="_blank" rel="noreferrer">
     <figure><img src="/images/quick-start/use-cases/waveform-studio.webp" width="1200" height="760" loading="lazy" decoding="async" alt="OpenAI Showcase 的音訊波形視覺工具"></figure>
-    <div><span>影音創作｜SHOWCASE</span><h3>建立自己的影音素材工具</h3><p>Waveform Studio 把本機音訊轉成可調整的視覺波形，示範 Codex 如何協助做出服務創作流程的專用工具。</p><b>Waveform Studio ↗</b></div>
+    <div><span>影音創作｜SHOWCASE</span><h3>建立自己的影音素材工具</h3><p>Waveform Studio 把本機音訊轉成可調整的視覺波形，示範 Codex 如何協助創作者做出符合自己工作流程的專用工具。</p><b>Waveform Studio ↗</b></div>
   </a>
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/datasets-and-reports" target="_blank" rel="noreferrer">
     <figure><img src="/images/quick-start/use-cases/data-reports.webp" width="1200" height="566" loading="lazy" decoding="async" alt="OpenAI 官方資料分析與報告案例畫面"></figure>
-    <div><span>數據分析｜USE CASE</span><h3>把雜亂資料變成分析報告</h3><p>清理資料、計算指標、建立視覺化，再把方法與結論整理成可重跑、可分享的報告。</p><b>Analyze datasets and ship reports ↗</b></div>
+    <div><span>資料分析｜USE CASE</span><h3>把雜亂資料變成分析報告</h3><p>清理資料、計算指標、建立視覺化，再把方法與結論整理成可重跑、可分享的報告。</p><b>Analyze datasets and ship reports ↗</b></div>
   </a>
 </div>
 
-這些案例的共同點，是 Codex 不只回答問題，而是讀取素材、操作工具，最後留下可以使用或繼續修改的成果。你不需要先會寫程式；先從一個真實工作問題，以及你想拿到的成品開始就好。
+這些案例都不只停在回答問題。Codex 會讀取素材、操作工具，最後留下能直接使用或繼續修改的成果。你不必先學會寫程式，從手上的真實問題和想拿到的成品開始即可。
 
 ## 參考資料
 
