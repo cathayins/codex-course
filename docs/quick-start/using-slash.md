@@ -64,6 +64,20 @@ pageClass: quickstart-story slash-commands-page
   ]"
 />
 
+## 東京旅遊 Demo｜先定義計畫書怎麼規劃
+
+確認資料夾裡已有 `tokyo-travel-research.md` 後，留在同一個任務，送出：
+
+```text
+/plan
+
+請讀取 @tokyo-trip-brief.txt 與 @tokyo-travel-research.md，
+產出一份完整的東京旅遊規劃計畫書。
+
+```
+
+這個 Demo 通常幾輪就能完成，不需要為了示範刻意使用 `/compact`；等同一個任務累積很多訊息、檔案與工具結果時再用。
+
 ## 其他常用指令
 
 斜線選單會隨 App 版本、帳號和目前工作方式顯示不同項目；上課時先知道各指令的用途，需要時再回來查表。

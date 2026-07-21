@@ -30,28 +30,53 @@ next:
   <p>Just Ask Codex 的前提，是說清楚工程意圖與完成條件。</p>
 </div>
 
-## 重新定義工程師角色：我們要做什麼？
+## Codex 開始寫程式後，工程師在做什麼？
 
-NStarX 把這個轉變分成 **AI-assisted** 和 **AI-native**：前者在既有流程裡加入補全，後者重新安排人與 Agent 的分工。當 Codex 接手實作，工程師會把更多心力放在建立一套讓 Agent 做對事的工作系統。
+NStarX 用 **AI-assisted** 和 **AI-native** 描述兩種工作方式。AI-assisted 是在原本的流程裡加入補全；AI-native 則重新安排人與 Agent 怎麼合作。Codex 接手實作後，工程師的工作會往前移：先釐清真正的需求，決定該怎麼取捨、哪些邊界不能跨，再把完成條件說清楚。
 
-<div class="story-contrast">
-  <section><span>HUMAN｜掌握方向</span><h3>意圖、邊界與判斷</h3><p>決定為什麼要做、哪些條件不能破壞，以及什麼才算完成。</p><b>負責：Intent、Constraints、Acceptance</b></section>
-  <section><span>AGENT｜完成執行</span><h3>探索、修改與驗證</h3><p>讀取程式碼與規範，實作、測試、Review，再帶著證據回報。</p><b>負責：Explore、Build、Test、Report</b></section>
+<div class="engineer-role-split" role="group" aria-label="工程師與 Codex 的分工">
+  <article class="engineer-role-card is-human">
+    <span class="engineer-role-card__eyebrow">HUMAN｜工程師</span>
+    <h3>釐清需求，做出取捨</h3>
+    <p>定義真正要解決的問題，決定方案該怎麼取捨、哪些邊界不能跨，以及怎樣才算完成。</p>
+    <div class="engineer-role-card__tags" aria-label="工程師負責項目">
+      <span>Requirements</span><span>Trade-offs</span><span>Boundaries</span><span>Acceptance</span>
+    </div>
+  </article>
+  <span class="engineer-role-split__handoff" aria-hidden="true">→</span>
+  <article class="engineer-role-card is-agent">
+    <span class="engineer-role-card__eyebrow">AGENT｜Codex</span>
+    <h3>把任務做完並交代結果</h3>
+    <p>先讀程式碼與規範，再動手修改、跑測試，最後回報改了什麼、檢查結果如何。</p>
+    <div class="engineer-role-card__tags" aria-label="Codex 負責項目">
+      <span>Explore</span><span>Build</span><span>Test</span><span>Report</span>
+    </div>
+  </article>
 </div>
 
-工程師開始把更多時間放在定義系統、拆解目標、準備工具和檢查結果。遇到大型任務，先拆成設計、實作、Review 與測試；Agent 卡住時，別只叫它再試一次，先問：**它缺了哪項能力、資訊或驗證方式？**
+工程師不必把每一步都寫成指令，但要對幾個關鍵問題做決定：需求到底是什麼？這次優先顧速度、品質還是風險？哪些地方可以調整，哪些地方不能碰？這些判斷清楚後，再把任務交給 Agent 實作與驗證。
 
-## 1｜讓 Agent 讀得懂程式與系統
+## 1｜讓 Agent 不只讀程式碼，還看得到執行結果
 
-讓人讀得懂的程式，需要清楚的命名、結構和文件。要讓 Agent 也能工作，還得讓它讀得到系統狀態、操作方式和驗證結果。
+工程師修 Bug 時，會先把 App 跑起來，看畫面、讀錯誤訊息，修改後再測一次。如果 Agent 只能讀程式碼，卻看不到 App 實際怎麼跑，它就只能猜。OpenAI 團隊在這個專案的做法，是把工程師平常用來判斷問題的訊號也交給 Codex。
 
-<div class="use-case-grid">
-  <section><span>01｜程式可導覽</span><h3>結構與邊界清楚</h3><p>模組、依賴方向與架構規則可以從程式碼庫直接理解，而不是依靠口頭默契。</p></section>
-  <section><span>02｜應用可觀察</span><h3>狀態能被讀取</h3><p>讓 Agent 能使用瀏覽器、DOM、截圖、日誌與指標，直接看見實際行為。</p></section>
-  <section><span>03｜結果可驗證</span><h3>檢查可以重跑</h3><p>把測試、Lint 與 CI 接回任務，讓 Agent 能重現問題並證明修正成立。</p></section>
+<div class="use-case-grid agent-readable-grid">
+  <section><span>01｜找得到規則</span><h3>知道該去哪裡看</h3><p>把模組邊界、架構規則和常用指令放進 Repository，讓 Agent 不必依賴口頭默契。</p></section>
+  <section><span>02｜看得到 App</span><h3>程式跑起來後，它也看得到</h3><p>讓 Agent 能啟動 App、讀 DOM 和截圖，也能查日誌、指標與追蹤，直接看到問題發生在哪裡。</p></section>
+  <section><span>03｜能自己確認</span><h3>改完後，知道有沒有修好</h3><p>讓 Agent 重跑同一段操作、測試與 Lint，對照修改前後的結果，不必只靠「程式看起來沒問題」。</p></section>
 </div>
 
-例如，每個 Git worktree 都能啟動獨立的 App，Codex 就可以操作彼此隔離的應用實例，用 DOM 快照、截圖和日誌重現 UI 問題，再執行測試確認修正。工具本身不是目的。Agent 最後要能跑完「理解 → 操作 → 驗證」這個迴圈。
+<section class="agent-readable-loop" aria-labelledby="agent-readable-loop-title">
+  <span>CODEX 的驗證迴圈</span>
+  <strong id="agent-readable-loop-title">Codex 怎麼知道自己真的修好了？</strong>
+  <ol>
+    <li><b>1｜重現</b><small>啟動 App，走一次出錯的操作流程。</small></li>
+    <li><b>2｜找原因</b><small>查看 DOM、截圖、日誌與執行指標。</small></li>
+    <li><b>3｜修改</b><small>改完程式後，重新啟動自己的 App。</small></li>
+    <li><b>4｜再驗證</b><small>重跑相同操作與測試，比較修改前後結果。</small></li>
+  </ol>
+  <p>OpenAI 讓每個 Git worktree（獨立工作目錄）啟動一套互不干擾的 App。Codex 因此可以在自己的環境反覆修改和重跑，不會踩到其他工作的狀態。這就是讓應用程式「對 Agent 可讀」：除了程式碼，也讓它讀得到畫面、錯誤與驗證結果。</p>
+</section>
 
 ## 2｜將程式碼庫作為唯一可信來源
 
