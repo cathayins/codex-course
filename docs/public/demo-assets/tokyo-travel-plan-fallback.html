@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>東京 4 天 3 夜旅遊計畫</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #657084;
+      --line: #dfe3ea;
+      --paper: #ffffff;
+      --canvas: #f4f1eb;
+      --red: #d84a3c;
+      --red-soft: #fff0ec;
+      --green: #1f765d;
+      --green-soft: #e9f5f0;
+      --shadow: 0 16px 40px rgba(40, 45, 56, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      line-height: 1.65;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 40px 0 72px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(32px, 7vw, 72px);
+      color: #fff;
+      border-radius: 28px;
+      background: #1d2434;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -70px;
+      bottom: -125px;
+      width: 330px;
+      height: 330px;
+      border: 54px solid rgba(216, 74, 60, 0.92);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      color: #f6b4aa;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 22px;
+      height: 2px;
+      background: currentColor;
+      content: "";
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(2.5rem, 8vw, 5.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    .hero__lead {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 26px 0 0;
+      color: #d7dce6;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+
+    .demo-note {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      color: #f5f6f8;
+      font-size: 0.82rem;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0 0;
+    }
+
+    .fact {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .fact span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .fact strong { font-size: 1.03rem; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 42px 0 18px;
+    }
+
+    .toolbar h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 2.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+    }
+
+    .filters button {
+      padding: 8px 15px;
+      color: var(--muted);
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .filters button[aria-pressed="true"] {
+      color: #fff;
+      background: var(--ink);
+    }
+
+    .days { display: grid; gap: 16px; }
+
+    .day {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: 0 8px 22px rgba(40, 45, 56, 0.04);
+    }
+
+    .day__head {
+      padding: 26px;
+      color: #fff;
+      background: var(--red);
+    }
+
+    .day__head span {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+    }
+
+    .day__head strong {
+      display: block;
+      font-size: 1.45rem;
+      line-height: 1.25;
+    }
+
+    .day__head small { display: block; margin-top: 12px; opacity: 0.85; }
+
+    .periods {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .period {
+      min-width: 0;
+      padding: 24px;
+      border-left: 1px solid var(--line);
+    }
+
+    .period span {
+      color: var(--red);
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.09em;
+    }
+
+    .period h3 { margin: 7px 0 8px; font-size: 1.05rem; }
+    .period p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+
+    .confirm-panel {
+      padding: clamp(24px, 5vw, 46px);
+      border: 1px solid #bad9cc;
+      border-radius: 22px;
+      background: var(--green-soft);
+    }
+
+    .confirm-panel[hidden], .days[hidden] { display: none; }
+
+    .confirm-panel h2 { margin: 0 0 8px; letter-spacing: -0.03em; }
+    .confirm-panel > p { margin: 0 0 24px; color: #41675a; }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      padding: 15px 17px;
+      border: 1px solid rgba(31, 118, 93, 0.2);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .checklist li::before {
+      margin-right: 10px;
+      color: var(--green);
+      content: "□";
+      font-weight: 900;
+    }
+
+    .source-note {
+      margin: 24px 2px 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 860px) {
+      .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .day { grid-template-columns: 1fr; }
+      .day__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .day__head small { margin: 0; }
+      .period:first-child { border-left: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 24px, 1120px); padding-top: 12px; }
+      .hero { border-radius: 20px; }
+      .facts, .periods, .checklist { grid-template-columns: 1fr; }
+      .period { border-top: 1px solid var(--line); border-left: 0; }
+      .toolbar { align-items: flex-start; }
+      .filters { width: 100%; }
+      .filters button { flex: 1; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { width: 100%; padding: 0; }
+      .hero, .day, .fact, .confirm-panel { box-shadow: none; break-inside: avoid; }
+      .toolbar .filters { display: none; }
+      .days[hidden], .confirm-panel[hidden] { display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Tokyo · 4 days / 3 nights</p>
+      <h1>第一次東京，<br>慢慢走就好。</h1>
+      <p class="hero__lead">住在上野，每天只走一到兩個主要區域。留時間吃飯、找路，也保留第一次旅行該有的餘裕。</p>
+      <span class="demo-note">課程示範｜非即時旅遊資訊</span>
+    </header>
+
+    <section class="facts" aria-label="行程摘要">
+      <div class="fact"><span>日期</span><strong>2026/10/16–10/19</strong></div>
+      <div class="fact"><span>同行</span><strong>2 位成人</strong></div>
+      <div class="fact"><span>住宿</span><strong>上野站附近</strong></div>
+      <div class="fact"><span>預算</span><strong>每人 ¥60,000</strong></div>
+    </section>
+
+    <div class="toolbar">
+      <h2>四天怎麼走</h2>
+      <div class="filters" aria-label="切換顯示內容">
+        <button type="button" data-view="itinerary" aria-pressed="true">全部行程</button>
+        <button type="button" data-view="confirm" aria-pressed="false">出發前確認</button>
+      </div>
+    </div>
+
+    <section class="days" id="itinerary" aria-label="四天行程">
+      <article class="day">
+        <header class="day__head"><div><span>DAY 01 · 10/16</span><strong>上野・淺草</strong></div><small>第一天放慢</small></header>
+        <div class="periods">
+          <section class="period"><span>上午</span><h3>抵達羽田</h3><p>09:10 抵達後前往上野。交通路線、車資與行李寄放方式出發前確認。</p></section>
+          <section class="period"><span>下午</span><h3>上野散步</h3><p>15:00 後入住，再依體力走上野街區。把第一天空間留給交通與休息。</p></section>
+          <section class="period"><span>晚上</span><h3>淺草收尾</h3><p>感受傳統街區；晚餐從拉麵、咖哩等熟食方向挑選，21:00 前回飯店。</p></section>
+        </div>
+      </article>
+
+      <article class="day">
+        <header class="day__head"><div><span>DAY 02 · 10/17</span><strong>豐洲・台場</strong></div><small>已預約行程</small></header>
+        <div class="periods">
+          <section class="period"><span>上午</span><h3>豐洲周邊</h3><p>09:30 左右出門。安排輕鬆散步與熟食午餐，避免生食。</p></section>
+          <section class="period"><span>下午</span><h3>teamLab Planets</h3><p>14:00 已預約。入場規定、票券內容與抵達方式仍要在出發前確認。</p></section>
+          <section class="period"><span>晚上</span><h3>台場夜景</h3><p>把晚上留給城市夜景與晚餐；回上野的末班交通出發前確認。</p></section>
+        </div>
+      </article>
+
+      <article class="day">
+        <header class="day__head"><div><span>DAY 03 · 10/18</span><strong>原宿・澀谷</strong></div><small>城市散步日</small></header>
+        <div class="periods">
+          <section class="period"><span>上午</span><h3>明治神宮</h3><p>09:30 左右出門，先走明治神宮，再銜接原宿街區。</p></section>
+          <section class="period"><span>下午</span><h3>原宿雜貨與甜點</h3><p>找文具雜貨與甜點，中途保留休息時間，不額外跨區。</p></section>
+          <section class="period"><span>晚上</span><h3>澀谷夜景</h3><p>晚餐可從燒肉或咖哩方向挑選；餐廳與夜景設施營業資訊出發前確認。</p></section>
+        </div>
+      </article>
+
+      <article class="day">
+        <header class="day__head"><div><span>DAY 04 · 10/19</span><strong>東京車站・羽田</strong></div><small>15:30 前往機場</small></header>
+        <div class="periods">
+          <section class="period"><span>上午</span><h3>東京車站周邊</h3><p>退房與行李處理後前往東京車站周邊，安排文具雜貨與伴手禮時間。</p></section>
+          <section class="period"><span>下午</span><h3>返回羽田</h3><p>預留取行李與移動時間，15:30 前往羽田機場。</p></section>
+          <section class="period"><span>晚上</span><h3>19:20 離境</h3><p>航廈、報到櫃檯與建議抵達時間請依航空公司通知確認。</p></section>
+        </div>
+      </article>
+    </section>
+
+    <section class="confirm-panel" id="confirm" hidden>
+      <h2>出發前確認</h2>
+      <p>出發前仍要核對的資訊先集中放這裡，確認後再更新。</p>
+      <ul class="checklist">
+        <li>各景點與設施的營業時間、休館日</li>
+        <li>teamLab Planets 的票券內容與入場規定</li>
+        <li>每日交通路線、時間、車資與末班車</li>
+        <li>羽田機場航廈、報到櫃檯與航班狀態</li>
+        <li>餐廳是否有符合「不吃生食」的選項</li>
+        <li>需要事先購票或預約的其他項目</li>
+      </ul>
+    </section>
+
+    <p class="source-note">本頁依課程提供的 tokyo-trip-brief.txt 製作，不代表即時營業、價格、交通或預約資訊。</p>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll('[data-view]');
+    const itinerary = document.querySelector('#itinerary');
+    const confirmPanel = document.querySelector('#confirm');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const showConfirm = button.dataset.view === 'confirm';
+        itinerary.hidden = showConfirm;
+        confirmPanel.hidden = !showConfirm;
+        buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      });
+    });
+  </script>
+</body>
+</html>

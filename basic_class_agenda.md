@@ -1,17 +1,17 @@
 # Codex App 基礎課：能力擴充與素材轉簡報
 
-> 本文件依 [`agenda.md`](agenda.md) 的第一堂「Codex App」編排，只保留 **15–30 分的進階能力**與 **30–42 分的 Demo 1**。對象是第一次使用 Codex App 的一般使用者；內容從畫面與基本觀念開始，不深入 Plugin manifest、MCP 設定或 Automation 的進階排程語法。
+> 本文件依 [`agenda.md`](agenda.md) 的第一堂「Codex App」編排，只保留 **20–33 分的進階能力**與 **33–44 分的 Demo 1**。對象是第一次使用 Codex App 的一般使用者；內容從畫面與基本觀念開始，不深入 Plugin manifest、MCP 設定或 Automation 的進階排程語法。
 
 ## 課程順序與時間
 
 | 時間 | Part | 主題 | 現場產出 |
 | ---: | --- | --- | --- |
-| 15–30 | **進階能力** | Skills → Plugins → Automation（Scheduled） | 學員能從 App 畫面找到三項能力，並判斷何時使用 |
-| 30–42 | **Demo 1** | 讀取參考文件 → 產生 storyline → 內建 `presentations` skill → GordenSuperPPTSkills | 同一份 storyline 的兩種簡報製作結果與選用判斷 |
+| 20–33 | **進階能力** | Skills → Plugins → Automation（Scheduled） | 學員能從 App 畫面找到三項能力，並判斷何時使用 |
+| 33–44 | **Demo 1** | 讀取參考文件 → 產生 storyline → 內建 `presentations` skill → GordenSuperPPTSkills | 同一份 storyline 的兩種簡報製作結果與選用判斷 |
 
 ## 學習目標
 
-完成這 27 分鐘後，學員應能：
+完成這 24 分鐘後，學員應能：
 
 1. 用一句話分辨 Skill、Plugin 與 Automation。
 2. 從 Codex App 的 **Skills**、**Plugins**、**Scheduled** 畫面找到可用能力。
@@ -21,16 +21,16 @@
 
 ---
 
-# Part 1｜進階能力（15–30 分）
+# Part 1｜進階能力（20–33 分）
 
 ## 現場節奏
 
 | 時間 | 模組 | 畫面操作 | 一句話重點 |
 | ---: | --- | --- | --- |
-| 15:00–15:30 | 銜接 | 回到 Codex App 左側欄與 Prompt 輸入區 | QuickStart 是「交代任務」，接下來是「替 Codex 增加可重用能力」 |
-| 15:30–22:00 | Skills | 開啟 **Skills**，瀏覽、點開一個 Skill，回到輸入區用 `$` 指定 | Skill 是某一類任務的可重用工作方法 |
-| 22:00–26:00 | Plugins | 開啟 **Plugins**，切換 OpenAI／Workspace／Personal 與 Installed | Plugin 是可安裝、可分享的能力包 |
-| 26:00–30:00 | Automation | 開啟 **Scheduled**，查看任務、狀態與執行紀錄 | Automation 讓已經測通的工作按時間自動重跑 |
+| 20:00–20:30 | 銜接 | 回到 Codex App 左側欄與 Prompt 輸入區 | QuickStart 是「交代任務」，接下來是「替 Codex 增加可重用能力」 |
+| 20:30–26:30 | Skills | 開啟 **Skills**，瀏覽、點開一個 Skill，回到輸入區用 `$` 指定 | Skill 是某一類任務的可重用工作方法 |
+| 26:30–30:00 | Plugins | 開啟 **Plugins**，切換 OpenAI／Workspace／Personal 與 Installed | Plugin 是可安裝、可分享的能力包 |
+| 30:00–33:00 | Automation | 開啟 **Scheduled**，查看任務、狀態與執行紀錄 | Automation 讓已經測通的工作按時間自動重跑 |
 
 ## 1.1 Skills：讓 Codex 按固定方法完成一類任務
 
@@ -237,7 +237,7 @@ Plugin 是「可安裝、可分享的能力包」。一個 Plugin 可以只有 S
 
 ---
 
-# Part 2｜Demo 1：讀參考文件，從 storyline 到兩種簡報成品（30–42 分）
+# Part 2｜Demo 1：讀參考文件，從 storyline 到兩種簡報成品（33–44 分）
 
 ## Demo 目標與情境
 
@@ -262,7 +262,7 @@ Demo 不從「幫我做一份簡報」開始，而是依序完成：
 
 ## 課前準備
 
-12 分鐘不足以等待兩套完整簡報流程，因此講師需同時準備「現場操作」與「已完成備援成果」。
+11 分鐘不足以等待兩套完整簡報流程，因此講師需同時準備「現場操作」與「已完成備援成果」。
 
 1. 確認內建 `$presentations` 可在 Skills selector 找到。
 2. 課前在獨立 task 完整跑過內建版本，保留 `.pptx` 與逐頁預覽。
@@ -279,11 +279,11 @@ Demo 不從「幫我做一份簡報」開始，而是依序完成：
 
 | 時間 | 步驟 | 現場操作 | 要讓學員看到的結果 |
 | ---: | --- | --- | --- |
-| 30:00–31:00 | 設定任務 | 選擇專案、附上 5 份參考文件，交代受眾、用途與 6 頁限制 | Codex 知道「為誰、為何、用哪些來源」 |
-| 31:00–34:00 | 產生 storyline | 先要求來源表與逐頁故事線，不做 PPTX | 一句話溝通目標、6 頁 answer-first 標題、來源與未知事項 |
-| 34:00–37:30 | 內建 `presentations` | 確認 storyline 後，用 `$presentations` 建立並 QA | 一份原生可編輯、已 render 檢查的 PPTX |
-| 37:30–41:00 | GordenSuperPPTSkills | 在新 task 使用同一份 storyline，啟動圖片生成與可編輯還原流程；切到課前成品 | 每頁圖片、圖片型 PPTX、四層還原的可編輯 PPTX |
-| 41:00–42:00 | 比較與收束 | 並排展示同一頁，說明選用時機 | 學員知道不是「哪個永遠比較好」，而是製作路線不同 |
+| 33:00–34:00 | 設定任務 | 選擇專案、附上 5 份參考文件，交代受眾、用途與 6 頁限制 | Codex 知道「為誰、為何、用哪些來源」 |
+| 34:00–36:30 | 產生 storyline | 先要求來源表與逐頁故事線，不做 PPTX | 一句話溝通目標、6 頁 answer-first 標題、來源與未知事項 |
+| 36:30–39:30 | 內建 `presentations` | 確認 storyline 後，用 `$presentations` 建立並 QA | 一份原生可編輯、已 render 檢查的 PPTX |
+| 39:30–43:00 | GordenSuperPPTSkills | 在新 task 使用同一份 storyline，啟動圖片生成與可編輯還原流程；切到課前成品 | 每頁圖片、圖片型 PPTX、四層還原的可編輯 PPTX |
+| 43:00–44:00 | 比較與收束 | 並排展示同一頁，說明選用時機 | 學員知道不是「哪個永遠比較好」，而是製作路線不同 |
 
 ## Step 1｜先讀文件並產生 storyline
 

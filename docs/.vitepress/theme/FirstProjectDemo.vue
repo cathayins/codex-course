@@ -14,7 +14,7 @@ let timers: number[] = []
 
 const models = ['5.6 Sol', '5.6 Terra', '5.6 Luna', '5.5', '5.4', '5.4 Mini']
 const overviewSteps = [
-  { title: '創建資料夾並於 Codex 打開', description: '建立工作資料夾，再從 Codex 選擇「使用現有資料夾」。' },
+  { title: '建立資料夾並在 Codex 打開', description: '放入東京旅遊需求檔，再從 Codex 選擇「使用現有資料夾」。' },
   { title: '選擇 Model', description: '打開 Model 選單，選擇模型與推理強度。' },
   { title: '送出第一個 Message', description: '輸入工作目標與需要的來源，再送出訊息。' },
 ]
@@ -25,23 +25,25 @@ const prompts: { label: string; parts: PromptPart[] }[] = [
   {
     label: '盤點資料夾',
     parts: [
-      { text: '請先盤點這個資料夾，說明每份檔案大概包含什麼，以及哪些資料可能和下一季預算有關。先不要修改檔案。' },
+      { text: '請先盤點這個資料夾，確認是否有 tokyo-trip-brief.txt，並說明裡面有哪些旅遊需求。先不要修改或建立檔案。' },
     ],
   },
   {
-    label: '分析試算表',
+    label: '蒐集旅遊資訊',
     parts: [
-      { text: '使用 ' },
-      { text: '@Spreadsheets', mention: true },
-      { text: ' 讀取活動成效與預算資料，找出下一季值得加碼的三個渠道，並列出數據依據與待確認事項。' },
+      { text: '請讀取 ' },
+      { text: '@tokyo-trip-brief.txt', mention: true },
+      { text: '，蒐集規劃這趟旅行會用到的資訊，整理成 tokyo-travel-research.md。保留來源與查詢日期，這一輪先不要排行程。' },
     ],
   },
   {
-    label: '建立摘要',
+    label: '規劃計畫書',
     parts: [
-      { text: '使用 ' },
-      { text: '@SharePoint', mention: true },
-      { text: ' 裡最新的專案計畫與會議紀錄，建立一份給主管閱讀的一頁摘要。先放結論，再列依據、風險與下一步。' },
+      { text: '/plan\n\n請基於 ' },
+      { text: '@tokyo-trip-brief.txt', mention: true },
+      { text: ' 與 ' },
+      { text: '@tokyo-travel-research.md', mention: true },
+      { text: '，規劃如何產出一份完整的東京旅遊規劃計畫書。請先提出規劃方向、安排準則與計畫書架構，不要建立最終成品。' },
     ],
   },
 ]
@@ -144,7 +146,7 @@ onBeforeUnmount(() => {
           <b :class="{ 'is-pulsing': folderPhase === 0 }">＋</b>
         </div>
         <div class="fp-app__project">▱ 範例專案</div>
-        <div v-if="folderPhase === 3" class="fp-app__project is-selected">▱ codex-quickstart</div>
+        <div v-if="folderPhase === 3" class="fp-app__project is-selected">▱ tokyo-travel-demo</div>
 
         <Transition name="fp-pop">
           <div v-if="folderPhase === 1" class="fp-app__menu">
@@ -157,7 +159,7 @@ onBeforeUnmount(() => {
       <main class="fp-app__main">
         <div class="fp-app__welcome">
           <span class="fp-app__mark">C</span>
-          <b>{{ folderPhase === 3 ? 'codex-quickstart' : '開始一個 Codex 任務' }}</b>
+          <b>{{ folderPhase === 3 ? 'tokyo-travel-demo' : '開始一個 Codex 任務' }}</b>
           <small>{{ folderPhase === 3 ? '工作資料夾已連結' : '先選擇這次要使用的資料夾' }}</small>
         </div>
         <div class="fp-app__composer">
@@ -187,7 +189,7 @@ onBeforeUnmount(() => {
                 <div class="fp-finder__path">Macintosh HD &nbsp;›&nbsp; Projects</div>
                 <div class="fp-finder__folders">
                   <div><i></i><span>project-notes</span></div>
-                  <div class="is-selected"><i></i><span>codex-quickstart</span></div>
+                  <div class="is-selected"><i></i><span>tokyo-travel-demo</span></div>
                   <div><i></i><span>research</span></div>
                 </div>
               </main>
@@ -206,7 +208,7 @@ onBeforeUnmount(() => {
     aria-label="選擇 Codex Model 的互動示意"
   >
     <div class="fp-composer fp-composer--model">
-      <p>請先盤點這個資料夾，告訴我有哪些檔案。</p>
+      <p>請先盤點這個資料夾，確認是否有東京旅遊需求檔。</p>
       <div class="fp-composer__actions">
         <span>＋</span>
         <span class="fp-model-spinner" aria-hidden="true"></span>

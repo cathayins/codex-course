@@ -8,16 +8,20 @@ pageClass: quickstart-story
 
 # Models｜選擇模型
 
-<p class="lesson-lead">Sol、Terra 與 Luna 分別偏向深度、均衡與速度。先從預設模型與 reasoning effort 開始，再依任務難度、等待時間與成果品質調整。</p>
+<p class="lesson-lead">需要深入分析時選 Sol，日常工作可用 Terra；範圍清楚、重複量大的任務則適合 Luna。先從預設模型與 reasoning effort 開始，再依任務難度、等待時間與成果品質調整。</p>
 
 ## 選擇模型與 Reasoning
 
 <div class="model-choice-grid">
   <section><span>MODEL</span><h3>選擇能力與速度</h3><p>模型決定適合處理的工作類型。複雜工作偏向 Sol，日常工作選 Terra，清楚且大量的工作選 Luna。</p></section>
-  <section><span>REASONING EFFORT</span><h3>決定這次要想多深</h3><p>較高設定能投入更多規劃與分析，但通常需要更久、使用更多 tokens。先用預設，再依結果往上調。</p></section>
+  <section><span>REASONING EFFORT</span><h3>決定這次要想多深</h3><p>提高 reasoning effort 後，模型會花更多時間規劃與分析，通常也會使用更多 tokens。先用預設，再依結果往上調。</p></section>
 </div>
 
 官方目前的預設 Power 使用 **5.6 Sol + Medium reasoning**。需要更深分析時往 Smarter 調整；希望更快或降低使用量時往 Faster 調整。Advanced 可以指定模型與 reasoning effort。
+
+::: tip 東京旅遊 Demo 先沿用預設值
+這次會讀需求、蒐集資料，再規劃一趟短旅行。先用畫面上的預設 Model 與 reasoning 就好；若資料整理或行程取捨明顯太淺，再提高 reasoning。課堂上不用逐一比較所有模型。
+:::
 
 ## 官方推薦模型
 
@@ -28,7 +32,7 @@ pageClass: quickstart-story
       <strong>5.6 Sol</strong>
     </div>
     <div class="recommended-model__body">
-      <p>旗艦 GPT-5.6 模型。適合複雜程式修改、computer use、深入研究，以及需要更多判斷與完成度的工作。</p>
+      <p>旗艦 GPT-5.6 模型。適合複雜程式修改、computer use、深入研究，以及需要整合多項證據再做判斷的工作。</p>
       <code>gpt-5.6-sol</code>
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力五顆星">✦ ✦ ✦ ✦ ✦</dd></div>
@@ -46,7 +50,7 @@ pageClass: quickstart-story
       <strong>5.6 Terra</strong>
     </div>
     <div class="recommended-model__body">
-      <p>日常工作的均衡選擇。適合跨檔案閱讀、工具操作與一般程式修改，不需要 Sol 完整深度時可從這裡開始。</p>
+      <p>日常工作的均衡選擇。適合跨檔案閱讀、工具操作與一般程式修改；如果任務不需要 Sol 的分析深度，可以先從 Terra 開始。</p>
       <code>gpt-5.6-terra</code>
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力四顆星">✦ ✦ ✦ ✦</dd></div>
@@ -99,11 +103,11 @@ pageClass: quickstart-story
 | Max | 單一模型處理最困難的問題 | 只在深度比速度或使用量重要時使用 |
 | Ultra | 能拆成數個有意義部分的大型工作 | 使用 subagents；大多數任務不需要 |
 
-先使用能完成工作的最低 reasoning effort。結果方向正確但分析不夠，再往上調；模型不適合工作類型時，才換模型。
+先從足以完成工作的 reasoning effort 開始。方向正確但分析太淺時，再提高設定；工作類型明顯不合適時，才換模型。
 
 ## 在 Codex 裡切換
 
-在 App 輸入框下方使用模型與 reasoning 控制；CLI 或 IDE 也可以輸入：
+App 的輸入框下方可以切換模型和 reasoning；CLI 或 IDE 也可以輸入：
 
 ```text
 /model
@@ -111,12 +115,12 @@ pageClass: quickstart-story
 
 CLI 也能在啟動時指定模型，例如 `codex -m gpt-5.6-sol`。選好後仍要確認 Prompt 的目標、來源、產出與限制；更強的模型不會自動補上缺少的背景。
 
-## 一個簡單的決策順序
+## 先這樣選
 
 <div class="quickstart-flow quickstart-flow--next" aria-label="模型選擇順序">
-  <section><span>01</span><h3>先用預設</h3><p>先讓工作跑一輪，確認真正的難點。</p></section>
-  <section><span>02</span><h3>結果太淺，再調 reasoning</h3><p>方向正確但分析不足，才增加思考程度。</p></section>
-  <section><span>03</span><h3>工作類型不同，再換模型</h3><p>在深度、日常均衡與高速度之間選擇。</p></section>
+  <section><span>01</span><h3>先用預設</h3><p>先用預設設定跑一輪，看看問題出在哪裡。</p></section>
+  <section><span>02</span><h3>結果太淺，再調 reasoning</h3><p>方向正確但分析太淺，再提高 reasoning。</p></section>
+  <section><span>03</span><h3>工作類型不同，再換模型</h3><p>任務類型不同時，再換模型。</p></section>
 </div>
 
 ## 參考資料
