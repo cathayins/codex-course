@@ -8,11 +8,11 @@ pageClass: quickstart-story first-project-page
 
 # First Project｜開始第一個 Codex 任務
 
-<p class="lesson-lead">第一次使用 Codex，只要完成三件事：準備工作資料夾、選擇 Model，再說明你想完成什麼。先走完一次，後面再補 Prompt 與進階操作。</p>
+<p class="lesson-lead">第一次使用 Codex，先準備一個工作資料夾、沿用預設 Model，再說明你想完成什麼。把第一個任務跑完後，再回來調整 Prompt 和其他設定。</p>
 
 <FirstProjectDemo mode="overview" />
 
-## Step 1｜創建資料夾並於 Codex 打開
+## Step 1｜建立資料夾，並在 Codex 開啟
 
 先在 Finder 或檔案總管建立 `codex-quickstart`。這個資料夾就是 Codex 這次讀取資料、修改檔案與存放成果的範圍。
 
@@ -26,7 +26,7 @@ pageClass: quickstart-story first-project-page
 
 ## Step 2｜選擇 Model
 
-在輸入框下方點選 Model 名稱，再依任務需求切換。第一次練習可以先沿用畫面的預設 Model；名稱與可用選項以你的 Workspace 畫面為準。
+第一次練習先沿用輸入框下方顯示的預設 Model。之後要切換時，再點選 Model 名稱；實際選項以你的 Workspace 畫面為準。
 
 <FirstProjectDemo mode="model" />
 
@@ -38,7 +38,7 @@ pageClass: quickstart-story first-project-page
 
 <FirstProjectDemo mode="message" />
 
-建議第一次先請 Codex 盤點資料夾，不要修改檔案。確認它找對工作範圍後，再請它分析內容或建立成品。
+建議第一次先請 Codex 盤點資料夾，不要修改檔案。確認它讀的是正確資料夾後，再請它分析內容或建立成品。
 
 ## 接下來怎麼走
 

@@ -15,13 +15,15 @@
 
 | 時間 | Part | 內容 | 負責人 |
 |---:|---|---|---|
-| 0–15 | **QuickStart** | Codex 定位、App 介面、建立專案與基本操作 | Course Team |
-| 15–30 | **進階能力** | Skills、Plugins、Automation | Course Team |
-| 30–42 | **Demo 1** | 素材整理與簡報製作 | Course Team |
-| 42–54 | **Demo 2** | Marketing 資料分析 | Course Team |
-| 54–60 | **收束與 Q&A** | 回顧使用原則與課後方向 | Course Team、Course Team |
+| 0–20 | **QuickStart** | Codex 定位、App 介面、建立專案與基本操作 | Course Team |
+| 20–33 | **進階能力** | Skills、Plugins、Automation | Course Team |
+| 33–44 | **Demo 1** | 素材整理與簡報製作 | Course Team |
+| 44–56 | **Demo 2** | Marketing 資料分析 | Course Team |
+| 56–60 | **收束與 Q&A** | 回顧使用原則與課後方向 | Course Team、Course Team |
 
 > Demo 1 與 Demo 2 各自完成，不安排成果串接。
+
+QuickStart 與 Marketing Demo 的逐字講稿、操作提示及超時備援，見 [`quickstart_case_instructor_script.md`](quickstart_case_instructor_script.md)。
 
 ## 第二堂：Codex IDE
 
@@ -34,6 +36,8 @@
 | 30–44 | **Part 3A｜理解專案** | 建立 Codebase map、追蹤資料流、整理證據與未知事項 | Course Team |
 | 44–57 | **Part 3B｜動手修改** | 根據理解進行小型修改，搭配 Skills／Codex 能力完成驗證 | Course Team |
 | 57–60 | **收束與 Q&A** | 回顧從理解到修改的完整流程 | Course Team、Course Team |
+
+IDE QuickStart 的逐字講稿與操作提示，見 [`quickstart_case_instructor_script.md`](quickstart_case_instructor_script.md)。
 
 ## Markdown 撰寫分工
 

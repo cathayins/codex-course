@@ -17,7 +17,7 @@ pageClass: quickstart-story
   <section><span>Queue｜排入佇列</span><h3>目前先做完，下一步接著做</h3><p>網站還在審查，但你已經知道下一步要整理預覽連結與待確認項目。先把訊息排進 Queue，眼前的工作不會被打斷。</p></section>
 </div>
 
-如果補充內容跟目前任務無關，例如行銷分析還在跑，但你想整理另一場會議的筆記，就另外開新任務。兩邊各自保留對話與進度，會比塞在同一個 Thread 裡清楚。
+補充內容和目前任務無關時，另外開新任務。例如行銷分析還在跑，你卻想整理另一場會議的筆記，兩邊分開會比較清楚。
 
 你可以在 **Settings → 一般 → 後續跟進行為** 選擇預設送出方式。臨時想改用另一種方式，快捷鍵也會顯示在設定頁；請以自己的 App 畫面為準。
 
@@ -29,7 +29,7 @@ pageClass: quickstart-story
     {
       label: 'Steer｜引導',
       title: '立即修正目前方向',
-      description: '補充內容會改變這一輪的結果，就用 Steer。Codex 會中斷原本方向，立即套用新指令；不用等它做完，也不用手動取消後重來。',
+      description: '補充內容會改變這一輪的結果，就用 Steer。Codex 會停下原本的做法，改用你剛補充的指令繼續工作；不用等它做完，也不用手動取消重來。',
       demo: 'steer',
       steps: [
         {
@@ -50,7 +50,7 @@ pageClass: quickstart-story
     {
       label: 'Queue｜排入佇列',
       title: '先讓目前工作完成，再接著處理',
-      description: '下一步要等目前工作完成才能做，就用 Queue。訊息會先排在輸入框上方；Codex 做完眼前這一輪後，再接著處理。',
+      description: '下一步必須等目前結果出來，就用 Queue。訊息會先排在輸入框上方，等這一輪結束後再執行。',
       demo: 'queue',
       steps: [
         {
@@ -74,7 +74,7 @@ pageClass: quickstart-story
 
 ## 留在同一個 Thread，還是開新 Thread？
 
-差別不在訊息長短，而在這件事是否還沿用同一個目標、檔案與 Context。
+判斷時看目標、檔案與 Context 是否相同，不用看訊息長短。
 
 <div class="review-flow">
   <section><span>Steer｜現在</span><b>同一目標，立即修正</b><p>剛補上的限制會改變眼前結果，例如尺寸、文案或檔案處理方式要立刻調整。用 Steer 中斷原本方向，直接套用新指令。</p></section>

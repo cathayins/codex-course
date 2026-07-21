@@ -8,13 +8,13 @@ pageClass: quickstart-story credit-savings-page
 
 # Credits 精打細算
 
-<p class="lesson-lead">Codex 的使用量，主要來自送進模型的 input、可重複利用的 cached input，以及模型產生的 output。真正有效的節省方式，不是把每句話縮到最短，而是讓每次任務只帶必要 Context、只做必要的工作，並產出可以直接驗收的結果。</p>
+<p class="lesson-lead">Codex 的使用量，主要來自送進模型的 input、可重複利用的 cached input，以及模型產生的 output。想減少使用量，重點是讓每次任務只帶必要 Context、只做必要工作，並產出能直接驗收的結果。單純把每句話縮短，幫助不大。</p>
 
 <div class="credit-savings-hero" aria-label="Codex 使用量的四個主要來源">
   <div class="credit-savings-hero__heading">
     <span>先看消耗從哪裡來</span>
-    <h2>少投餵、少重工，成果更快到手</h2>
-    <p>Credits 不是每開一個任務就固定扣除。任務越長、讀入的檔案越多、輸出越大，或使用更高的模型與 reasoning，通常就會需要更多使用量。</p>
+    <h2>先減少無關輸入與重工</h2>
+    <p>Credits 不是每開一個任務就固定扣除；任務越長、讀入檔案越多、輸出越大，或模型與 reasoning 設定越高，通常消耗越多。</p>
   </div>
   <div class="credit-savings-factors">
     <section><b>01</b><strong>Input</strong><p>Prompt、檔案、程式碼與對話 Context。</p></section>
@@ -26,7 +26,7 @@ pageClass: quickstart-story credit-savings-page
 
 ## 4 個精打細算的工作習慣
 
-先選一個情境。每個分頁都只保留一個重點，右側的動畫用來提醒「這一招正在省哪一種 Credits」。
+以下四個分頁分別處理模型、Prompt、Compact 和 `AGENTS.md`，右側動畫會標出各自影響的使用量來源。
 
 <MediaTabs
   aria-label="Credits 精打細算技巧"
@@ -34,24 +34,24 @@ pageClass: quickstart-story credit-savings-page
     {
       label: '01 模型',
       title: '輕量模型先跑一輪',
-      description: '範圍清楚、容易驗證的擷取、分類、簡單修正，先用較快或較輕量的模型。結果不夠，再升級模型或 reasoning。',
+      description: '範圍清楚、容易驗證的擷取、分類與簡單修正，可以先用輕量模型。深度不足時，再提高模型或 reasoning。',
       visual: 'model',
       steps: [
         { title: '先用能完成工作的模型', description: '小錯字與簡單轉換，不必一開始就用最高能力。' },
         { title: '結果不夠，再升級', description: '方向正確但深度不足時，再提高模型或 reasoning。' }
       ],
-      note: '省下的是不必要的推理成本；品質真的需要時，再把預算花在關鍵任務。'
+      note: '把較高的推理成本留給需要深入判斷的任務。'
     },
     {
       label: '02 Prompt',
-      title: '先講清楚，給出完整說明',
-      description: '一次說明目標、範圍、已知問題、完成條件與限制。Codex 才能少走猜測與重試的路。',
+      title: '一次交代必要資訊',
+      description: '說明目標、範圍、已知問題、完成條件與限制，可以減少 Codex 猜測和重試的次數。',
       visual: 'prompt',
       steps: [
         { title: '建議 Prompt', description: '只檢查 src/checkout 的付款錯誤；完成後執行指定測試，回覆修改檔案與測試結果。' },
         { title: '避免的 Prompt', description: '請把整個專案看過，順便把所有問題都修好。' }
       ],
-      note: '建議先給目標、範圍、完成條件與驗收方式；避免一次倒入整個 Repository 或只給模糊需求。'
+      note: '建議先給目標、範圍、完成條件與驗收方式；避免一次塞進整個 Repository，也不要只給模糊需求。'
     },
     {
       label: '03 Compact 壓縮',
@@ -73,14 +73,14 @@ pageClass: quickstart-story credit-savings-page
         { title: '放長期規則', description: '把專案結構、命令、限制與完成標準寫成可重複使用的說明。' },
         { title: '不要放一次性內容', description: '秘密、長篇日誌、單次任務與整份需求文件不適合放在這裡。' }
       ],
-      note: '穩定的 Context 固定放好，就不用每輪 Prompt 都重貼一遍。'
+      note: '把長期有效的 Context 寫進 AGENTS.md，每次下 Prompt 就不用重新貼一遍。'
     }
   ]"
 />
 
 ## 把工作分流，避免重複投餵
 
-長篇問答、資料整理與觀點比較，不一定要佔用同一個 Codex coding session。先在適合的工作空間完成討論，再把已確認的目標與必要檔案交給 Codex 執行，Context 會更乾淨。
+長篇問答、資料整理和觀點比較，可以先在適合的工作空間完成。確認目標後，再把必要檔案交給 Codex 執行，避免同一個 coding session 累積太多無關內容。
 
 <div class="credit-savings-routing" aria-label="ChatGPT 與 Codex 的工作分流">
   <section class="credit-savings-routing__panel credit-savings-routing__panel--chatgpt">
@@ -113,7 +113,7 @@ pageClass: quickstart-story credit-savings-page
   </section>
 </div>
 
-省 Token 的核心不是少說話，而是少做無關的事：縮小 Context、減少重複、控制輸出，並在需要時讓同一個 Session 繼續累積有效進度。
+要省 Token，就縮小 Context、減少重複、控制輸出，並讓同一個 Session 只累積和目前目標有關的進度。
 
 ## 參考資料
 
