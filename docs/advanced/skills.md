@@ -351,17 +351,21 @@ Codex 會把可用 Skills 的名稱與 description 放進初始 context，但這
   </div>
   <ul>
     <li>
-      <div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">▾</span><code>meeting-follow-up/</code></div>
-      <ul>
-        <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◆</span><code>SKILL.md</code><span class="lesson-file-tree__badge is-active">必要</span></div></li>
-        <li>
-          <div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">▾</span><code>agents/</code><span class="lesson-file-tree__badge is-global">建議</span></div>
-          <ul><li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◇</span><code>openai.yaml</code><span class="lesson-file-tree__badge is-global">UI 與依賴</span></div></li></ul>
-        </li>
-        <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◇</span><code>scripts/</code><span class="lesson-file-tree__badge is-local">選用</span></div></li>
-        <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◇</span><code>references/</code><span class="lesson-file-tree__badge is-local">選用</span></div></li>
-        <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◇</span><code>assets/</code><span class="lesson-file-tree__badge is-local">選用</span></div></li>
-      </ul>
+      <details open>
+        <summary class="lesson-file-tree__node lesson-file-tree__node--folder"><span class="lesson-file-tree__icon lesson-file-tree__icon--folder" aria-hidden="true"></span><code>meeting-follow-up/</code></summary>
+        <ul>
+          <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file" aria-hidden="true"></span><code>SKILL.md</code><span class="lesson-file-tree__badge is-active">必要</span></div></li>
+          <li>
+            <details open>
+              <summary class="lesson-file-tree__node lesson-file-tree__node--folder"><span class="lesson-file-tree__icon lesson-file-tree__icon--folder" aria-hidden="true"></span><code>agents/</code><span class="lesson-file-tree__badge is-global">建議</span></summary>
+              <ul><li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file-optional" aria-hidden="true"></span><code>openai.yaml</code><span class="lesson-file-tree__badge is-global">UI 與依賴</span></div></li></ul>
+            </details>
+          </li>
+          <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file-optional" aria-hidden="true"></span><code>scripts/</code><span class="lesson-file-tree__badge is-local">選用</span></div></li>
+          <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file-optional" aria-hidden="true"></span><code>references/</code><span class="lesson-file-tree__badge is-local">選用</span></div></li>
+          <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file-optional" aria-hidden="true"></span><code>assets/</code><span class="lesson-file-tree__badge is-local">選用</span></div></li>
+        </ul>
+      </details>
     </li>
   </ul>
 </div>

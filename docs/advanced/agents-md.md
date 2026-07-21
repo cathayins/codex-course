@@ -276,20 +276,26 @@ PostgreSQL, Redis, Ruff, and pytest.
     <small>越接近工作目錄，內容越具體</small>
   </div>
   <ul>
+    <li class="lesson-file-tree__divider" role="separator" aria-label="使用者規則範圍"><span>USER SCOPE</span></li>
     <li>
-      <div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">⌂</span><code>~/.codex/AGENTS.md</code><span class="lesson-file-tree__badge is-global">個人跨專案偏好</span></div>
+      <div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--home" aria-hidden="true"></span><code>~/.codex/AGENTS.md</code><span class="lesson-file-tree__badge is-global">個人跨專案偏好</span></div>
     </li>
+    <li class="lesson-file-tree__divider" role="separator" aria-label="專案規則範圍"><span>PROJECT SCOPE</span></li>
     <li>
-      <div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">▾</span><code>commerce-platform/</code></div>
-      <ul>
-        <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◆</span><code>AGENTS.md</code><span class="lesson-file-tree__badge is-active">全專案共同規則</span></div></li>
-        <li>
-          <div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">▾</span><code>services/payments/</code></div>
-          <ul>
-            <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon">◆</span><code>AGENTS.md</code><span class="lesson-file-tree__badge is-local">付款服務局部規則</span></div></li>
-          </ul>
-        </li>
-      </ul>
+      <details open>
+        <summary class="lesson-file-tree__node lesson-file-tree__node--folder"><span class="lesson-file-tree__icon lesson-file-tree__icon--folder" aria-hidden="true"></span><code>commerce-platform/</code></summary>
+        <ul>
+          <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file" aria-hidden="true"></span><code>AGENTS.md</code><span class="lesson-file-tree__badge is-active">全專案共同規則</span></div></li>
+          <li>
+            <details open>
+              <summary class="lesson-file-tree__node lesson-file-tree__node--folder"><span class="lesson-file-tree__icon lesson-file-tree__icon--folder" aria-hidden="true"></span><code>services/payments/</code></summary>
+              <ul>
+                <li><div class="lesson-file-tree__node"><span class="lesson-file-tree__icon lesson-file-tree__icon--file" aria-hidden="true"></span><code>AGENTS.md</code><span class="lesson-file-tree__badge is-local">付款服務局部規則</span></div></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </details>
     </li>
   </ul>
 </div>
