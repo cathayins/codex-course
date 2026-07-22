@@ -1,6 +1,6 @@
 ---
 title: Credits 精打細算
-description: 從縮小 Context、選對模型到控制輸出，學會在 Codex 中精打細算 Credits。
+description: 減少不必要的 Token，並依任務選擇適合的 Model，讓 Codex 把 Credits 用在真正需要的地方。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story credit-savings-page
@@ -8,25 +8,29 @@ pageClass: quickstart-story credit-savings-page
 
 # Credits 精打細算
 
-<p class="lesson-lead">Codex 的使用量，主要來自送進模型的 input、可重複利用的 cached input，以及模型產生的 output。想減少使用量，重點是讓每次任務只帶必要 Context、只做必要工作，並產出能直接驗收的結果。單純把每句話縮短，幫助不大。</p>
+<p class="lesson-lead">Codex 的 Credits 可以先看兩件事：用了多少 Token，以及選了哪個 Model。先減少不必要的 Context、重工與過長輸出，再依任務難度選擇剛好夠用的模型，不必每次都從最高能力開始。</p>
 
-<div class="credit-savings-hero" aria-label="Codex 使用量的四個主要來源">
+<div class="credit-savings-hero" aria-label="Codex 精打細算的兩個核心原則">
   <div class="credit-savings-hero__heading">
-    <span>先看消耗從哪裡來</span>
-    <h2>先減少無關輸入與重工</h2>
-    <p>Credits 不是每開一個任務就固定扣除；任務越長、讀入檔案越多、輸出越大，或模型與 reasoning 設定越高，通常消耗越多。</p>
+    <span>先抓住兩個原則</span>
+    <h2>減少 Token，選對 Model</h2>
+    <p>Input、cached input 和 output 會影響 Token 使用量；Model 與 reasoning 則會影響處理能力和 Credits 消耗。</p>
   </div>
   <div class="credit-savings-factors">
-    <section><b>01</b><strong>Input</strong><p>Prompt、檔案、程式碼與對話 Context。</p></section>
-    <section><b>02</b><strong>Cached input</strong><p>已重複使用、可被快取的輸入內容。</p></section>
-    <section><b>03</b><strong>Output</strong><p>模型回覆、程式碼、解釋與工具輸出。</p></section>
-    <section><b>04</b><strong>Model × effort</strong><p>模型能力與 reasoning 深度的選擇。</p></section>
+    <section><b>01｜TOKEN</b><strong>減少不必要的使用量</strong><p>縮小 Context、控制輸出、減少重工；重複內容則盡量讓 Cache 重用。</p></section>
+    <section><b>02｜MODEL</b><strong>選擇剛好夠用的模型</strong><p>先用能完成工作的 Model；真的需要更深判斷時，再提高模型能力或 reasoning。</p></section>
   </div>
 </div>
 
+::: info Cache 省的是重複處理
+當這一輪輸入的前段內容和先前相同，模型可以重用已經處理過的部分，這些就是 cached input。
+
+Cache 不代表 Session 越長越省。後來加入的內容仍會增加使用量，無關的 Context 也可能讓 Codex 更難抓到重點。
+:::
+
 ## 4 個精打細算的工作習慣
 
-以下四個分頁分別處理模型、Prompt、Compact 和 `AGENTS.md`，右側動畫會標出各自影響的使用量來源。
+接下來從模型、Prompt、Cache 和 `AGENTS.md` 四個地方下手，看看平常怎麼少走冤枉路。
 
 <MediaTabs
   aria-label="Credits 精打細算技巧"
@@ -44,25 +48,25 @@ pageClass: quickstart-story credit-savings-page
     },
     {
       label: '02 Prompt',
-      title: '一次交代必要資訊',
-      description: '說明目標、範圍、已知問題、完成條件與限制，可以減少 Codex 猜測和重試的次數。',
+      title: '先說清楚希望得到什麼結果',
+      description: '先講要交付什麼、做到什麼程度、怎麼驗收，再補上必要素材和限制。結果說得越清楚，越不容易做完才發現方向不對。',
       visual: 'prompt',
       steps: [
-        { title: '建議 Prompt', description: '先依 tokyo-trip-brief.txt 蒐集需要的資訊，再用新的研究素材規劃行程。' },
-        { title: '避免的 Prompt', description: '幫我查完整個東京，把所有景點、餐廳和交通都放進去。' }
+        { title: '希望的結果', description: '整理成一份可以直接拿去規劃行程的東京旅遊資料，輸出為 Markdown。' },
+        { title: '範圍與邊界', description: '依 tokyo-trip-brief.txt 蒐集交通、區域、景點、餐飲與注意事項；附上來源，先不要排行程。' }
       ],
-      note: '建議先給目標、範圍、完成條件與驗收方式；避免一次塞進整個 Repository，也不要只給模糊需求。'
+      note: '範例 Prompt：請依 tokyo-trip-brief.txt 蒐集東京旅遊需要的資訊，整理成 Markdown。內容包含交通、區域、景點、餐飲與注意事項，每項附上資料來源。這一階段只整理資料，先不要安排行程。'
     },
     {
-      label: '03 Compact 壓縮',
-      title: '對話太長，就用 /compact 壓縮',
-      description: '同一件工作談了很多輪、讀了很多檔案或累積大量工具輸出時，用 /compact 保留目標、決策與進度，再繼續工作。',
-      visual: 'compact',
+      label: '03 Cache',
+      title: '同一個目標，沿用同一個 Session',
+      description: '延續同一件工作時，前面的輸入比較有機會被重用。不過 Session 越長不代表越省；新增內容和無關 Context 仍會增加使用量。',
+      visual: 'session',
       steps: [
-        { title: '先整理不能遺失的內容', description: '把規則、數字、完成條件寫進工作檔案，不要只留在聊天裡。' },
-        { title: '同一個目標再繼續', description: 'Compact 適合延續原工作；如果目標變了，直接開新任務。' }
+        { title: '讓前面的內容保持穩定', description: '專案規則與共用資料不要每一輪重寫，把這次才會變動的要求接在後面。' },
+        { title: '目標換了就開新 Session', description: '不要為了 Cache，把不相關的工作全部接在同一段對話裡。' }
       ],
-      note: 'Compact 是把 Context 變短，不是逐字保存聊天；壓縮後要確認摘要沒有遺漏。'
+      note: '是否命中 Cache，關鍵是輸入前段是否相同，不是 Session 名稱本身。'
     },
     {
       label: '04 AGENTS.md',
@@ -113,7 +117,7 @@ pageClass: quickstart-story credit-savings-page
   </section>
 </div>
 
-要省 Token，就縮小 Context、減少重複、控制輸出，並讓同一個 Session 只累積和目前目標有關的進度。
+同一個目標可以留在同一個 Session，通常比較容易重用前面的 Context；目標換了，就另開一個。Cache 省得了重複輸入，省不了無關內容和重工。
 
 東京旅遊 Demo 的每一輪只做一件事：先蒐集資料，再確認規劃方向與準則，接著製作計畫書，最後決定交付格式。這比一開始同時要求搜尋、排行程、做網頁，更容易檢查，也能減少整份重做。
 
@@ -121,8 +125,10 @@ pageClass: quickstart-story credit-savings-page
 
 - [Codex rate card｜OpenAI Help Center](https://help.openai.com/en/articles/20001106)
 - [Using Codex with your ChatGPT plan｜OpenAI Help Center](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
+- [Prompt caching｜OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching)
+- [Claude Code 如何使用 prompt caching｜Anthropic](https://code.claude.com/docs/zh-TW/prompt-caching)
 - [Slash Commands](/quick-start/using-slash)
 - [Prompting](/quick-start/prompting)
 - [AGENTS.md](/advanced/agents-md)
 
-<p class="source-note">本頁依 2026-07-19 OpenAI 官方 Credits、Codex 使用量與工作方式文件整理。實際使用量會依模型、輸入／快取輸入／輸出、reasoning、Fast mode、任務複雜度與 Workspace 設定變動；產品名稱與費率更新時，請以官方 rate card 為準。</p>
+<p class="source-note">本頁的 Credits 計算以 OpenAI Codex rate card 為準；Cache 的工作方式參考 OpenAI Prompt Caching 與 Claude Code 文件。不同模型與產品的 Cache 規則可能不同，實際費率與行為請以各自的官方文件為準。</p>
