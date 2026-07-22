@@ -1569,9 +1569,78 @@ body {
 }
 
 .VPHero .main {
+  position: relative;
   max-width: 940px !important;
   margin: 0;
   text-align: left;
+}
+
+.course-hero-squares {
+  --course-hero-square-size: 128px;
+  --course-hero-solid-size: 52px;
+  position: absolute;
+  top: 4px;
+  left: calc(100% - 148px);
+  display: none;
+  width: 208px;
+  height: 240px;
+  pointer-events: none;
+}
+
+.course-hero-squares__square {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+}
+
+.course-hero-squares__square--filled {
+  top: 0;
+  right: 0;
+  width: var(--course-hero-square-size);
+  height: var(--course-hero-square-size);
+  border: 1px solid rgb(15 61 117 / 34%);
+  background: rgb(64 127 193 / 14%);
+}
+
+.course-hero-squares__square--outline {
+  top: 32px;
+  left: 0;
+  width: var(--course-hero-square-size);
+  height: var(--course-hero-square-size);
+  border: 2px solid rgb(15 61 117 / 72%);
+}
+
+.course-hero-squares__square--solid {
+  left: -72px;
+  bottom: 0;
+  width: var(--course-hero-solid-size);
+  height: var(--course-hero-solid-size);
+  background: #0f3d75;
+}
+
+@media (min-width: 1024px) {
+  .course-hero-squares {
+    display: block;
+  }
+}
+
+@media (min-width: 1200px) {
+  .course-hero-squares {
+    --course-hero-square-size: 160px;
+    --course-hero-solid-size: 68px;
+    top: -8px;
+    left: calc(100% + 24px);
+    width: 256px;
+    height: 256px;
+  }
+
+  .course-hero-squares__square--outline {
+    top: 44px;
+  }
+
+  .course-hero-squares__square--solid {
+    left: -92px;
+  }
 }
 
 .course-hero-eyebrow {
@@ -5944,8 +6013,14 @@ html:not(.dark) .vp-doc .vp-code span {
     font-size: 48px;
   }
 
-  .VPHero .text {
+  .VPHero .main .text {
+    width: auto;
+    max-width: 100%;
     font-size: 28px;
+  }
+
+  .VPHero .main .tagline {
+    max-width: 100%;
   }
 
   .course-paths-intro {

@@ -15,6 +15,13 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
     <template #home-hero-info-before>
       <p class="course-hero-eyebrow">COURSE 01 · FUNDAMENTALS</p>
     </template>
+    <template #home-hero-info-after>
+      <div class="course-hero-squares" aria-hidden="true">
+        <span class="course-hero-squares__square course-hero-squares__square--filled"></span>
+        <span class="course-hero-squares__square course-hero-squares__square--outline"></span>
+        <span class="course-hero-squares__square course-hero-squares__square--solid"></span>
+      </div>
+    </template>
     <template #home-features-before>
       <section id="learning-paths" class="course-paths-intro">
         <div>
