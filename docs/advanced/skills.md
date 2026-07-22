@@ -2,6 +2,7 @@
 title: Skills：把方法變成可重用能力
 description: 從 Basic 選用現有 Skill，到 Advanced 設計、建立、測試與分享可重複使用的工作流程。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 <script setup>
@@ -249,6 +250,8 @@ $meeting-follow-up
 這次改用繁體中文，並將行動項目依期限排序。
 ```
 
+這個案例使用的 [`$meeting-follow-up`](#_3-建立-meeting-follow-up-skill) 要怎麼建立？請到 Advanced 章節查看完整步驟。
+
 <a :href="withBase('/demo-assets/product-sync-0717.md')" download>下載範例會議紀錄：product-sync-0717.md</a>
 
 第一句指出本次輸入與用途；第二句只補充和 Skill 預設不同的語言與排序。原本已寫在 Skill 裡的欄位、檢查與禁止推測，不需要再次貼進 Prompt。
@@ -350,6 +353,41 @@ Codex 會把可用 Skills 的名稱與 description 放進初始 context，但這
 
 一個 Skill 至少是一個含有 `SKILL.md` 的資料夾。先做 instruction-only，再依真實需求加入資源：
 
+<MediaTabs
+  class="skills-media-tabs"
+  aria-label="SKILL.md 的最小結構與延伸內容"
+  :items="[
+    {
+      label: '最小結構',
+      title: '先從一份聚焦的 SKILL.md 開始',
+      description: '一個 Skill 可以先只有 SKILL.md。YAML frontmatter 的 name 和 description 說明用途與觸發情境；下方 Markdown 則寫下執行步驟、必要檢查與完成條件。共同流程清楚後，多數穩定任務就能直接處理。',
+      image: '/images/skills/skill-md-core.png',
+      alt: 'SKILL.md 範例，分成包含名稱與用途說明的 YAML frontmatter，以及包含步驟和程式範例的 Markdown 內容',
+      links: [
+        {
+          label: '圖片參考：Anthropic｜Skill 撰寫最佳實踐',
+          href: 'https://platform.claude.com/docs/zh-TW/agents-and-tools/agent-skills/best-practices'
+        }
+      ],
+      fit: 'wide'
+    },
+    {
+      label: '按需延伸',
+      title: '內容多了，再把需要時才看的資料拆出去',
+      description: '進階規格、長篇範例或特殊流程不是每次都要看，就拆到 references 或其他資源檔。SKILL.md 保留主流程，並寫清楚什麼情況該讀哪一份資料，讓它維持精簡也不缺需要的細節。',
+      image: '/images/skills/skill-md-bundled-content.png',
+      alt: 'SKILL.md 範例透過 reference.md 和 forms.md 連到兩份延伸內容，說明依任務需要載入額外資料',
+      links: [
+        {
+          label: '圖片參考：Anthropic｜Skill 撰寫最佳實踐',
+          href: 'https://platform.claude.com/docs/zh-TW/agents-and-tools/agent-skills/best-practices'
+        }
+      ],
+      fit: 'wide'
+    }
+  ]"
+/>
+
 <div class="lesson-file-tree skills-file-tree" role="group" aria-label="meeting-follow-up Skill 完整檔案結構">
   <div class="lesson-file-tree__title">
     <span>SKILL ANATOMY</span>
@@ -388,26 +426,62 @@ Codex 會把可用 Skills 的名稱與 description 放進初始 context，但這
 
 #### Description 是觸發介面，不只是介紹文案
 
-<div class="lesson-rule-grid skills-description-compare">
-  <section class="lesson-rule-card is-skip" aria-labelledby="skills-description-bad-title">
-    <span class="lesson-rule-card__mark">過度模糊</span>
-    <strong id="skills-description-bad-title" class="lesson-rule-card__title">幫忙處理會議內容</strong>
-    <ul>
-      <li>沒有說明輸入是逐字稿、筆記還是行事曆。</li>
-      <li>沒有明確成果與觸發語境。</li>
-      <li>容易誤觸發一般文件摘要。</li>
-    </ul>
-  </section>
-  <section class="lesson-rule-card is-do" aria-labelledby="skills-description-good-title">
-    <span class="lesson-rule-card__mark">可判斷觸發</span>
-    <strong id="skills-description-good-title" class="lesson-rule-card__title">把會議紀錄整理成可追蹤後續</strong>
-    <ul>
-      <li>輸入包含會議逐字稿、筆記或多份紀錄。</li>
-      <li>輸出包含決策、行動項目、負責人、期限與待確認問題。</li>
-      <li>使用於會議摘要與 follow-up，不處理無關的一般文件摘要。</li>
-    </ul>
-  </section>
-</div>
+<MediaTabs
+  class="skills-description-media-tabs"
+  aria-label="模糊與清楚的 Skill description 比較"
+  :items="[
+    {
+      label: '太模糊',
+      title: '只寫「幫忙處理會議內容」',
+      description: '這句沒交代要處理的資料、要交付的結果，也沒說什麼情況該用。連一般文件摘要都可能誤觸發這個 Skill。',
+      commands: [
+        {
+          label: '範例',
+          code: 'description: 幫忙處理會議內容'
+        }
+      ],
+      steps: [
+        {
+          title: '輸入不明確',
+          description: '看不出輸入是逐字稿、會議筆記，還是行事曆資料。'
+        },
+        {
+          title: '成果不明確',
+          description: '看不出要整理成摘要、決策紀錄，還是待辦事項。'
+        },
+        {
+          title: '邊界不明確',
+          description: '沒有排除一般文件摘要，可能在不適合的情況下被選到。'
+        }
+      ]
+    },
+    {
+      label: '更容易判斷',
+      title: '把任務、適用時機和排除範圍寫清楚',
+      description: '有了輸入、成果、使用時機和排除範圍，Codex 才能判斷什麼時候該用這個 Skill。',
+      commands: [
+        {
+          label: '範例',
+          code: 'description: 將會議逐字稿、筆記或多份會議紀錄，整理成已確認的決策、行動項目、負責人、期限與待確認問題。用於會議摘要、會後追蹤或提取 action items；不要用於和會議無關的一般文件摘要。'
+        }
+      ],
+      steps: [
+        {
+          title: '說明輸入',
+          description: '輸入限定為逐字稿、筆記或多份會議紀錄。'
+        },
+        {
+          title: '說明成果',
+          description: '輸出會列出決策、行動項目、負責人、期限與待確認問題。'
+        },
+        {
+          title: '說明邊界',
+          description: '適用於會議摘要與會後追蹤，不處理與會議無關的一般文件摘要。'
+        }
+      ]
+    }
+  ]"
+/>
 
 ### 3｜建立 `meeting-follow-up` Skill
 

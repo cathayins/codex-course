@@ -2,6 +2,7 @@
 title: MCP 與外部工具
 description: 認識 MCP 的角色與能力、外部工具的連線方式，以及白名單、Authentication 與 Approval 的風險控管。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 # MCP 與外部工具

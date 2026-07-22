@@ -2,6 +2,7 @@
 title: AGENTS.md：Repository 的長期規範
 description: 學習判斷哪些規則適合寫入 AGENTS.md，並透過改寫與檢查，讓規則具體、可驗證且容易維護。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 # `AGENTS.md`：Repository 的長期規範

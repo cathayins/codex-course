@@ -2,6 +2,7 @@
 title: Plugins：安裝與分享完整能力包
 description: 理解 Plugin 的使用情境、瀏覽與安全使用方式，並判斷何時值得建立團隊能力包。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 # Plugins：安裝與分享完整能力包
