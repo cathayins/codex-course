@@ -131,33 +131,33 @@ Goal 與本次任務的 Output 通常留在 Prompt。能跨任務使用，而且
 ### 可直接改寫的精簡範本
 
 ```markdown
-# Repository guide
+# 專案庫導覽
 
-## Quick commands
+## 常用指令
 
-- Install: `uv sync`
-- Fast test: `uv run pytest tests/unit -q`
-- Full test: `uv run pytest -q`
-- Lint: `uv run ruff check .`
-- Type check: `uv run mypy app`
+* 安裝依賴：`uv sync`
+* 快速測試：`uv run pytest tests/unit -q`
+* 完整測試：`uv run pytest -q`
+* 程式碼檢查（Lint）：`uv run ruff check .`
+* 型別檢查：`uv run mypy app`
 
-## Purpose and non-obvious context
+## 專案目的與注意事項
 
-- This service processes subscription billing events.
-- Read `docs/billing-contracts.md` before changing invoice behavior.
-- `app/legacy_gateway/` exists for partner compatibility; do not refactor it incidentally.
+* 本服務用於處理訂閱計費事件。
+* 修改發票／帳單行為前，請先閱讀 `docs/billing-contracts.md`。
+* `app/legacy_gateway/` 是為了相容合作夥伴而保留，請勿順手對其進行重構。
 
-## Change boundaries
+## 變更邊界與限制
 
-- Always use the existing test doubles; tests must not call live payment providers.
-- Ask before adding a production dependency or changing a public API or schema.
-- Never print credentials or customer payloads. Use redacted fixtures for debugging.
+* 請務必使用現有的 Test Double（測試替身）；測試絕不可呼叫真實的支付服務提供者（Payment Provider）。
+* 若要新增正式環境套件依賴（Production Dependency）、修改公開 API 或 Schema，請先詢問並確認。
+* 嚴禁印出金鑰憑證（Credentials）或客戶資料載荷（Payload）；除錯時請使用去敏感化（Redacted）的 Fixture。
 
-## Definition of done
+## 完成定義（Definition of Done）
 
-- Run the checks relevant to the changed area and report the exact commands and results.
-- Update `docs/billing-contracts.md` when invoice behavior changes.
-- List skipped checks, remaining risks, migration impact, and rollback considerations.
+* 針對修改涵蓋的領域執行相應檢查，並回報確切執行的指令與結果。
+* 當發票／帳單行為有變更時，須同步更新 `docs/billing-contracts.md`。
+* 列出跳過的檢查項目、潛在風險、Migration（資料庫遷移）影響以及 Rollback（復原）考量。
 ```
 
 這份範本需要依專案調整。專案沒有 type check 時，刪除對應命令；完整測試若需要一小時，則註明哪些變更必須執行完整測試。
@@ -178,44 +178,42 @@ Goal 與本次任務的 Output 通常留在 Prompt。能跨任務使用，而且
 ::: code-group
 
 ```markdown [Before｜冗長但不實用]
-# Project instructions
+# 專案指引
 
-This is a Python web application. Source code is in `src/`, tests are in
-`tests/`, and documentation is in `docs/`. The project uses FastAPI,
-PostgreSQL, Redis, Ruff, and pytest.
+這是一個 Python Web 應用程式。程式碼位於 `src/`，測試程式碼位於 `tests/`，而說明文件位於 `docs/`。本專案使用 FastAPI、PostgreSQL、Redis、Ruff 及 pytest。
 
-- Follow software engineering best practices and write clean code.
-- Use four spaces for indentation and keep imports sorted.
-- Make sure all tests pass after every change.
-- Be careful when editing files and do not break existing behavior.
-- For the current BILL-248 ticket, do not add a new dependency.
-- See the README for installation, architecture, and all API endpoints.
+* 遵循軟體工程最佳實踐，編寫乾淨整潔的程式碼。
+* 使用 4 個空格進行縮排，並保持 import 排序整齊。
+* 確保每次變更後所有測試皆能通過。
+* 編輯檔案時請保持審慎，切勿破壞現有的行為機制。
+* 針對目前的 BILL-248 單號（ticket），請勿新增任何新的套件依賴（dependency）。
+* 關於安裝步驟、架構說明及所有 API 端點，請參閱 README。
 ```
 
 ```markdown [After｜精簡且可執行]
-# Repository guide
+# 專案庫導覽
 
-## Quick commands
+## 常用指令
 
-- Fast check: `uv run pytest tests/unit -q`
-- Full check for API or database changes: `uv run pytest -q`
-- Lint: `uv run ruff check .`
+* 快速檢查：`uv run pytest tests/unit -q`
+* API 或資料庫變更的完整檢查：`uv run pytest -q`
+* 程式碼檢查（Lint）：`uv run ruff check .`
 
-## Non-obvious context
+## 注意事項與隱性規則
 
-- `src/legacy_sync/` must remain compatible with partner payload version 2.
-- Read `docs/data-contracts.md` before changing database or API fields.
+* `src/legacy_sync/` 必須保持對合作夥伴資料載荷（Payload）第 2 版的相容性。
+* 修改資料庫或 API 欄位前，請先閱讀 `docs/data-contracts.md`。
 
-## Change boundaries
+## 變更邊界與限制
 
-- Ask before changing a public API, schema, or production dependency.
-- Use existing Redis and PostgreSQL test fixtures; tests must not call shared services.
+* 若要修改公開 API、Schema 或正式環境套件依賴（Production Dependency），請先詢問並確認。
+* 請使用現有的 Redis 與 PostgreSQL 測試 Fixture；測試不得呼叫共用服務。
 
-## Definition of done
+## 完成定義（Definition of Done）
 
-- Report the validation commands and results.
-- For schema changes, include migration and rollback impact.
-- List checks that were skipped and why.
+* 附上驗證採用的指令與執行結果。
+* 若有修改 Schema，須包含 Migration（資料庫遷移）與 Rollback（復原）的影響評估。
+* 列出跳過的檢查項目及其原因。
 ```
 
 :::
