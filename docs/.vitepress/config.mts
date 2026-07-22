@@ -28,7 +28,7 @@ export default defineConfig({
         activeMatch: '^/quick-start/',
         items: [
           { text: 'What Is Codex', link: '/quick-start/' },
-          { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineer' },
+          { text: 'New SDLC w/ Codex', link: '/quick-start/codex-for-engineer' },
           { text: 'Installation', link: '/quick-start/installation' },
           {
             text: 'Overview',
@@ -90,7 +90,7 @@ export default defineConfig({
           text: '快速上手',
           items: [
             { text: 'What Is Codex', link: '/quick-start/' },
-            { text: 'Codex for Engineer', link: '/quick-start/codex-for-engineer' },
+            { text: 'New SDLC w/ Codex', link: '/quick-start/codex-for-engineer' },
             { text: 'Installation', link: '/quick-start/installation' },
             {
               text: 'Overview',

@@ -1,6 +1,6 @@
 ---
-title: Codex for Engineer
-description: 從 ChatGPT、Cursor 到 Codex，理解工程師角色、Agent 可讀性，以及以程式碼庫為唯一可信來源的現代工程架構。
+title: The New Paradign of SDLC in the Era of Codex
+description: 工程師如何從親手完成每個步驟，轉向定義問題與完成標準，再由 Codex 或 Claude Code 執行、驗證並回報。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story codex-for-engineer
@@ -12,9 +12,9 @@ next:
   link: /quick-start/installation
 ---
 
-# Codex for Engineer
+# The New Paradign of SDLC in the Era of Codex
 
-<p class="lesson-lead">工程師和 AI 的互動，正從「問答案」走向「交辦任務」。<br><strong>人掌握方向，Agent 負責執行。</strong></p>
+<p class="lesson-lead">從親手寫每一步，到帶著 Agent 把任務做完。<br><strong>工程師把問題與標準說清楚，Agent 負責實作、測試與回報。</strong></p>
 
 ## 從 Ctrl C、V 到直接交辦任務
 
@@ -30,66 +30,46 @@ next:
   <p>Just Ask Codex 的前提，是說清楚工程意圖與完成條件。</p>
 </div>
 
-## Codex 開始寫程式後，工程師在做什麼？
+## 有了 Codex，工程師的工作怎麼變？
 
-NStarX 用 **AI-assisted** 和 **AI-native** 描述兩種工作方式。AI-assisted 是在原本的流程裡加入補全；AI-native 則重新安排人與 Agent 怎麼合作。Codex 接手實作後，工程師的工作會往前移：先釐清真正的需求，決定該怎麼取捨、哪些邊界不能跨，再把完成條件說清楚。
+以前，工程師從拆需求、寫程式到除錯和測試，大多要自己一步步完成。現在，實作可以交給 Agent 反覆執行，工程師則要先把問題、限制和完成標準講清楚，最後再檢查結果。NStarX 用 **AI-assisted** 和 **AI-native** 區分這兩種工作方式；這裡只看工程師最直接的變化。
 
-<div class="engineer-role-split" role="group" aria-label="工程師與 Codex 的分工">
-  <article class="engineer-role-card is-human">
-    <span class="engineer-role-card__eyebrow">HUMAN｜工程師</span>
-    <h3>釐清需求，做出取捨</h3>
-    <p>定義真正要解決的問題，決定方案該怎麼取捨、哪些邊界不能跨，以及怎樣才算完成。</p>
-    <div class="engineer-role-card__tags" aria-label="工程師負責項目">
-      <span>Requirements</span><span>Trade-offs</span><span>Boundaries</span><span>Acceptance</span>
+<div class="engineer-role-split" role="group" aria-label="工程師工作方式的 Before 與 After">
+  <article class="engineer-role-card is-before">
+    <span class="engineer-role-card__eyebrow">BEFORE｜以前</span>
+    <h3>工程師自己一步步做</h3>
+    <p>從拆需求、寫程式、找問題到跑測試，主要都由工程師親手完成。AI 即使有參與，也多半只是補幾行程式碼或提供建議。</p>
+    <div class="engineer-role-card__tags" aria-label="以前的工作方式">
+      <span>拆需求</span><span>寫程式</span><span>找問題</span><span>跑測試</span>
     </div>
   </article>
   <span class="engineer-role-split__handoff" aria-hidden="true">→</span>
-  <article class="engineer-role-card is-agent">
-    <span class="engineer-role-card__eyebrow">AGENT｜Codex</span>
-    <h3>把任務做完並交代結果</h3>
-    <p>先讀程式碼與規範，再動手修改、跑測試，最後回報改了什麼、檢查結果如何。</p>
-    <div class="engineer-role-card__tags" aria-label="Codex 負責項目">
-      <span>Explore</span><span>Build</span><span>Test</span><span>Report</span>
+  <article class="engineer-role-card is-after">
+    <span class="engineer-role-card__eyebrow">AFTER｜現在</span>
+    <h3>工程師先定方向，再交給 Agent 執行</h3>
+    <p>工程師先說清楚要解決的問題、不能碰的地方，以及怎樣才算完成。Codex 負責讀專案、修改、測試和回報，工程師再確認方向與結果。</p>
+    <div class="engineer-role-card__tags" aria-label="現在的工作方式">
+      <span>定方向</span><span>設邊界</span><span>Agent 執行</span><span>檢查結果</span>
     </div>
   </article>
 </div>
 
-工程師不必把每一步都寫成指令，但要對幾個關鍵問題做決定：需求到底是什麼？這次優先顧速度、品質還是風險？哪些地方可以調整，哪些地方不能碰？這些判斷清楚後，再把任務交給 Agent 實作與驗證。
+工程師不是退出實作，而是把時間往前移：先想清楚要做什麼，再判斷 Agent 做得對不對。
 
-## 1｜讓 Agent 不只讀程式碼，還看得到執行結果
+## 1｜將程式碼庫作為唯一可信來源
 
-工程師修 Bug 時，會先把 App 跑起來，看畫面、讀錯誤訊息，修改後再測一次。如果 Agent 只能讀程式碼，卻看不到 App 實際怎麼跑，它就只能猜。OpenAI 團隊在這個專案的做法，是把工程師平常用來判斷問題的訊號也交給 Codex。
-
-<div class="use-case-grid agent-readable-grid">
-  <section><span>01｜找得到規則</span><h3>知道該去哪裡看</h3><p>把模組邊界、架構規則和常用指令放進 Repository，讓 Agent 不必依賴口頭默契。</p></section>
-  <section><span>02｜看得到 App</span><h3>程式跑起來後，它也看得到</h3><p>讓 Agent 能啟動 App、讀 DOM 和截圖，也能查日誌、指標與追蹤，直接看到問題發生在哪裡。</p></section>
-  <section><span>03｜能自己確認</span><h3>改完後，知道有沒有修好</h3><p>讓 Agent 重跑同一段操作、測試與 Lint，對照修改前後的結果，不必只靠「程式看起來沒問題」。</p></section>
-</div>
-
-<section class="agent-readable-loop" aria-labelledby="agent-readable-loop-title">
-  <span>CODEX 的驗證迴圈</span>
-  <strong id="agent-readable-loop-title">Codex 怎麼知道自己真的修好了？</strong>
-  <ol>
-    <li><b>1｜重現</b><small>啟動 App，走一次出錯的操作流程。</small></li>
-    <li><b>2｜找原因</b><small>查看 DOM、截圖、日誌與執行指標。</small></li>
-    <li><b>3｜修改</b><small>改完程式後，重新啟動自己的 App。</small></li>
-    <li><b>4｜再驗證</b><small>重跑相同操作與測試，比較修改前後結果。</small></li>
-  </ol>
-  <p>OpenAI 讓每個 Git worktree（獨立工作目錄）啟動一套互不干擾的 App。Codex 因此可以在自己的環境反覆修改和重跑，不會踩到其他工作的狀態。這就是讓應用程式「對 Agent 可讀」：除了程式碼，也讓它讀得到畫面、錯誤與驗證結果。</p>
-</section>
-
-## 2｜將程式碼庫作為唯一可信來源
-
-如果重要知識只放在 Google 文件、Slack 討論或某位資深工程師腦中，AI 就看不到完整系統。把架構、設計、規格和決策帶回 Repository，這些內容才能被搜尋、版本控制，並和程式一起更新。
+Agent 只能依照它找得到的資料工作。如果架構規則留在 Google 文件、決策散在 Slack，還有一些做法只有資深工程師知道，Codex 看到的就不是完整專案。把規格、設計、決策和程式碼放在同一個 Repository，才能一起搜尋、修改和追蹤版本。
 
 <figure class="course-visual course-visual--wide">
   <img src="/images/quick-start/agent-knowledge-limits.webp" width="1800" height="938" loading="lazy" decoding="async" alt="OpenAI 圖解 Codex 無法看見外部文件、Slack 訊息與隱性知識，必須把重要內容編碼進程式碼庫">
   <figcaption>重要知識要成為 Repository 內可發現、可版本控制的內容。圖片來源：OpenAI Harness Engineering。</figcaption>
 </figure>
 
-### 給 Agent 一張可以逐步展開的地圖
+### 先看地圖，需要時再找細節
 
-如果把所有規則都塞進一份大型 `AGENTS.md`，會占掉任務需要的 Context，也更難看出優先順序和內容是否過期。可以另外整理一層給人與 Agent 閱讀的工程知識：
+不要把所有規則都塞進 `AGENTS.md`。讓它保持精簡，負責指向更深入的設計、架構與計畫文件；重複使用的工作方法則整理成 Skill。Agent 需要什麼才讀什麼，不必每次把整套文件都塞進 Context。這就是**漸進式揭露**。
+
+導入 Agent 協作後，Repository 通常會多出這幾份文件。`DESIGN.md`、`ARCHITECTURE.md` 與 `PLANS.md` 不是每個工具都會自動載入，因此要從 `AGENTS.md` 清楚指向它們。
 
 ```text
 repository/
@@ -97,23 +77,100 @@ repository/
 ├── DESIGN.md
 ├── ARCHITECTURE.md
 ├── PLANS.md
+├── .agents/
+│   └── skills/
+│       └── <workflow>/
+│           └── SKILL.md
 └── docs/
-    ├── product-specs/
+    ├── design-docs/
     └── exec-plans/
 ```
 
-<div class="feature-case-grid">
-  <section><span>AGENTS.md</span><h3>導覽地圖</h3><p>只放專案慣例、常用指令、驗證方式，以及下一步該去哪裡找資料。</p></section>
-  <section><span>DESIGN.md</span><h3>設計原則</h3><p>記錄網站色調、視覺風格、互動原則與不能破壞的設計限制。</p></section>
-  <section><span>ARCHITECTURE.md</span><h3>系統架構</h3><p>說明模組邊界、依賴方向、核心流程與重要技術決策。</p></section>
-  <section><span>PLANS.md ＋ docs/</span><h3>規格與執行紀錄</h3><p>保存 PRD、執行計畫、目前進度、決策日誌與已知技術債。</p></section>
+<AgentKnowledgeNav />
+
+<div class="takeaway">
+  <span>LIVE REPOSITORY｜課堂示範</span>
+  <strong><a href="https://github.com/cathayins/codex-course" target="_blank" rel="noreferrer">cathayins/codex-course ↗</a></strong>
+  <p>這份教材本身就是一個可以直接打開的 Repository。上課時可以從程式碼、課程文件、<code>AGENTS.md</code> 與 <code>DESIGN.md</code> 開始，看規則和實作怎麼放在同一個地方。</p>
 </div>
 
-Agent 先讀短而穩定的 `AGENTS.md`，再依任務決定是否打開設計、架構或計畫文件。這種做法稱為**漸進式揭露**：先給一張足以出發的地圖，需要時再展開下一層。
+
+## 2｜讓 Agent 不只讀程式碼，也看得到程式怎麼跑
+
+只看程式碼，Codex 只能推測程式「應該」怎麼運作。要讓它自己找問題、修改並驗證，還得把 App 跑起來後的畫面與執行訊號交給它。
+
+<div class="agent-runtime-points" aria-label="讓 Agent 讀取程式執行結果的兩種做法">
+  <section class="agent-runtime-point">
+    <b class="agent-runtime-point__index">01</b>
+    <div>
+      <span class="agent-runtime-point__eyebrow">BROWSER｜看 UI</span>
+      <h3>網站開發：直接看使用者遇到什麼</h3>
+      <p>讓 Coding Agent 啟動網站、操作頁面，再讀 DOM、截圖與瀏覽器事件。它可以從實際畫面找問題，修改後再走一次相同流程。</p>
+      <div class="agent-runtime-path" aria-label="透過 Browser 判斷 UI 的流程"><b>啟動 App</b><i>→</i><b>操作頁面</b><i>→</i><b>讀 DOM／截圖</b><i>→</i><b>修改後重跑</b></div>
+    </div>
+  </section>
+  <section class="agent-runtime-point">
+    <b class="agent-runtime-point__index">02</b>
+    <div>
+      <span class="agent-runtime-point__eyebrow">OBSERVABILITY｜查系統</span>
+      <h3>系統除錯：從 Logs、Metrics 與 Traces 找原因</h3>
+      <p>把 <code>LogQL</code>、<code>PromQL</code>、<code>TraceQL</code> 等查詢介面接給 Codex，它就能自己查線索、關聯訊號，再修改程式並重跑測試。</p>
+      <div class="agent-runtime-path" aria-label="透過遙測資料除錯的流程"><b>查詢訊號</b><i>→</i><b>關聯資料</b><i>→</i><b>找出原因</b><i>→</i><b>修改與重跑</b></div>
+    </div>
+  </section>
+</div>
+
+<figure class="agent-observability-figure">
+  <div class="agent-observability-figure__canvas">
+    <img src="/images/quick-start/codex-observability-stack.svg" width="802" height="469" loading="lazy" decoding="async" alt="Codex 查詢日誌、指標與追蹤，修改程式後重啟應用程式並重跑 UI 測試的可觀測性回饋迴圈">
+  </div>
+  <figcaption>OpenAI 的做法：讓 Codex 查詢日誌、指標與追蹤，修改後重新啟動 App、重跑流程，再把結果送回下一輪。手機可左右滑動查看圖面細節。圖片來源：<a href="https://openai.com/zh-Hant-HK/index/harness-engineering/">OpenAI Harness Engineering</a>。</figcaption>
+</figure>
+
+### 看得到現場之後，還要補上兩件事
+
+Agent 還需要知道怎樣才算完成，以及出錯後該往哪裡查。
+
+<div class="agent-feedback-stack" aria-label="讓 Agent 自己完成驗證與除錯的兩個條件">
+
+  <section class="agent-feedback-card is-validation">
+    <header>
+      <b class="agent-feedback-card__index">01</b>
+      <div><span>DEFINE DONE</span><h3>有清楚的驗證標準</h3></div>
+    </header>
+    <div class="agent-feedback-card__meaning">
+      <strong>代表什麼</strong>
+      <p>在動手前先說清楚「做到什麼才算完成」。Codex 修改後必須重跑約定的檢查與操作流程，不能只看程式碼覺得應該沒問題。</p>
+    </div>
+    <div class="agent-feedback-card__checks" aria-label="常見的完成驗證方式">
+      <div><b>Unit Test</b><span>確認功能邏輯</span></div>
+      <div><b>Lint</b><span>確認程式規範</span></div>
+      <div><b>Type Check</b><span>確認型別與介面</span></div>
+    </div>
+    <div class="agent-feedback-card__example"><span>完成條件範例</span><p><code>npm run lint</code> 與 <code>npm test</code> 通過，並重跑原本出錯的操作流程。</p></div>
+  </section>
+
+  <section class="agent-feedback-card is-error">
+    <header>
+      <b class="agent-feedback-card__index">02</b>
+      <div><span>READ THE ERROR</span><h3>讀得到可以採取行動的錯誤</h3></div>
+    </header>
+    <div class="agent-feedback-card__meaning">
+      <strong>代表什麼</strong>
+      <p>Logs、Network 與 Exception 要留下足夠線索。如果你正在開發會由 Agent 操作的系統，Error Message 應說明失敗動作、資料、實際狀態、預期狀態與下一步。</p>
+    </div>
+    <div class="agent-feedback-card__error-compare">
+      <article class="is-poor"><span>✕ 只知道失敗</span><code>Update failed</code></article>
+      <article class="is-useful"><span>✓ 知道下一步怎麼查</span><code>更新訂單 order_123 失敗：API 回傳 409，目前狀態為 paid，預期為 pending。請先重新讀取訂單狀態。</code></article>
+    </div>
+    <footer class="agent-feedback-card__tags"><span>Logs</span><span>Network</span><span>Exception</span><span>Next step</span></footer>
+  </section>
+</div>
 
 ## 參考資料
 
 - [Harness 工程：在以代理為核心的世界利用 Codex 推動工程效率｜OpenAI](https://openai.com/zh-Hant-HK/index/harness-engineering/)
+- [How Claude remembers your project｜Anthropic](https://code.claude.com/docs/en/memory)
 - [The New Paradigm of SDLC in the Era of Claude & Codex｜NStarX](https://nstarxinc.com/blog/the-new-paradigm-of-sdlc-in-the-era-of-claude-codex/)
 
 <p class="source-note">「Agentic Engineer」與三階段演化是本課的教學框架；OpenAI 文章著重工程師角色、Harness、Agent 可讀性與回饋迴圈，NStarX 文章則以 AI-assisted／AI-native SDLC 描述流程轉變。官方圖片保留原始內容；本文未沿用 NStarX 的預測性效益數字。</p>

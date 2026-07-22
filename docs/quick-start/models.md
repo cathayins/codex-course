@@ -105,24 +105,6 @@ pageClass: quickstart-story
 
 先從足以完成工作的 reasoning effort 開始。方向正確但分析太淺時，再提高設定；工作類型明顯不合適時，才換模型。
 
-## 在 Codex 裡切換
-
-App 的輸入框下方可以切換模型和 reasoning；CLI 或 IDE 也可以輸入：
-
-```text
-/model
-```
-
-CLI 也能在啟動時指定模型，例如 `codex -m gpt-5.6-sol`。選好後仍要確認 Prompt 的目標、來源、產出與限制；更強的模型不會自動補上缺少的背景。
-
-## 先這樣選
-
-<div class="quickstart-flow quickstart-flow--next" aria-label="模型選擇順序">
-  <section><span>01</span><h3>先用預設</h3><p>先用預設設定跑一輪，看看問題出在哪裡。</p></section>
-  <section><span>02</span><h3>結果太淺，再調 reasoning</h3><p>方向正確但分析太淺，再提高 reasoning。</p></section>
-  <section><span>03</span><h3>工作類型不同，再換模型</h3><p>任務類型不同時，再換模型。</p></section>
-</div>
-
 ## 參考資料
 
 - [Models｜ChatGPT Learn](https://learn.chatgpt.com/docs/models?surface=app)
