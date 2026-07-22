@@ -2,6 +2,7 @@
 title: Subagents：拆分、平行處理與彙整
 description: 介紹 Subagents 的工作原理、基礎配置與使用時機，包含平行派工與客製化 Agent 的實作。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 <script setup>

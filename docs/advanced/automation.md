@@ -2,6 +2,7 @@
 title: Scheduled tasks：讓已驗證的任務定期執行
 description: 先手動確認流程能正常執行，再設定明確的輸入、輸出與停止條件，交由排程定期處理。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 # Scheduled tasks：讓已驗證的任務定期執行

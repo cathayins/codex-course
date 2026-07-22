@@ -5326,6 +5326,39 @@ html:not(.dark) .vp-doc .vp-code span {
   white-space: pre;
 }
 
+/* Description 比較每個分頁只呈現一段程式碼，讓範例撐滿內容區。 */
+.skills-description-media-tabs .media-tabs__commands {
+  grid-template-columns: 1fr;
+}
+
+.skills-description-media-tabs .media-tabs__commands pre {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: clip;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.skills-description-media-tabs .media-tabs__commands code {
+  white-space: inherit;
+  overflow-wrap: inherit;
+}
+
+/* 進階章節的程式碼範例在窄螢幕上自動換行，不需要水平滑桿。 */
+.Layout.advanced-code-wrap .vp-doc div[class*="language-"] {
+  overflow-x: clip;
+}
+
+.Layout.advanced-code-wrap .vp-doc div[class*="language-"] pre,
+.Layout.advanced-code-wrap .vp-doc div[class*="language-"] code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.Layout.advanced-code-wrap .vp-doc div[class*="language-"] pre {
+  overflow-x: clip;
+}
+
 .media-tabs__platforms {
   margin-top: 22px;
   border: 1px solid #343a43;
@@ -8990,10 +9023,6 @@ html:not(.dark) .vp-doc .vp-code span {
   color: #78e0b1;
 }
 
-.skills-description-compare .lesson-rule-card {
-  min-height: 245px;
-}
-
 .skills-scope-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -9889,9 +9918,6 @@ html:not(.dark) .vp-doc .vp-code span {
     gap: 4px;
   }
 
-  .skills-description-compare .lesson-rule-card {
-    min-height: 0;
-  }
 }
 
 /* MCP lesson: concept-first architecture, guided connection, and read-only lab. */

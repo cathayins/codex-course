@@ -2,6 +2,7 @@
 title: Config、權限與沙盒
 description: 說明如何用 config.toml 設定模型、Approval、Sandbox 與網路邊界，並依任務調整 Codex 的工作模式。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 # Config、權限與沙盒

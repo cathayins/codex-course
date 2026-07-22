@@ -2,6 +2,7 @@
 title: Hooks：從 Matcher 到 Handler
 description: 說明 Event、Matcher 與 Handler 的判讀順序，並以工程、非工程和安全護欄案例介紹 Codex Hooks。
 outline: [2, 3]
+pageClass: advanced-code-wrap
 ---
 
 # Hooks：從 Matcher 到 Handler
