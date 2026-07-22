@@ -47,12 +47,36 @@ Context 只要放會影響答案的來源，並說明要從每份來源找什麼
 
 ### Work with Your Files
 
-在輸入框打 `@`，從清單選擇這次要用的來源。不要只把 `@檔名` 當一般文字打完；從選單點選，Codex 才能帶入正確的檔案或工具。
+在輸入框打 `@`，再從選單挑選來源。資料已經在專案裡，就選 **@File**；資料放在外部服務，或需要特定工具處理，就選 **@Plugin**。請從選單點選，不要只把名稱當成一般文字輸入。
 
-<div class="command-grid">
-  <section><kbd>@檔案</kbd><h3>已經知道要讀哪一份</h3><p>直接選 CSV、Excel、PDF、圖片或 Markdown，適合比較、整理與修改指定內容。</p></section>
-  <section><kbd>@資料夾</kbd><h3>先限定搜尋範圍</h3><p>檔案散在同一個目錄時，先請 Codex 盤點，再選出會影響答案的來源。</p></section>
-  <section><kbd>@Plugin</kbd><h3>使用外部資料或工具</h3><p>例如 SharePoint、Spreadsheets 或 PDF。可用項目取決於安裝、帳號授權與 Workspace 設定。</p></section>
+<div class="source-choice-grid" aria-label="使用 File 或 Plugin 選擇資料來源">
+  <section class="source-choice-card source-choice-card--file">
+    <div class="source-choice-card__header">
+      <span class="source-choice-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+      </span>
+      <div><kbd>@File</kbd><small>本機與專案檔案</small></div>
+    </div>
+    <h3>直接指定要讀的檔案</h3>
+    <p>知道資料在哪裡時，從 <code>@</code> 選單挑選檔案。適合摘要、比較、轉換，或修改指定內容。</p>
+    <div class="source-choice-card__examples" aria-label="File 支援的常見格式">
+      <span>CSV</span><span>Excel</span><span>PDF</span><span>圖片</span><span>Markdown</span>
+    </div>
+  </section>
+
+  <section class="source-choice-card source-choice-card--plugin">
+    <div class="source-choice-card__header">
+      <span class="source-choice-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+      </span>
+      <div><kbd>@Plugin</kbd><small>外部服務與專用工具</small></div>
+    </div>
+    <h3>連接外部資料或能力</h3>
+    <p>資料在其他服務，或需要專用工具處理時使用。可用項目會依安裝、帳號授權與 Workspace 設定而不同。</p>
+    <div class="source-choice-card__examples" aria-label="Plugin 的常見例子">
+      <span>SharePoint</span><span>Spreadsheets</span><span>PDF</span>
+    </div>
+  </section>
 </div>
 
 <figure class="interface-figure interface-figure--hero">
@@ -66,18 +90,6 @@ Context 只要放會影響答案的來源，並說明要從每份來源找什麼
 比較各渠道的成效與預算差額，找出下一季值得加碼的三個渠道。
 不要修改來源檔；缺少的數字標成待確認。
 ```
-
-### 還不知道要讀哪些檔案時
-
-來源很多時，分成兩輪：先請 Codex 盤點，再點名這次要用的檔案。
-
-```text
-先盤點 @campaign-data 資料夾。
-告訴我每份檔案大概放什麼、哪些可能和預算決策有關。
-先不要修改或建立檔案。
-```
-
-這樣比一次塞進二十份附件容易核對，也能避開舊版本或同名檔案。
 
 ### Connected sources 與 Plugins
 

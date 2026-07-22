@@ -55,26 +55,21 @@ pageClass: quickstart-story ide-official-page
 開始修改前先確認工作區狀態；完成後再查看 Diff。這樣更容易比較、保留或還原變更。
 :::
 
-## 01｜使用目前已開啟的脈絡
-
-<div class="ide-story-grid">
-  <div class="ide-story-copy"><p>Codex 可以從輸入框引用開啟的檔案、選取的程式碼與最近對話。它會先從你正在看的內容開始，因此不必貼上整份檔案，也不必每次重新交代背景。</p><p>第一次提問時，先縮小範圍並說清楚要「解釋、修改或除錯」。若只想理解現況，也要明確寫下「先不要修改」。</p><a href="/quick-start/prompting#補上有用的-context">了解如何用 @ 指定來源 →</a></div>
-  <div class="ide-context-composer"><div class="ide-context-pills"><span>@ retry.ts</span><span>Selection · 12 lines</span><span>Recent chat</span></div><p>請追查選取區塊為什麼會重複 retry。先說明資料流與可能原因，列出驗證方式，先不要修改。</p><div><small>Local · workspace-write</small><b>↑</b></div></div>
-</div>
-
-## 02｜在程式碼旁檢查修改
+## 01｜在程式碼旁檢查修改
 
 <div class="ide-story-grid ide-story-grid--review">
   <div class="ide-story-copy"><p>Codex 完成工作後，先讀摘要，再查看實際修改的程式碼。來源、修改原因和後續對話都在同一個畫面，比只看一句「完成」更容易判斷結果。</p><ol><li><b>摘要：</b>確認任務目的、修改檔案與驗證結果。</li><li><b>Diff：</b>逐行檢查新增與刪除，留意是否超出範圍。</li><li><b>追問：</b>方向正確但細節不對時，留在同一段對話補充條件。</li></ol><p>需要檢查目前 Git 變更時，也可以輸入 <code>/review</code>。</p></div>
   <figure class="ide-review-shot"><img src="/images/quick-start/codex-ide-official.webp" width="1600" height="900" alt="Codex IDE 顯示程式碼 Diff、修改摘要與 Review 按鈕" loading="lazy" decoding="async"><figcaption>官方示意：摘要、Diff、修改檔案與後續輸入框都留在 IDE 裡。</figcaption></figure>
 </div>
 
-## 03｜任務變大時再交出去
+## 02｜使用目前已開啟的脈絡
 
 <div class="ide-story-grid">
-  <div class="ide-story-copy"><p>需要立即來回調整的小修改，適合留在 IDE。任務範圍較廣、需要跑一段時間，或你想先處理別的事時，可以把工作交給 Codex cloud，完成後再回來檢查結果。</p><p>交付前仍要寫清楚目標、驗收方式與不要改動的範圍；切換執行位置不會自動補上缺少的背景。</p></div>
-  <div class="ide-delegate-panel"><small>CONTINUE IN</small><div><section><span>⌘</span><b>Work locally</b><p>快速修改、逐步追問、立即檢查 Diff。</p></section><i>→</i><section><span>☁</span><b>Cloud</b><p>較長任務、較大範圍、背景持續執行。</p></section></div><footer><span>openai / codex-course</span><b>Ready to delegate ✓</b></footer></div>
+  <div class="ide-story-copy"><p>Codex 可以從輸入框引用開啟的檔案、選取的程式碼與最近對話。它會先從你正在看的內容開始，因此不必貼上整份檔案，也不必每次重新交代背景。</p><p>第一次提問時，先縮小範圍並說清楚要「解釋、修改或除錯」。若只想理解現況，也要明確寫下「先不要修改」。</p><a href="/quick-start/prompting#補上有用的-context">了解如何用 @ 指定來源 →</a></div>
+  <div class="ide-context-composer"><div class="ide-context-pills"><span>@ retry.ts</span><span>Selection · 12 lines</span><span>Recent chat</span></div><p>請追查選取區塊為什麼會重複 retry。先說明資料流與可能原因，列出驗證方式，先不要修改。</p><div><small>Local · workspace-write</small><b>↑</b></div></div>
 </div>
+
+
 
 ## 適合使用 Codex IDE 的情境
 
@@ -85,21 +80,6 @@ pageClass: quickstart-story ide-official-page
   <section><span>04</span><h3>分派較大任務</h3><p>從 IDE 啟動 cloud 工作，再回來檢查結果。</p></section>
 </div>
 
-## 不同 IDE 的入口
-
-| IDE | 開啟方式 |
-| --- | --- |
-| VS Code、Cursor、Windsurf | Codex 圖示，或執行 `Codex: Open Codex Sidebar` |
-| Xcode | 開啟 coding assistant、新增對話，選擇 Codex agent |
-| JetBrains | 開啟 AI Chat，選擇 Codex |
-
-不同 IDE、版本和帳號設定，看到的入口可能不一樣。第一次使用時先完成 **Sign in with ChatGPT**，再確認 Codex 能讀到目前的 Workspace。
-
-## 下一步
-
-- [Prompting：寫出可執行、可驗收的任務](/quick-start/prompting)
-- [Slash Commands：執行工作流程操作](/quick-start/using-slash)
-- [Models：依任務選擇模型](/quick-start/models)
 
 ## 參考資料
 
@@ -107,5 +87,3 @@ pageClass: quickstart-story ide-official-page
 - [IDE commands](https://learn.chatgpt.com/docs/developer-commands?surface=ide)
 - [IDE settings](https://learn.chatgpt.com/docs/developer-settings?surface=ide)
 - [Code review](https://learn.chatgpt.com/docs/code-review)
-
-<p class="source-note">本頁依官方 Codex IDE 頁面的 Hero、三個核心情境、Quickstart 與適用情境重整。官方 Hero 是互動式介面，沒有獨立 GIF；課程頁以輕量介面示意搭配官方 Review 圖片呈現。</p>
