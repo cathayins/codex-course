@@ -45,7 +45,7 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
                 <strong id="course-footer-brand">Codex Course</strong>
               </div>
               <p>
-                <span>國泰產險內部教育訓練教材</span>
+                <span>國泰產險內部分享文件</span>
                 從第一次任務開始，建立清楚、可驗證且可重複的 Codex 工作方式。
               </p>
             </section>
@@ -61,7 +61,7 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
             </nav>
 
             <section class="course-footer__maintenance" aria-labelledby="course-footer-maintenance-title">
-              <h2 id="course-footer-maintenance-title">教材維護</h2>
+              <h2 id="course-footer-maintenance-title">作者與教材維護</h2>
               <ul>
                 <li>
                   <strong>Roy</strong>
@@ -78,16 +78,16 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
 
         <div class="course-footer__legal">
           <div class="course-footer__legal-inner">
-            <small>© {{ currentYear }} 國泰世紀產物保險股份有限公司. All rights reserved.</small>
-            <small>僅供國泰產險內部教育訓練使用，未經授權不得對外公開、轉載或散布。</small>
+            <small>© {{ currentYear }} 國泰產險數據團隊. All rights reserved.</small>
+            <small>本文件僅供國泰產險內部交流與學習參考，不作為正式政策、規範或操作指引；未經授權不得對外公開、轉載或散布。</small>
           </div>
         </div>
       </footer>
 
       <footer v-else class="course-footer course-footer--legal" aria-label="教材聲明">
         <div class="course-footer__legal-inner">
-          <small>© {{ currentYear }} 國泰世紀產物保險股份有限公司</small>
-          <small>僅供國泰產險內部教育訓練使用</small>
+          <small>© {{ currentYear }} 國泰產險數據團隊. All rights reserved.</small>
+          <small>本文件僅供國泰產險內部交流與學習參考，不作為正式政策、規範或操作指引；未經授權不得對外公開、轉載或散布。</small>
         </div>
       </footer>
     </template>
