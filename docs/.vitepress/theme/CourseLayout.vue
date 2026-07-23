@@ -45,7 +45,7 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
                 <strong id="course-footer-brand">Codex Course</strong>
               </div>
               <p>
-                <span>Codex Course 學習教材</span>
+                <span>公開學習教材</span>
                 從第一次任務開始，建立清楚、可驗證且可重複的 Codex 工作方式。
               </p>
             </section>
@@ -61,7 +61,7 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
             </nav>
 
             <section class="course-footer__maintenance" aria-labelledby="course-footer-maintenance-title">
-              <h2 id="course-footer-maintenance-title">教材維護</h2>
+              <h2 id="course-footer-maintenance-title">作者與教材維護</h2>
               <ul>
                 <li>
                   <strong>Course Team</strong>
@@ -79,15 +79,15 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
         <div class="course-footer__legal">
           <div class="course-footer__legal-inner">
             <small>© {{ currentYear }} Codex Course. All rights reserved.</small>
-            <small>本教材供公開學習參考，不作為正式政策、規範或操作指引。</small>
+            <small>本教材供 Codex Course 學習參考，不作為正式政策、規範或操作指引。</small>
           </div>
         </div>
       </footer>
 
       <footer v-else class="course-footer course-footer--legal" aria-label="教材聲明">
         <div class="course-footer__legal-inner">
-          <small>© {{ currentYear }} Codex Course</small>
-          <small>本教材供公開學習參考</small>
+          <small>© {{ currentYear }} Codex Course. All rights reserved.</small>
+          <small>本教材供 Codex Course 學習參考，不作為正式政策、規範或操作指引。</small>
         </div>
       </footer>
     </template>
