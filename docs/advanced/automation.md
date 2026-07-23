@@ -392,4 +392,3 @@ Check my commits from the last 24h and submit a $recent-code-bugfix.
 - [遠見：Codex 每日自動收集案例](https://www.gvm.com.tw/article/130317)
 - [OpenAI Academy：Automations](https://openai.com/academy/codex-automations/)
 - [上一章：Plugins](/advanced/plugins)：把方法與外部連線組成可驗證的工作流程。
-- [下一章（選修）：Subagents](/advanced/worktrees)：學習拆分任務與平行處理。
