@@ -31,7 +31,7 @@ features:
       width: '780'
       height: '1040'
     title: 進階課程
-    details: 深入 Codebase、AGENTS.md、Skills、Plugins、權限與團隊工作流，讓方法可以持續複用。
+    details: 把常用流程整理成 Skills、透過 Plugins 組合需要的能力，再交給 Scheduled tasks 定期執行。
     link: /advanced/
     linkText: 進入課程
   - icon:
@@ -40,7 +40,5 @@ features:
       width: '1200'
       height: '1200'
     title: 實戰案例
-    details: 從簡報、數據分析、架構圖到 PR 交付，觀摩完整任務如何拆解、驗證與落地。
-    link: /cases/
-    linkText: 瀏覽案例
+    details: 實戰案例正在準備中。後續會補上從資料分析到成果驗證的完整示範，敬請期待。
 ---

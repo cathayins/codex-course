@@ -28,8 +28,6 @@ export default defineConfig({
         activeMatch: '^/quick-start/',
         items: [
           { text: 'What Is Codex', link: '/quick-start/' },
-          { text: 'New SDLC w/ Codex', link: '/quick-start/codex-for-engineer' },
-          { text: 'Installation', link: '/quick-start/installation' },
           {
             text: 'Overview',
             items: [
@@ -55,32 +53,9 @@ export default defineConfig({
         activeMatch: '^/advanced/',
         items: [
           { text: '學習路線', link: '/advanced/' },
-          {
-            text: '核心路線',
-            items: [
-              { text: 'AGENTS.md', link: '/advanced/agents-md' },
-              { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
-              { text: 'Skills', link: '/advanced/skills' },
-              { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
-              { text: 'Plugins', link: '/advanced/plugins' },
-              { text: 'Scheduled tasks', link: '/advanced/automation' }
-            ]
-          },
-          {
-            text: '選修進階',
-            items: [
-              { text: 'Subagents', link: '/advanced/worktrees' },
-              { text: 'Hooks', link: '/advanced/hooks' }
-            ]
-          }
-        ]
-      },
-      {
-        text: '實戰案例',
-        activeMatch: '^/cases/',
-        items: [
-          { text: '案例總覽', link: '/cases/' },
-          { text: 'Marketing 數據分析', link: '/cases/marketing-data' }
+          { text: 'Skills', link: '/advanced/skills' },
+          { text: 'Plugins', link: '/advanced/plugins' },
+          { text: 'Scheduled tasks', link: '/advanced/automation' }
         ]
       }
     ],
@@ -90,8 +65,6 @@ export default defineConfig({
           text: '快速上手',
           items: [
             { text: 'What Is Codex', link: '/quick-start/' },
-            { text: 'New SDLC w/ Codex', link: '/quick-start/codex-for-engineer' },
-            { text: 'Installation', link: '/quick-start/installation' },
             {
               text: 'Overview',
               collapsed: false,
@@ -119,36 +92,10 @@ export default defineConfig({
         {
           text: '進階課程',
           items: [
-            { text: '學習路線', link: '/advanced/' }
-          ]
-        },
-        {
-          text: '核心路線',
-          collapsed: false,
-          items: [
-            { text: 'AGENTS.md', link: '/advanced/agents-md' },
-            { text: 'Config、權限與沙盒', link: '/advanced/permissions' },
+            { text: '學習路線', link: '/advanced/' },
             { text: 'Skills', link: '/advanced/skills' },
-            { text: 'MCP 與外部工具', link: '/advanced/mcp-tools' },
             { text: 'Plugins', link: '/advanced/plugins' },
             { text: 'Scheduled tasks', link: '/advanced/automation' }
-          ]
-        },
-        {
-          text: '選修進階',
-          collapsed: false,
-          items: [
-            { text: 'Subagents', link: '/advanced/worktrees' },
-            { text: 'Hooks', link: '/advanced/hooks' }
-          ]
-        }
-      ],
-      '/cases/': [
-        {
-          text: '實戰案例',
-          items: [
-            { text: '案例總覽', link: '/cases/' },
-            { text: 'Marketing 數據分析', link: '/cases/marketing-data' }
           ]
         }
       ]

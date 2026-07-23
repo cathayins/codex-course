@@ -55,7 +55,6 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
               <ul>
                 <li><a :href="withBase('/quick-start/')">快速上手</a></li>
                 <li><a :href="withBase('/advanced/')">進階課程</a></li>
-                <li><a :href="withBase('/cases/')">實戰案例</a></li>
                 <li><a :href="withBase('/resources/')">學習資源</a></li>
               </ul>
             </nav>
