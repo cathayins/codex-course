@@ -160,12 +160,7 @@ Provide SVG, 32×32 PNG and Apple touch icon formats in `docs/public/`. Every ge
 
 ### Footer
 
-The footer reads **Codex Course**. The right side contains two independent plain mail links:
-
-- Course Team — `contact@example.invalid`
-- Course Team — `contact@example.invalid`
-
-Do not place `&` between them. Do not add avatars, icons, “講師”, “持續更新”, editorial status or shared-directory implementation instructions.
+The footer reads **Codex Course** and uses neutral course-navigation and learning-method copy. Do not include personal contact details, organization names, internal-use notices or shared-directory implementation instructions.
 
 ## Motion
 
