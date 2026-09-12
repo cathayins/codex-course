@@ -27,7 +27,27 @@
 | Permission | Codex 這次被允許做到哪裡 |
 | Result / Artifact | 回答最後落在哪一個可繼續使用的內容 |
 
-## 投影主線
+## 目前 QuickStart 主線
+
+公開課程先放一頁 Brief，讓學員知道這一段會從 Codex 基本介紹、App 畫面一路走到實際 Demo。接著用同一份 Marketing Excel 貫穿每個步驟，最後留下可以操作、也可以人工驗收的 Dashboard。
+
+```text
+Brief
+  ↓
+What Is Codex：從 ChatGPT 對話走向可交付工作
+  ↓
+Codex App：左邊選工作、中間交代、右邊驗收
+  ↓
+Marketing Excel：建立 Project、盤點來源、規劃 Dashboard
+  ↓
+逐步完成：Model、Prompt、Plan、Follow-up
+  ↓
+打開 Dashboard：核對 KPI、圖表、篩選器與資料限制
+```
+
+Goals 保留在工作區作為延伸素材，但不加入公開導覽；IDE、安裝與其他進階課程素材也保留檔案，現階段不作為這條新手主線的頁面入口。
+
+## 原始投影主線（歷史版本）
 
 ```text
 回答問題

@@ -29,21 +29,23 @@ export default defineConfig({
         items: [
           { text: 'What Is Codex', link: '/quick-start/' },
           {
-            text: 'Overview',
+            text: 'Codex App',
             items: [
-              { text: 'Codex App', link: '/quick-start/app-interface' },
-              { text: 'Codex IDE', link: '/quick-start/ide-interface' }
+              { text: 'Codex App｜桌面工作介面', link: '/quick-start/codex-app/' },
+              { text: '安裝 Codex App', link: '/quick-start/codex-app/installation' },
+              { text: '介面介紹', link: '/quick-start/codex-app/interface' }
             ]
           },
           {
             text: 'Quick Start',
             items: [
-              { text: 'First Project', link: '/quick-start/first-project' },
-              { text: 'Models', link: '/quick-start/models' },
-              { text: 'Prompting', link: '/quick-start/prompting' },
-              { text: 'Slash Commands', link: '/quick-start/using-slash' },
-              { text: 'Follow Up', link: '/quick-start/follow-up' },
-              { text: 'Credits 精打細算', link: '/quick-start/token-efficiency' }
+              { text: 'Demo 案例建立', link: '/quick-start/demo-setup' },
+              { text: 'First Project｜開啟工作區', link: '/quick-start/first-project' },
+              { text: 'Models｜選擇模型', link: '/quick-start/models' },
+              { text: 'Prompting｜做出 Dashboard', link: '/quick-start/prompting' },
+              { text: 'Slash Commands｜規劃分析報告', link: '/quick-start/using-slash' },
+              { text: 'Follow Up｜途中調整方向', link: '/quick-start/follow-up' },
+              { text: 'Credits｜用量與效率', link: '/quick-start/token-efficiency' }
             ]
           }
         ]
@@ -66,23 +68,25 @@ export default defineConfig({
           items: [
             { text: 'What Is Codex', link: '/quick-start/' },
             {
-              text: 'Overview',
+              text: 'Codex App',
               collapsed: false,
               items: [
-                { text: 'Codex App', link: '/quick-start/app-interface' },
-                { text: 'Codex IDE', link: '/quick-start/ide-interface' }
+                { text: '桌面工作介面', link: '/quick-start/codex-app/' },
+                { text: '安裝 Codex App', link: '/quick-start/codex-app/installation' },
+                { text: '介面介紹', link: '/quick-start/codex-app/interface' }
               ]
             },
             {
               text: 'Quick Start',
               collapsed: false,
               items: [
-                { text: 'First Project', link: '/quick-start/first-project' },
-                { text: 'Models', link: '/quick-start/models' },
-                { text: 'Prompting', link: '/quick-start/prompting' },
-                { text: 'Slash Commands', link: '/quick-start/using-slash' },
-                { text: 'Follow Up', link: '/quick-start/follow-up' },
-                { text: 'Credits 精打細算', link: '/quick-start/token-efficiency' }
+                { text: 'Demo 案例建立', link: '/quick-start/demo-setup' },
+                { text: 'First Project｜開啟工作區', link: '/quick-start/first-project' },
+                { text: 'Models｜選擇模型', link: '/quick-start/models' },
+                { text: 'Prompting｜做出 Dashboard', link: '/quick-start/prompting' },
+                { text: 'Slash Commands｜規劃分析報告', link: '/quick-start/using-slash' },
+                { text: 'Follow Up｜途中調整方向', link: '/quick-start/follow-up' },
+                { text: 'Credits｜用量與效率', link: '/quick-start/token-efficiency' }
               ]
             }
           ]

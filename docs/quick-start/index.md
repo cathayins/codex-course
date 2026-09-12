@@ -1,73 +1,54 @@
 ---
 title: What Is Codex
-description: 從工作環境與交付方式理解 ChatGPT 和 Codex 的差別，以及 Codex 為什麼不只適合工程師。
+description: 認識 Codex 的工作方式，以及它和 ChatGPT 瀏覽器對話在工作環境上的差別。
 outline: [2, 3]
-aside: true
-pageClass: quickstart-story chatgpt-vs-codex
+aside: false
+pageClass: quickstart-story quickstart-editorial chatgpt-vs-codex
 ---
 
-# ChatGPT vs Codex
+# What Is Codex
 
-<p class="lesson-lead">Codex 剛推出時，大家常用一句話區分：寫程式用 Codex，整理知識用 ChatGPT。這個說法很好記，現在卻不太準確了。</p>
+<p class="lesson-lead">Codex 是 OpenAI 開發的 Agent 系統。你交代一個目標，它會自己拆解步驟、使用需要的工具，把事情做完，並把成果留在你指定的地方。這一頁先從你熟悉的 ChatGPT 對話出發，說清楚兩者到底差在哪裡。</p>
 
-## 別再用「是不是工程師」區分
+<LessonBlock
+  id="codex-in-one-sentence"
+  title="它不只是回答你，而是會動手把事情做完"
+  description="一般的對話會給你答案或一段程式碼；Codex 會實際打開檔案、執行工具，然後把完成的東西交給你。"
+  tone="accent"
+>
+  <p>你在電腦上的工作，很少停在「知道答案」這一步。多數時候還要打開檔案、算出結果、產生一份可以交出去的東西 — 中間可能牽涉到程式、套件與終端機指令。</p>
+  <p>Codex 的差別就在這裡：它能實際執行這些動作，而不只是把做法寫給你看。你不需要會寫程式，但需要說清楚三件事 — 要達成什麼、資料在哪裡、怎樣才算做完。</p>
+</LessonBlock>
 
-<div class="work-entry-contrast">
-  <section class="work-entry-card work-entry-card--legacy">
-    <header><span>THEN｜以前</span><em>舊分法</em></header>
-    <h3>看職稱選工具</h3>
-    <div class="work-entry-legacy-rule" aria-label="以前用職稱選擇工具">
-      <span>工程師 <b>→ 用 Codex</b></span>
-      <span>不是工程師 <b>→ 用 ChatGPT</b></span>
-    </div>
-    <p>工程師寫程式就開 Codex；顧問、企劃和研究人員則留在 ChatGPT，做研究、整理想法。</p>
-    <strong>這樣分很簡單，現在已經不夠用了。</strong>
-  </section>
-  <section class="work-entry-card work-entry-card--current">
-    <header><span>NOW｜現在</span><em>換個分法</em></header>
-    <h3>先看工作在哪裡</h3>
-    <p class="work-entry-card__lead">先別管職稱。看看這次要在哪裡動手，最後要留下什麼。</p>
-    <ol class="work-entry-questions">
-      <li><b>01</b><span><strong>你會先從哪裡動手？</strong><small>先查資料、討論想法，還是直接打開檔案和專案？</small></span></li>
-      <li><b>02</b><span><strong>做完要留下什麼？</strong><small>一個答案，還是能繼續編輯的檔案或工具？</small></span></li>
-    </ol>
-    <div class="work-entry-routes" aria-label="依工作環境選擇入口">
-      <span><small>先查資料、整理想法</small><b>先用 ChatGPT</b></span>
-      <i aria-hidden="true">或</i>
-      <span><small>直接處理檔案或專案</small><b>先用 Codex</b></span>
-    </div>
-  </section>
-</div>
+<LessonBlock
+  id="chatgpt-vs-codex"
+  title="顧問與同事：工作發生在不同的環境"
+  description="一邊是在瀏覽器裡給你建議的顧問，一邊是坐在你電腦前直接動手的同事。差別不在誰比較聰明，而在工作在哪裡發生。"
+>
+  <CodexEnvironmentDemo />
+</LessonBlock>
 
-現在 ChatGPT 和 Codex 都能讀取檔案、搜尋資料，也能用 Plugin 連接 GitHub、Figma 或 Atlassian／Jira 等工作工具；實際能用哪些項目，取決於安裝狀態、帳號和 Workspace 權限。兩者不是非此即彼。你要判斷的是：**哪個工作空間離手上的任務最近？**
+<LessonBlock
+  id="programming-environment"
+  title="寫得出程式碼，不等於跑得起來"
+  description="拿到一份 .py 檔只是第一步。電腦要先裝好執行環境、補齊套件、排掉錯誤，程式才會真的跑出結果 — 而這段路，決定了你會不會卡住。"
+  tone="sand"
+>
+  <p>這是很多人第一次用 AI 寫程式時最挫折的地方：對話框裡的程式碼看起來完整又漂亮，複製下來卻跑不動。缺 Python、缺套件、路徑不對、版本不合 — 每一個都要自己查、自己試。</p>
+  <p>下面用同一個需求，看兩邊走到「真的產生出結果」各自需要做什麼。</p>
 
-## 顧問 vs 能進工作環境的同事
+  <CodexRuntimeDemo />
 
-顧問可以先在 ChatGPT 研究、推演，再把確認過的方法交給 Codex，做成能重複產生報告的小工具。產品經理也可以先談清楚需求，再讓 Codex 把截圖、規格與資料做成能操作的 Web App。
+  <p class="runtime-takeaway">差別不在程式寫得好不好，而在<strong>有沒有權限實際執行與驗證</strong>。能夠自己跑一次、看到錯誤、修好再跑，才有辦法把責任揹到最後。</p>
+</LessonBlock>
 
-一個簡單的選法是：
+<LessonBlock
+  id="codex-for-almost-everything"
+  title="Codex 不只用來寫程式"
+  description="只要任務需要讀取素材、操作檔案，或留下可以繼續使用的成果，都可以交給 Codex。"
+>
 
-- 主要在問問題、整理知識、比較觀點：**先從 ChatGPT 開始**。
-- 主要在處理本機檔案、專案資料夾或需要執行工具：**先從 Codex 開始**。
-
-<div class="outcome-examples">
-  <section class="outcome-example outcome-example--chatgpt">
-    <header><div class="outcome-example__icon outcome-example__icon--chatgpt" aria-hidden="true"><img src="/images/quick-start/chatgpt-icon.webp" width="256" height="256" decoding="async" alt=""></div><div><span>CHATGPT｜從知識與對話開始</span><h3>研究、理解與整理</h3></div></header>
-    <p>例如顧問要調研市場、比較多方觀點、整理訪談，或和 AI 一起推敲策略。資料主要來自提問、網路與已連接的知識來源。</p>
-    <b>常見交付：分析、觀點、摘要與決策建議</b>
-  </section>
-  <section class="outcome-example outcome-example--codex">
-    <header><div class="outcome-example__icon outcome-example__icon--codex" aria-hidden="true"><img src="/images/quick-start/codex-icon.webp" width="256" height="256" decoding="async" alt=""></div><div><span>CODEX｜從本機工作環境開始</span><h3>讀檔案、做出成品</h3></div></header>
-    <p>工作任務主要在各專案資料夾裡，包含 PDF、Excel、CSV、簡報、圖片、逐字稿或程式碼；你希望 AI 批次整理、修改並留下檔案。</p>
-    <b>常見交付：整理後的文件、Web App 或自動化工作流</b>
-  </section>
-</div>
-
-
-
-## Codex for (Almost) Everything
-
-不用急著背 Codex 的功能，先看它能交出哪些成果。以下案例選自 OpenAI 官方的 [Use cases](https://learn.chatgpt.com/use-cases) 與 [Showcase](https://developers.openai.com/showcase)：前者示範日常工作流程，後者展示完成的作品。
+寫程式只是其中一種用途。OpenAI 的 [ChatGPT Use Cases](https://learn.chatgpt.com/use-cases) 與 [Showcase](https://developers.openai.com/showcase) 也涵蓋資料整理、簡報、研究、網站與創作工具 — 用 Codex 時，這些任務可以直接在你指定的工作環境中完成。
 
 <div class="codex-use-case-gallery">
   <a class="codex-use-case-card" href="https://learn.chatgpt.com/use-cases/daily-work-brief" target="_blank" rel="noreferrer">
@@ -96,18 +77,18 @@ pageClass: quickstart-story chatgpt-vs-codex
   </a>
 </div>
 
-這些案例都不只停在回答問題。Codex 會讀取素材、操作工具，最後留下能直接使用或繼續修改的成果。你不必先學會寫程式，從手上的真實問題和想拿到的成品開始即可。
+這些案例有一個共同點：都是從現有的素材出發，經過整理或工具操作，最後留下一份可以檢查、修改、繼續使用的成果 — 而不只是一段對話紀錄。
+</LessonBlock>
 
 ## 參考資料
 
 - [Codex for (almost) everything｜OpenAI](https://openai.com/index/codex-for-almost-everything/)
 - [Codex：How to get started](https://openai.com/academy/codex-how-to-start/)
 - [Codex best practices](https://learn.chatgpt.com/guides/best-practices)
-- [Codex IDE extension](https://learn.chatgpt.com/docs/codex/ide)
 - [Codex Use cases](https://learn.chatgpt.com/use-cases)
 - [OpenAI Showcase](https://developers.openai.com/showcase)
 - [Codex 完整新手教學｜Frank Chiu](https://frankchiu.io/ai-chatgpt-codex-intro/)
 - [零基礎 30 分鐘學會 Codex｜李厂长来了](https://www.youtube.com/watch?v=dMiV7Yx9yk4)
 - [Codex - Full Course for Beginners｜Tech With Tim](https://www.youtube.com/watch?v=ZXkeWiWB4xg)
 
-<p class="source-note">ChatGPT／Codex 的選擇框架是本課為了教學整理的判斷方式，不是官方的產品界線。產品定位依 2026-07-19 OpenAI 官方資料核對；案例 Gallery 使用 OpenAI 官方原圖，其餘插圖為本課生成素材。</p>
+<p class="source-note">ChatGPT／Codex 的選擇框架是本課為了教學整理的判斷方式，不是官方的產品界線。案例 Gallery 使用 OpenAI 官方原圖，其餘插圖為本課生成素材。</p>

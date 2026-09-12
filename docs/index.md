@@ -22,7 +22,7 @@ features:
       width: '1200'
       height: '1200'
     title: 快速上手
-    details: 先分清 ChatGPT 與 Codex，再認識 App、IDE、CLI，最後從一個本機資料夾完成第一個跨檔任務。第一次使用 Codex 可以從這裡開始。
+    details: 先理解 ChatGPT 與 Codex 的工作方式，再認識 Codex App，最後沿著 Marketing Excel 到 Dashboard 的主線完成第一個可驗證的任務。第一次使用 Codex 可以從這裡開始。
     link: /quick-start/
     linkText: 進入課程
   - icon:
@@ -34,11 +34,4 @@ features:
     details: 把常用流程整理成 Skills、透過 Plugins 組合需要的能力，再交給 Scheduled tasks 定期執行。
     link: /advanced/
     linkText: 進入課程
-  - icon:
-      src: /images/course-paths/cases.webp
-      alt: 黃綠背景上的紅色立體資料圖表畫作
-      width: '1200'
-      height: '1200'
-    title: 實戰案例
-    details: 實戰案例正在準備中。後續會補上從資料分析到成果驗證的完整示範，敬請期待。
 ---

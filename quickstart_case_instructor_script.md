@@ -13,7 +13,7 @@
 
 ## 共通檢查
 
-- Codex App 與 VS Code 已登入課堂帳號，字級與投影對比可讀。
+- Codex App 已登入課堂帳號，字級與投影對比可讀；若另有 IDE 課程，再準備 VS Code。
 - 每次示範都開新任務。需要重跑時，另開一個沒有舊產物的資料夾。
 - App 的 **Settings → 一般 → 後續跟進行為**先設為 **Queue**。
 - 課堂以預設 Model 與預設 reasoning 開始，不在 QuickStart 花時間比較全部模型。
@@ -21,15 +21,11 @@
 
 ## App QuickStart 檔案
 
-在一個名為 `tokyo-travel-demo` 的資料夾中準備：
+在一個名為 `codex-demo` 的資料夾中準備：
 
-- `tokyo-trip-brief.txt`：可從 [`docs/public/demo-assets/tokyo-trip-brief.txt`](docs/public/demo-assets/tokyo-trip-brief.txt) 複製。
-- 不要預先放入 `tokyo-travel-research.md` 或 `tokyo-travel-plan.html`，讓學員看見 Codex 先蒐集素材，再建立最後成果。
-
-備援素材放在另一個不會被現場 task 讀到的資料夾：
-
-- 搜尋太慢時，將 [`docs/public/demo-assets/tokyo-travel-research-fallback.md`](docs/public/demo-assets/tokyo-travel-research-fallback.md) 複製成 `tokyo-travel-research.md`，再繼續 `/plan`。
-- HTML 產生太慢時，打開 [`docs/public/demo-assets/tokyo-travel-plan-fallback.html`](docs/public/demo-assets/tokyo-travel-plan-fallback.html)。
+- `Marketing_Campaign_Data.xlsx`：使用教材案例頁提供的教學用合成資料。
+- 不要預先放入 `marketing_dashboard.html`，讓學員看見 Codex 從來源資料開始建立成果。
+- 課前另存一份乾淨備份；若現場等待過久，再打開教材附的完成版 Dashboard。
 
 ## Marketing Demo 檔案
 
@@ -58,9 +54,19 @@
 
 # 第一堂｜Codex App QuickStart（0–20 分）
 
-## 0:00–1:30｜開場：今天不是來背功能
+## 0:00–1:30｜Brief：今天會學什麼
 
-【操作】開啟 [ChatGPT vs Codex](docs/quick-start/index.md)，停在主標與「顧問 vs 能進工作環境的同事」。
+【操作】先展示 QuickStart 的導覽，停在 [What Is Codex](docs/quick-start/index.md) 頁面開頭。
+
+【講】
+
+> 這一段 QuickStart 會先讓大家知道 Codex 是什麼，再看 Codex App 的畫面，最後用同一份 Marketing Excel，實際做出一個可以操作的 Dashboard。
+>
+> 大家不用先會寫程式，也不用先背指令。今天的重點是看懂工作範圍、把目標說清楚，最後自己檢查成果。
+
+## 1:30–4:00｜開場：今天不是來背功能
+
+【操作】開啟 [What Is Codex](docs/quick-start/index.md)，停在「顧問 vs 能進工作環境的同事」。
 
 【講】
 
@@ -74,7 +80,7 @@
 
 停一到兩個回答後收束：只是想聊想法，多半先開 ChatGPT；要進資料夾、讀幾份檔案，還得留下成品，我會開 Codex。
 
-## 1:30–4:00｜Codex 的工作單位是「可驗收的任務」
+## 4:00–5:30｜Codex 的工作單位是「可驗收的任務」
 
 【操作】仍停在 [ChatGPT vs Codex](docs/quick-start/index.md)，快速帶過成果案例區，不逐張開啟。
 
@@ -89,25 +95,21 @@
 - App 班不展開 [Codex for Engineer](docs/quick-start/codex-for-engineer.md)；工程分工留到第二堂。
 - Showcase 圖片只用來建立期待，不在此處逐一介紹。
 
-## 4:00–5:30｜今天選 App，入口依工作現場決定
+## 5:30–7:30｜今天使用 Codex App
 
-【操作】切到 [安裝 Codex](docs/quick-start/installation.md)，顯示 App、IDE Extension、CLI 三個入口。
+【操作】切到 [Codex App](docs/quick-start/app-interface.md)，先指三大區塊。
 
 【講】
 
-> Codex 有 App、IDE Extension 與 CLI。三個入口沿用同一套工作方式，差別只在你平常在哪裡做事。
->
-> 一般文件、資料與跨應用工作，可以先從 App 開始；平常就在編輯器裡工作的人，用 IDE；習慣命令列或自動化的人，再選 CLI。今天先用 App，讓大家直接走完第一個任務。
+> 今天先從 Codex App 開始。左邊選工作，中間交代任務，右邊查看成果；先把這三件事記住，就足以完成今天的 Demo。
 
 【講師提醒】
 
 > 課堂帳號已經登入。大家自己安裝時，一般優先選 Sign in with ChatGPT；實際可用功能仍會受到方案與公司 Workspace 政策影響。
 
-不要現場安裝，不展開 CLI 指令與 API key 計費。
+## 7:30–9:30｜認識 App：左邊開始、中間交代、右邊驗收
 
-## 5:30–9:00｜認識 App：左邊開始、中間交代、右邊驗收
-
-【操作】切到 [Codex App](docs/quick-start/app-interface.md)，先指三大區塊，再打開右側 Files 或 Review 面板。
+【操作】打開右側 Files、Browser 或 Review 面板，快速帶過每個用途。
 
 【講】
 
@@ -121,110 +123,49 @@
 
 > 看到「完成」先別急著關掉。做網站就開 Browser，做文件看 Files，程式修改則看 Diff 和測試。最後要看哪一個面板，由交付物決定。
 
-【現場取捨】Settings 這裡只確認 Queue，其他頁籤今天先跳過。
+【現場取捨】Settings 這裡只確認 Queue，其他設定先留到課後補充。
 
-## 9:00–15:30｜第一個 Project：資料夾、Model、Message
+## QuickStart 實作｜工作區、Excel、Dashboard 與分析報告
 
-【操作】切到 [First Project](docs/quick-start/first-project.md)，再回 App 實際操作。
+本段依執行速度安排示範，Prompt 以各教材頁的可複製區塊為準，避免現場使用不同版本。Excel 與 Dashboard 可準備完成範例備用。
 
-### 9:00–10:30｜選資料夾
+### First Project｜開啟資料夾
 
-【操作】在「專案」旁按 **＋** → **使用現有資料夾** → 選擇 `tokyo-travel-demo`。
-
-【講】
-
-> 這個資料夾就是今天的工作範圍。Codex 可以讀裡面的來源，也會把成果留在這裡。今天只放教學資料。客戶資料、密碼和公司機密都不要拿來練習。
-
-### 10:30–11:00｜沿用預設 Model
-
-【操作】指一下輸入框下方的 Model 與 reasoning，不切換。
-
-【講】
-
-> Model 會影響速度、深度與用量，但不會替我們補上沒說的目標。第一次沿用預設值就好。結果太淺再提高 reasoning，工作類型變了再換 Model。今天先把任務跑起來。
-
-### 11:00–15:30｜送出第一個任務
-
-【操作】用 `@` 從選單選取 `tokyo-trip-brief.txt`，貼上並送出：
+【操作】在「專案」旁按 **＋** → **使用現有資料夾** → 選擇 `codex-demo`。介紹要求存取與代我核准，再送出：
 
 ```text
-請讀取 @tokyo-trip-brief.txt，蒐集規劃這趟東京旅行會用到的資訊。
-
-可以搜尋網路，優先參考官方或可信的來源。
-請把蒐集到的內容整理成 `tokyo-travel-research.md`，
-保留來源連結與查詢日期；還不能確認的內容請清楚標示。
-
-這一輪只做資料蒐集與整理，先不要安排每天的行程。
+請告訴我目前資料夾下有什麼檔案
 ```
 
-【講】
+【看點】回覆包含 `Marketing_Campaign_Data.xlsx`。
 
-> 第一步先蒐集資料，不急著排行程。來源是剛才用 `@` 選的需求檔，再讓 Codex 找到規劃會用到的最新資訊，整理成一份新的研究素材。外部資料要保留來源，後面才能核對。
->
-> `@` 不只是把檔名打進句子。我會從選單選取，讓 Codex 確實帶入這份檔案或能力。
+### Prompting｜指定 Excel、查看並修改結果
 
-【操作】從 Files 確認 `tokyo-travel-research.md` 已建立，再送出：
+【操作】切到 [Prompting](docs/quick-start/prompting.md)，用 @ 選取 Excel，送出「用 @ 指定檔案」的趨勢圖任務。
 
-```text
-/plan
+【看點】產出 `Marketing_Campaign_Click_Trend.xlsx`，點選檔案在右側查看圖表。使用教材中的實際截圖，說明檔案卡片與預覽的位置。
 
-請讀取 @tokyo-trip-brief.txt 與 @tokyo-travel-research.md，
-規劃如何產出一份完整的東京旅遊規劃計畫書。
+【操作】延續同一段對話，使用教材 Prompt 將每日資料改成每月加總。說明前後 Prompt 的差異，再介紹任務六要素。
 
-請先提出這趟旅程的規劃方向、安排行程時要遵守的準則、
-遇到衝突時的取捨原則、計畫書應包含的內容，以及完成後的檢查方式。
+【操作】送出「把 Marketing 資料做成 Dashboard」的完整 Prompt。完成後開啟 `marketing_dashboard.html`，測試 Platform 與清除篩選，抽查成本、營收與 ROAS。
 
-最終成果要是一份可以實際使用的旅遊規劃計畫書，
-但這個階段先確認規劃方法與計畫書架構，
-先不要建立最終成品。
-```
+### Slash Commands｜規劃並製作報告
 
-【講】
+【操作】切到 [Slash Commands](docs/quick-start/using-slash.md)，選取 /plan，使用原始 Excel 與 Dashboard 規劃報告。確認指標定義、資料期間、分析方法與報告大綱。
 
-> Plan 會同時參考原始需求和剛蒐集的新素材，但這時還不直接排行程。先確認它打算依照哪些方向與準則規劃，以及最後的計畫書會包含什麼；方向不對，可以在動手前修正。
+【操作】依 App 提示確認執行，或離開 Plan 模式，送出「確認計畫後，開始製作報告」的 Prompt，產出 `marketing_analysis_report.md`。
 
-【操作】確認 Plan 後送出：
+【銜接】報告開始製作後就進入 Follow Up，不必等它完成。
 
-```text
-請依照剛才確認的規劃方向與準則，
-開始製作完整的東京旅遊規劃計畫書。
-```
+### Follow Up｜中途修改分析需求
 
-【看點】Codex 是否同時使用需求檔與研究素材，並依照剛確認的方向與準則開始製作計畫書。
+【操作】切到 [Follow Up](docs/quick-start/follow-up.md)，以 Steer 補上入學轉換率與入學人數的比較。保留原本月度分析。
 
-## 15:30–18:30｜用 Steer 改成交付 HTML，再驗收
+【操作】以 Queue 安排完成後核對 Excel 與報告數字，檢查結果附在報告末尾。
 
-【操作】趁 Codex 還在製作行程時，用 Steer 送出：
+【看點】Steer 加入目前工作；Queue 等這輪完成後處理。若報告已完成，可在後續修改報告的執行過程中練習，或使用頁面動畫說明。
 
-```text
-我希望最後交付的是一份可以直接打開的 HTML 旅遊計畫。
-請改成建立 `tokyo-travel-plan.html`，並繼續完成目前的工作。
-```
-
-【講】
-
-> 行程內容沒有換題，但我現在才補上真正需要的交付格式。這會直接改變眼前成果，所以用 Steer，不用等一般文字做完再重來。
-
-【操作】從 Files 打開 `tokyo-travel-plan.html`，再用 Browser 預覽。快速檢查日期、航班、住宿、預約、飲食限制與「出發前確認」。
-
-【講】
-
-> 現在直接打開檔案，先查日期、航班、住宿、預約和飲食限制。這幾個地方最不能出錯。
->
-> 內容大致正確，只是格式不好用，留在原任務裡改就好。
-
-【操作】把下一步排進 Queue：
-
-```text
-這一版完成後，請檢查手機版是否能正常閱讀、互動是否可操作，
-並列出仍需要出發前確認的資訊。
-```
-
-【講】
-
-> 第一句 Prompt 不用把後面所有要求都塞進去。要改變眼前結果，用 Steer；要等目前成果完成後再驗收，就用 Queue；如果是不同目標，再開 New Task。
-
-如果第一個任務已完成，Follow-up 直接送出即可，不必為了展示 Steer 人為拖長任務。
+【驗收】打開報告，確認新增分析、摘要、指標公式與檢查結果一致。
 
 ## 18:30–20:00｜收束並交棒
 
@@ -232,25 +173,28 @@
 
 【講】
 
-> QuickStart 到這裡，我們已經走完一輪：選資料夾、用 `@` 指定來源、交代成果，最後打開檔案檢查。
+> 今天從工作資料夾出發，用 `@` 指定 Excel、建立趨勢圖與 Dashboard，再規劃分析報告，並在製作途中加入新的分析需求。
 >
-> 第一次不用丟一個大專案給 Codex。像剛才這種十幾分鐘能做完、打得開檔案核對的任務，更適合練習。接下來 Course Team 會介紹 Skills、Plugins 與 Automation：也就是怎麼替 Codex 增加做法、工具，以及重複執行的能力。
+> 第一次不用丟一個大專案給 Codex。像剛才這種能打開成品、核對數字與互動的任務，更適合練習。接下來如果要深入，再另外介紹更多能力；今天先把這條基本工作流跑熟。
 
 ### QuickStart 超時版（剩 60 秒時）
 
-立刻停止等待，打開課前準備的 `tokyo-travel-plan-fallback.html`：
+立刻停止等待，打開課前準備的 `marketing_dashboard.html` 完成版：
 
-> 還在跑，我們直接切完成版。來源是同一份旅遊需求，成果是可以操作的 HTML；還沒核對的資訊集中放在「出發前確認」。這三件事有做到，示範就成立。
+> 還在跑，我們直接切完成版。來源是同一份 Marketing Excel，成果是可以操作的 Dashboard；還沒核對的數字集中標成待確認。這三件事有做到，示範就成立。
 
 ### QuickStart 課後閱讀
 
-不在 20 分鐘現場逐頁講解：
+What Is Codex、Codex App、Demo 案例建立與 First Project 在現場走過；其餘頁面沿用同一份 Marketing Excel，依時間挑重點操作：
 
+- [What Is Codex](docs/quick-start/index.md)
+- [Codex App｜介面介紹](docs/quick-start/codex-app/interface.md)
+- [Demo 案例建立](docs/quick-start/demo-setup.md)
+- [First Project](docs/quick-start/first-project.md)
 - [Models](docs/quick-start/models.md)
 - [Prompting](docs/quick-start/prompting.md)
 - [Slash Commands](docs/quick-start/using-slash.md)
 - [Follow Up](docs/quick-start/follow-up.md)
-- [Using Goals](docs/quick-start/goals.md)
 - [Credits 精打細算](docs/quick-start/token-efficiency.md)
 
 ---

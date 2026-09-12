@@ -1,6 +1,6 @@
 ---
 title: Models｜選擇模型
-description: 比較 5.6 Sol、Terra 與 Luna 的能力、速度與適用工作，再選擇合適的 reasoning effort。
+description: 先用同一個 Marketing Dashboard 任務理解 Model 與 reasoning effort，再選擇剛好夠用的設定。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story
@@ -8,7 +8,7 @@ pageClass: quickstart-story
 
 # Models｜選擇模型
 
-<p class="lesson-lead">需要深入分析時選 Sol，日常工作可用 Terra；範圍清楚、重複量大的任務則適合 Luna。先從預設模型與 reasoning effort 開始，再依任務難度、等待時間與成果品質調整。</p>
+<p class="lesson-lead">Model 會影響 Codex 思考與回應的方式，但不會取代清楚的任務描述。這次先沿用 App 的預設值，等看到 Marketing Dashboard 的結果後，再理解什麼情況值得調整。</p>
 
 ## 選擇模型與 Reasoning
 
@@ -17,10 +17,10 @@ pageClass: quickstart-story
   <section><span>REASONING EFFORT</span><h3>決定這次要想多深</h3><p>提高 reasoning effort 後，模型會花更多時間規劃與分析，通常也會使用更多 tokens。先用預設，再依結果往上調。</p></section>
 </div>
 
-官方目前的預設 Power 使用 **5.6 Sol + Medium reasoning**。需要更深分析時往 Smarter 調整；希望更快或降低使用量時往 Faster 調整。Advanced 可以指定模型與 reasoning effort。
+官方目前的預設 Power 使用 **5.6 Sol + Medium reasoning**。需要更深分析時往 Smarter 調整；希望更快或降低使用量時往 Faster 調整。第一次上手不用先改額外設定。
 
-::: tip 東京旅遊 Demo 先沿用預設值
-這次會讀需求、蒐集資料，再規劃一趟短旅行。先用畫面上的預設 Model 與 reasoning 就好；若資料整理或行程取捨明顯太淺，再提高 reasoning。課堂上不用逐一比較所有模型。
+::: tip Marketing Dashboard Demo 先沿用預設值
+這次會讀取 Excel、整理指標、規劃 Dashboard，再檢查篩選器與數字。先用畫面上的預設 Model 與 reasoning 就好；若分析方向正確但深度不足，再提高 reasoning。課堂上不用逐一比較所有模型。
 :::
 
 ## 官方推薦模型
@@ -37,9 +37,7 @@ pageClass: quickstart-story
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力五顆星">✦ ✦ ✦ ✦ ✦</dd></div>
         <div><dt>Speed</dt><dd aria-label="速度二格">ϟ ϟ</dd></div>
-        <div><dt>Desktop / Web</dt><dd class="is-available">✓</dd></div>
-        <div><dt>CLI / IDE</dt><dd class="is-available">✓</dd></div>
-        <div><dt>Codex cloud</dt><dd class="is-unavailable">×</dd></div>
+        <div><dt>Codex App</dt><dd class="is-available">✓</dd></div>
       </dl>
     </div>
   </article>
@@ -55,9 +53,7 @@ pageClass: quickstart-story
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力四顆星">✦ ✦ ✦ ✦</dd></div>
         <div><dt>Speed</dt><dd aria-label="速度三格">ϟ ϟ ϟ</dd></div>
-        <div><dt>Desktop / Web</dt><dd class="is-available">✓</dd></div>
-        <div><dt>CLI / IDE</dt><dd class="is-available">✓</dd></div>
-        <div><dt>Codex cloud</dt><dd class="is-unavailable">×</dd></div>
+        <div><dt>Codex App</dt><dd class="is-available">✓</dd></div>
       </dl>
     </div>
   </article>
@@ -73,9 +69,7 @@ pageClass: quickstart-story
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力三顆星">✦ ✦ ✦</dd></div>
         <div><dt>Speed</dt><dd aria-label="速度四格">ϟ ϟ ϟ ϟ</dd></div>
-        <div><dt>Desktop / Web</dt><dd class="is-available">✓</dd></div>
-        <div><dt>CLI / IDE</dt><dd class="is-available">✓</dd></div>
-        <div><dt>Codex cloud</dt><dd class="is-unavailable">×</dd></div>
+        <div><dt>Codex App</dt><dd class="is-available">✓</dd></div>
       </dl>
     </div>
   </article>
@@ -91,24 +85,21 @@ pageClass: quickstart-story
 | 一般文件、跨檔案閱讀、日常程式修改 | **Terra** | Medium | 在能力、速度與使用量之間取得平衡 |
 | 明確、可重複、大量且容易驗證 | **Luna** | Light／Medium | 速度快，適合擷取、分類與轉換 |
 | 困難且需要單一模型深入思考 | 合適模型 | Max | 深度比速度與使用量重要 |
-| 能拆成數個獨立部分的大型工作 | 合適模型 | Ultra | 使用 subagents 平行處理不同部分 |
 
 ## Reasoning effort 比較
 
 | 設定 | 適合的工作 | 注意事項 |
 | --- | --- | --- |
-| Light／CLI 的 Low | 範圍小、做法清楚、結果容易檢查 | 回應較快，投入較少推理 |
+| Light／較低 | 範圍小、做法清楚、結果容易檢查 | 回應較快，投入較少推理 |
 | Medium | 需要一些規劃、跨檔案閱讀或日常工具操作 | 官方預設的速度與深度平衡點 |
 | High／Extra High | 多步驟、多來源、重要取捨或複雜分析 | 通常需要更久、使用更多 tokens |
 | Max | 單一模型處理最困難的問題 | 只在深度比速度或使用量重要時使用 |
-| Ultra | 能拆成數個有意義部分的大型工作 | 使用 subagents；大多數任務不需要 |
 
-先從足以完成工作的 reasoning effort 開始。方向正確但分析太淺時，再提高設定；工作類型明顯不合適時，才換模型。
+先從足以完成工作的 reasoning effort 開始。方向正確但分析太淺時，再提高設定；工作類型明顯不合適時，才換模型。這次的判斷標準是：Dashboard 是否讀對資料、指標是否清楚、成果是否容易驗收。
 
 ## 參考資料
 
 - [Models｜ChatGPT Learn](https://learn.chatgpt.com/docs/models?surface=app)
-- [Subagents](https://learn.chatgpt.com/docs/subagents)
 - [Prompting](https://learn.chatgpt.com/docs/prompting)
 
 <p class="source-note">本頁依 2026-07-19 OpenAI Models 頁面整理。模型名稱、能力、支援平台與 reasoning 選項會隨官方更新、帳號方案與 Workspace 設定變動。</p>

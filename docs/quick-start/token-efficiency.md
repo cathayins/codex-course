@@ -1,6 +1,6 @@
 ---
 title: Credits 精打細算
-description: 減少不必要的 Token，並依任務選擇適合的 Model，讓 Codex 把 Credits 用在真正需要的地方。
+description: 用同一個 Marketing Dashboard 任務理解如何減少不必要的 Token、重工與等待。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story credit-savings-page
@@ -30,7 +30,7 @@ Cache 不代表 Session 越長越省。後來加入的內容仍會增加使用�
 
 ## 4 個精打細算的工作習慣
 
-接下來從模型、Prompt、Cache 和 `AGENTS.md` 四個地方下手，看看平常怎麼少走冤枉路。
+接下來從模型、Prompt、Context 和驗收四個地方下手，看看平常怎麼少走冤枉路。
 
 <MediaTabs
   aria-label="Credits 精打細算技巧"
@@ -52,10 +52,10 @@ Cache 不代表 Session 越長越省。後來加入的內容仍會增加使用�
       description: '先講要交付什麼、做到什麼程度、怎麼驗收，再補上必要素材和限制。結果說得越清楚，越不容易做完才發現方向不對。',
       visual: 'prompt',
       steps: [
-        { title: '希望的結果', description: '整理成一份可以直接拿去規劃行程的東京旅遊資料，輸出為 Markdown。' },
-        { title: '範圍與邊界', description: '依 tokyo-trip-brief.txt 蒐集交通、區域、景點、餐飲與注意事項；附上來源，先不要排行程。' }
+        { title: '希望的結果', description: '整理成一份可以直接拿來規劃 Marketing Dashboard 的資料與指標說明。' },
+        { title: '範圍與邊界', description: '依 Marketing_Campaign_Data.xlsx 整理欄位與指標；保留資料限制，先不要修改來源檔。' }
       ],
-      note: '範例 Prompt：請依 tokyo-trip-brief.txt 蒐集東京旅遊需要的資訊，整理成 Markdown。內容包含交通、區域、景點、餐飲與注意事項，每項附上資料來源。這一階段只整理資料，先不要安排行程。'
+      note: '範例 Prompt：請依 Marketing_Campaign_Data.xlsx 整理工作表、欄位與指標，說明如何用它製作 Dashboard。這一階段只整理資料，先不要修改來源檔。'
     },
     {
       label: '03 Cache',
@@ -69,15 +69,15 @@ Cache 不代表 Session 越長越省。後來加入的內容仍會增加使用�
       note: '是否命中 Cache，關鍵是輸入前段是否相同，不是 Session 名稱本身。'
     },
     {
-      label: '04 AGENTS.md',
-      title: '把穩定規則放進 AGENTS.md',
-      description: '把跨任務都成立的專案結構、Coding Style、Build／Test 指令、不可修改的路徑與 Review 規則放在 AGENTS.md。',
+      label: '04 驗收',
+      title: '先驗收，再決定要不要重做',
+      description: '先檢查資料、指標和互動是否符合要求，再補上具體修正。一次只改一個問題，避免整個 Dashboard 反覆重做。',
       visual: 'agents',
       steps: [
-        { title: '放長期規則', description: '把專案結構、命令、限制與完成標準寫成可重複使用的說明。' },
-        { title: '不要放一次性內容', description: '秘密、長篇日誌、單次任務與整份需求文件不適合放在這裡。' }
+        { title: '先查目前結果', description: '抽查 KPI、圖表與篩選器，確認它們使用同一批資料。' },
+        { title: '只補發現的問題', description: '指出具體欄位或互動行為，讓下一輪修改範圍保持清楚。' }
       ],
-      note: '把長期有效的 Context 寫進 AGENTS.md，每次下 Prompt 就不用重新貼一遍。'
+      note: '先驗收再修改，通常比一次把所有想法塞回 Prompt 更省使用量。'
     }
   ]"
 />
@@ -119,7 +119,7 @@ Cache 不代表 Session 越長越省。後來加入的內容仍會增加使用�
 
 同一個目標可以留在同一個 Session，通常比較容易重用前面的 Context；目標換了，就另開一個。Cache 省得了重複輸入，省不了無關內容和重工。
 
-東京旅遊 Demo 的每一輪只做一件事：先蒐集資料，再確認規劃方向與準則，接著製作計畫書，最後決定交付格式。這比一開始同時要求搜尋、排行程、做網頁，更容易檢查，也能減少整份重做。
+Marketing Dashboard Demo 的每一輪只做一件事：先盤點資料，再確認指標與畫面規劃，接著建立 Dashboard，最後檢查篩選器與資料限制。這比一開始同時要求分析、設計、製作和驗收，更容易檢查，也能減少整份重做。
 
 ## 參考資料
 

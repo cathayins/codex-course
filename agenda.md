@@ -11,17 +11,17 @@
 
 ## 第一堂：Codex App
 
-對象以一般使用者為主，從介面操作進入能力擴充，再以兩個獨立 Demo 展示實際應用。
+對象以一般使用者為主，QuickStart 以同一份 Marketing Excel 貫穿，從 Codex 基本介紹、App 介面一路做到可操作的 Dashboard；後續案例再視課程安排延伸。
 
 | 時間 | Part | 內容 | 負責人 |
 |---:|---|---|---|
-| 0–20 | **QuickStart** | Codex 定位、App 介面、建立專案與基本操作 | Course Team |
+| 0–20 | **QuickStart** | Brief、Codex 定位、App 介面，沿著 Marketing Excel 建立並驗收 Dashboard | Course Team |
 | 20–33 | **進階能力** | Skills、Plugins、Automation | Course Team |
 | 33–44 | **Demo 1** | 素材整理與簡報製作 | Course Team |
-| 44–56 | **Demo 2** | Marketing 資料分析 | Course Team |
+| 44–56 | **Demo 2** | Marketing 資料分析延伸：Excel 分析與 Dashboard 驗證 | Course Team |
 | 56–60 | **收束與 Q&A** | 回顧使用原則與課後方向 | Course Team、Course Team |
 
-> Demo 1 與 Demo 2 各自完成，不安排成果串接。
+> QuickStart 先用 Marketing Excel 走完 Dashboard 主線；Demo 2 再把同一份資料延伸到 Excel 分析與更完整的驗證，不另換案例。
 
 QuickStart 與 Marketing Demo 的逐字講稿、操作提示及超時備援，見 [`quickstart_case_instructor_script.md`](quickstart_case_instructor_script.md)。
 

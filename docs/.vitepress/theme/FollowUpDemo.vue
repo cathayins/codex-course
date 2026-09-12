@@ -7,8 +7,8 @@ const phase = ref(0)
 let timers: number[] = []
 
 const message = computed(() => props.mode === 'steer'
-  ? '這個區塊太大，請縮小 20%，按鈕間距改為 16px。'
-  : '這件事完成後，請整理預覽連結與待確認項目。')
+  ? '報告請加入入學轉換率，並一起比較各平台的入學人數。'
+  : '報告完成後，請核對原始 Excel 的平台數字與摘要。')
 
 function clearTimers() {
   timers.forEach((timer) => window.clearTimeout(timer))
@@ -47,8 +47,8 @@ onBeforeUnmount(() => {
       <div class="follow-up-demo__status">
         <span class="follow-up-demo__spinner" :class="{ 'is-stopped': mode === 'steer' && phase === 2 }"></span>
         <div>
-          <small>{{ mode === 'steer' && phase === 2 ? '已中斷原本方向' : '正在執行任務' }}</small>
-          <b>{{ mode === 'steer' && phase === 2 ? '依照補充指示繼續' : '正在檢查網站畫面…' }}</b>
+          <small>{{ mode === 'steer' && phase === 2 ? '已收到補充需求' : '正在執行任務' }}</small>
+          <b>{{ mode === 'steer' && phase === 2 ? '加入入學轉換分析' : '正在製作行銷分析報告…' }}</b>
         </div>
         <span>已處理 8s</span>
       </div>
@@ -86,9 +86,10 @@ onBeforeUnmount(() => {
 
       <div class="follow-up-demo__meaning">
         <b>{{ mode === 'steer' ? 'Steer｜現在就改' : 'Queue｜接下來再做' }}</b>
-        <span>{{ mode === 'steer' ? '中斷目前方向，立即套用補充內容' : '目前工作繼續，訊息先在上方等待' }}</span>
+        <span>{{ mode === 'steer' ? '將補充內容加入目前這輪工作' : '目前工作繼續，訊息先在上方等待' }}</span>
       </div>
     </div>
+    <button class="follow-up-replay" type="button" @click="play">↻ 重新播放示意</button>
   </section>
 </template>
 
@@ -99,11 +100,11 @@ onBeforeUnmount(() => {
   padding: clamp(14px, 2vw, 24px);
   place-items: center;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 74% 18%, rgb(132 97 255 / 68%), transparent 35%),
-    radial-gradient(circle at 18% 82%, rgb(46 141 255 / 62%), transparent 37%),
-    linear-gradient(140deg, #e7f2ff, #9bc5ff 48%, #b4a1ff);
+  background: #f2f5f8;
+  border-radius: 16px;
 }
+.follow-up-replay { margin-top: 14px; padding: 6px 10px; color: #3c6590; font-size: 13px; cursor: pointer; }
+.follow-up-replay:focus-visible { outline: 2px solid #3c6590; outline-offset: 3px; }
 
 .follow-up-demo__window {
   width: 100%;

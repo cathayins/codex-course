@@ -54,8 +54,8 @@ const isHome = computed(() => route.path === '/' || frontmatter.value.layout ===
               <h2 id="course-footer-nav-title">課程導覽</h2>
               <ul>
                 <li><a :href="withBase('/quick-start/')">快速上手</a></li>
+                <li><a :href="withBase('/quick-start/demo-setup')">Demo 案例建立</a></li>
                 <li><a :href="withBase('/advanced/')">進階課程</a></li>
-                <li><a :href="withBase('/resources/')">學習資源</a></li>
               </ul>
             </nav>
 
