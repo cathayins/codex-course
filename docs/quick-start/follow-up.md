@@ -1,12 +1,12 @@
 ---
-title: Follow Up｜報告途中改變分析重點
+title: 調整分析方向
 description: 分析報告製作中，用 Steer 改變分析重點，用 Queue 安排完成後的檢查。
 outline: [2, 3]
 aside: false
 pageClass: quickstart-story quickstart-editorial task-lesson follow-up-page
 ---
 
-# Follow Up｜報告途中改變分析重點
+# 調整分析方向
 
 <p class="lesson-lead">上一頁的報告正在跑 — 這一頁所有操作都發生在「它還在工作」的那段時間。真實工作裡，需求常常是做到一半才想清楚的；重點是不打掉重做，直接在過程中把方向修正過來。</p>
 

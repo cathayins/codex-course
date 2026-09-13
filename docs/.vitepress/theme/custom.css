@@ -68,6 +68,16 @@
   margin-bottom: 24px;
 }
 
+.vp-doc .lesson-block__header h2 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.vp-doc .lesson-block__header > :first-child {
+  margin-top: 0;
+}
+
 .lesson-block__eyebrow {
   display: block;
   color: var(--lesson-accent);
@@ -3378,7 +3388,8 @@ body {
 }
 
 .quickstart-story .vp-doc h2 {
-  margin-top: 58px;
+  margin-top: 42px;
+  padding-top: 18px;
   font-size: clamp(26px, 2.6vw, 34px);
 }
 
@@ -4467,45 +4478,96 @@ body {
   line-height: 1.8;
 }
 
+/* Key points: one tidy list instead of four full-width cards. */
 .credit-savings-page .media-tabs__steps {
-  margin-top: 24px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.credit-savings-page .media-tabs__steps section {
-  border-color: #e4edda;
-  border-radius: 12px;
+  display: block;
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid #e4edda;
+  border-radius: 14px;
   background: #fbfdec;
 }
 
+.credit-savings-page .media-tabs__steps section {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 2px 12px;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.credit-savings-page .media-tabs__steps section + section {
+  border-top: 1px solid #e9f1dd;
+}
+
 .credit-savings-page .media-tabs__steps span {
-  color: #78a52d;
+  display: grid;
+  grid-row: 1 / span 2;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  margin-top: 1px;
+  border-radius: 50%;
+  color: #5f8420;
+  background: #e6f3c9;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
 }
 
 .credit-savings-page .media-tabs__steps b {
   color: var(--credit-ink);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .credit-savings-page .media-tabs__steps p {
   color: var(--credit-muted);
+  font-size: 13.5px;
+  line-height: 1.65;
 }
 
-.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:first-child {
-  border-color: #c5e875;
-  background: #efffd0;
+/* Install / use / export: one step per row, code wraps instead of overflowing. */
+.credit-savings-page .media-tabs__commands {
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 22px;
 }
 
-.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:first-child span {
-  color: #6d9823;
+.credit-savings-page .media-tabs__commands > div {
+  display: grid;
+  gap: 7px;
 }
 
-.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:last-child {
-  border-color: #f4c1ac;
-  background: #fff0e9;
+.credit-savings-page .media-tabs__commands span {
+  justify-self: start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: #5f8420;
+  background: #eef7db;
+  font-family: var(--vp-font-family-base);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0;
 }
 
-.credit-savings-page .media-tabs__panel.visual-prompt .media-tabs__steps section:last-child span {
-  color: #b56f59;
+.credit-savings-page .media-tabs__commands pre {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: clip;
+  border-radius: 10px;
+  background: #1b2026;
+}
+
+.credit-savings-page .media-tabs__commands code {
+  font-size: 12.5px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .credit-savings-page .media-tabs__note {
@@ -4773,9 +4835,6 @@ body {
     padding: 24px 22px 26px;
   }
 
-  .credit-savings-page .media-tabs__steps {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -15796,7 +15855,7 @@ html:not(.dark) .vp-doc .vp-code span {
 }
 
 /* Labelled checklist used for "what to verify". */
-.task-lesson .task-checklist {
+.vp-doc .task-checklist {
   display: grid;
   gap: 0;
   margin: 18px 0 20px;
@@ -15807,29 +15866,499 @@ html:not(.dark) .vp-doc .vp-code span {
   overflow: hidden;
 }
 
-.task-lesson .task-checklist li {
+.vp-doc .task-checklist li {
   display: grid;
-  grid-template-columns: minmax(96px, 150px) minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: minmax(112px, 172px) minmax(0, 1fr);
+  gap: 16px;
   margin: 0;
-  padding: 14px 18px;
+  padding: 16px 20px;
   background: #fff;
 }
 
-.task-lesson .task-checklist li + li {
+.vp-doc .task-checklist li + li {
   border-top: 1px solid #edf0f3;
 }
 
-.task-lesson .task-checklist b {
+.task-checklist b {
   color: #26323d;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 700;
 }
 
-.task-lesson .task-checklist span {
+.task-checklist span {
+  color: #57636f;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* Credits mapping + model recommendation on the Models page. */
+.vp-doc .model-credit-note {
+  margin-top: -6px;
+  color: #68727c;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.model-credit-note b {
+  color: #26323d;
+}
+
+.model-pick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 22px 0 14px;
+}
+
+.model-pick__card {
+  padding: 22px 24px;
+  border: 1px solid #dce4ed;
+  border-radius: 16px;
+  background: #fbfcfd;
+}
+
+.model-pick__card--daily {
+  border-color: #c7e3d3;
+  background: linear-gradient(165deg, #f6fcf8, #eef8f2);
+}
+
+.model-pick__card--hard {
+  border-color: #cfe0f2;
+  background: linear-gradient(165deg, #f7fbff, #eef5fd);
+}
+
+.model-pick__tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.model-pick__card--daily .model-pick__tag { color: #1b7a51; background: #dcf2e5 }
+.model-pick__card--hard .model-pick__tag { color: #1160a9; background: #e1eefb }
+
+.vp-doc .model-pick h3 {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  font-size: 21px;
+  line-height: 1.45;
+}
+
+.vp-doc .model-pick h3 code {
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 78%);
+  font-size: 18px;
+}
+
+.vp-doc .model-pick p {
+  margin: 0;
+  color: #4a5663;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+
+.model-pick p b {
+  color: #26323d;
+}
+
+.vp-doc .model-pick__note {
+  margin-top: 6px;
+  color: #68727c;
+  font-size: 15.5px;
+  line-height: 1.85;
+}
+
+/* Cache pricing bars, drawn rather than screenshotted. */
+.cache-chart {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0 26px;
+  padding: 28px 30px;
+  border: 1px solid #dfe4e9;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgb(36 55 72 / 7%);
+}
+
+.cache-chart__row {
+  display: grid;
+  grid-template-columns: minmax(128px, 178px) minmax(0, 1fr) 74px;
+  align-items: center;
+  gap: 18px;
+}
+
+.cache-chart__label {
+  color: #26323d;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.cache-chart__label small {
+  display: block;
+  margin-top: 3px;
+  color: #7c8794;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cache-chart__track {
+  height: 30px;
+  border-radius: 9px;
+  background: #eff2f5;
+}
+
+.cache-chart__track i {
+  display: block;
+  height: 100%;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #9fabb6, #8794a1);
+}
+
+.cache-chart__track i.is-good { background: linear-gradient(180deg, #38a97a, #248a5f) }
+.cache-chart__track i.is-warn { background: linear-gradient(180deg, #e0ac33, #c8901c) }
+.cache-chart__track i.is-bad { background: linear-gradient(180deg, #e35f5a, #c9413c) }
+
+.cache-chart__row > b {
+  color: #26323d;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cache-chart__row > b.is-good { color: #1b7a51 }
+.cache-chart__row > b.is-bad { color: #c0403c }
+
+/* Cache TTL / break-even timeline. */
+.cache-timeline {
+  margin: 24px 0 26px;
+  padding: 28px 30px 20px;
+  border: 1px solid #dfe4e9;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgb(36 55 72 / 7%);
+}
+
+.cache-timeline__track {
+  position: relative;
+  height: 44px;
+  border-radius: 10px;
+  background: #eff2f5;
+}
+
+.cache-timeline__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.cache-timeline__zone span {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cache-timeline__zone.is-warm {
+  border-radius: 10px 0 0 10px;
+  background: linear-gradient(180deg, #38a97a, #248a5f);
+}
+
+.cache-timeline__zone.is-grey { background: #cfd6dd }
+
+.cache-timeline__zone.is-cold {
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(180deg, #b5757e, #9a5d66);
+}
+
+.cache-timeline__mark {
+  position: absolute;
+  top: 100%;
+  padding-top: 7px;
+  text-decoration: none;
+  transform: translateX(-50%);
+}
+
+.cache-timeline__mark::before {
+  position: absolute;
+  top: -44px;
+  left: 50%;
+  width: 2px;
+  height: 44px;
+  background: rgb(20 34 48 / 40%);
+  content: '';
+}
+
+.cache-timeline__mark b,
+.cache-timeline__mark small {
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cache-timeline__mark b {
+  color: #26323d;
+  font-size: 15px;
+}
+
+.cache-timeline__mark small {
+  color: #7c8794;
+  font-size: 12.5px;
+}
+
+.cache-timeline__axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 54px;
+  color: #8b959f;
+  font-size: 13px;
+}
+
+/* Token vs rounds comparison bars. */
+.rounds-chart {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 26px;
+  padding: 28px 30px;
+  border: 1px solid #dfe4e9;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgb(36 55 72 / 7%);
+}
+
+.rounds-chart__row {
+  display: grid;
+  grid-template-columns: minmax(140px, 196px) minmax(0, 1fr) 76px 66px;
+  align-items: center;
+  gap: 16px;
+}
+
+.rounds-chart__label {
+  color: #26323d;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.rounds-chart__label small {
+  display: block;
+  margin-top: 3px;
+  color: #7c8794;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.rounds-chart__track {
+  height: 28px;
+  border-radius: 8px;
+  background: #eff2f5;
+}
+
+.rounds-chart__track i {
+  display: block;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #6f93b8, #55789e);
+}
+
+.rounds-chart__row.is-best .rounds-chart__track i { background: linear-gradient(180deg, #38a97a, #248a5f) }
+.rounds-chart__row.is-worst .rounds-chart__track i { background: linear-gradient(180deg, #e35f5a, #c9413c) }
+
+.rounds-chart__row > b {
+  color: #26323d;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rounds-chart__row.is-best > b { color: #1b7a51 }
+.rounds-chart__row.is-worst > b { color: #c0403c }
+
+.rounds-chart__row > em {
+  padding: 4px 0;
+  border-radius: 999px;
+  color: #5d6b78;
+  background: #eff2f5;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  text-align: center;
+}
+
+.rounds-chart__row.is-best > em { color: #1b7a51; background: #e0f4ea }
+.rounds-chart__row.is-worst > em { color: #c0403c; background: #fbe6e5 }
+
+.vp-doc .rounds-formula {
+  margin: 20px 0 18px;
+  padding: 20px 22px;
+  border: 1px solid #cfe0f2;
+  border-radius: 14px;
+  color: #17324a;
+  background: linear-gradient(165deg, #f7fbff, #eef5fd);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  text-align: center;
+}
+
+.rounds-formula span {
+  margin: 0 10px;
+  color: #7c8b99;
+  font-weight: 400;
+}
+
+/* open-doc / open-sheet / open-slide trio on the Credits page. */
+.tool-trio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(202px, 1fr));
+  gap: 12px;
+  margin: 22px 0 12px;
+}
+
+.tool-trio__card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #dfe4ea;
+  border-radius: 14px;
+  background: #fbfcfd;
+}
+
+.tool-trio__card figure {
+  margin: 0;
+  border-bottom: 1px solid #e6eaee;
+  background: #f2f5f8;
+}
+
+.tool-trio__card figure img {
+  display: block;
+  width: 100%;
+  height: 128px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.tool-trio__card > span,
+.tool-trio__card > h3,
+.tool-trio__card > p,
+.tool-trio__card > code,
+.tool-trio__card > a {
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.tool-trio__card > span {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 16px;
+  margin-bottom: 9px;
+  padding: 3px 10px;
+  border-radius: 999px;
   color: #5c6873;
-  font-size: 14.5px;
+  background: #eef1f4;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.vp-doc .tool-trio h3 {
+  margin: 0 0 9px;
+  padding: 0;
+  border: 0;
+  font-family: var(--vp-font-family-mono);
+  font-size: 17px;
+  line-height: 1.4;
+  letter-spacing: -.01em;
+}
+
+.vp-doc .tool-trio p {
+  flex: 1 1 auto;
+  margin: 0 0 14px;
+  color: #5c6873;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.vp-doc .tool-trio code {
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: #3d4954;
+  background: #eef1f4;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.vp-doc .tool-trio__card > a {
+  margin-top: 10px;
+  margin-bottom: 16px;
+  color: #1677d2;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.vp-doc .tool-trio__card > a:hover {
+  text-decoration: underline;
+}
+
+.vp-doc .tool-trio__credit {
+  margin-top: 0;
+  color: #8b959f;
+  font-size: 12.5px;
   line-height: 1.75;
+}
+
+@media (max-width: 760px) {
+  .cache-chart,
+  .cache-timeline,
+  .rounds-chart {
+    padding: 20px 18px;
+  }
+
+  .cache-chart__row {
+    grid-template-columns: minmax(100px, 130px) minmax(0, 1fr) 58px;
+    gap: 12px;
+  }
+
+  .cache-chart__label,
+  .rounds-chart__label { font-size: 14px }
+
+  .cache-chart__label small,
+  .rounds-chart__label small { font-size: 12px }
+
+  .cache-chart__row > b { font-size: 17px }
+
+  .rounds-chart__row {
+    grid-template-columns: minmax(104px, 140px) minmax(0, 1fr) 58px 52px;
+    gap: 10px;
+  }
+
+  .rounds-chart__row > b { font-size: 16px }
+  .rounds-chart__row > em { font-size: 12px }
+
+  .cache-chart__track { height: 24px }
+  .rounds-chart__track { height: 22px }
+
+  .cache-timeline__zone span { font-size: 12px }
+  .vp-doc .rounds-formula { font-size: 15px }
+}
+
+@media (max-width: 820px) {
+  .model-pick {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 720px) {
@@ -15844,7 +16373,7 @@ html:not(.dark) .vp-doc .vp-code span {
     transform: translateX(-50%);
   }
 
-  .task-lesson .task-checklist li {
+  .vp-doc .task-checklist li {
     grid-template-columns: 1fr;
     gap: 5px;
   }

@@ -1,18 +1,18 @@
 ---
-title: Codex App
+title: 操作介面
 description: 認識 Codex App 的主要畫面、左右側邊欄與常用設定。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story
 ---
 
-# Codex App
+# 操作介面
 
 <figure class="interface-figure interface-figure--hero">
   <img src="/images/quick-start/codex-app-interface.webp" width="1800" height="885" loading="eager" fetchpriority="high" decoding="async" alt="Codex App 完整介面，左側是專案與任務，中間是對話，右側顯示檔案變更">
 </figure>
 
-## 介面的三大區塊
+## 介面分區
 
 <div class="screen-zones">
   <section><span>左側</span><h3>開始任務</h3><p>建立新任務、回到之前的工作，或打開 Plugin 與設定。</p></section>
@@ -20,7 +20,7 @@ pageClass: quickstart-story
   <section><span>右側</span><h3>工作站台</h3><p>看檔案、終端機、網站預覽與本次修改的差異。</p></section>
 </div>
 
-## 左側開始｜New thread
+## 建立新任務
 
 <div class="sidebar-guide">
   <div class="refined-media refined-media--tall refined-media--sidebar-compact">
@@ -35,7 +35,7 @@ pageClass: quickstart-story
   </div>
 </div>
 
-## 側邊欄｜Side Panel
+## 使用側邊欄
 
 側邊欄集中顯示 Codex 建立的文件、程式、簡報、網站，以及執行過程留下的資訊。
 
@@ -78,7 +78,7 @@ pageClass: quickstart-story
   ]"
 />
 
-## 設定｜Settings
+## 調整設定
 
 從 App menu 打開 **Settings**。macOS 可按 <kbd>Command</kbd> + <kbd>,</kbd>，Windows 可按 <kbd>Ctrl</kbd> + <kbd>,</kbd>。
 <MediaTabs

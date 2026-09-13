@@ -1,26 +1,28 @@
 ---
-title: Models｜選擇模型
-description: 先用同一個 Marketing Dashboard 任務理解 Model 與 reasoning effort，再選擇剛好夠用的設定。
+title: 選擇模型
+description: 理解 Model 與 reasoning effort 的差別，以及它們換算成 Credits 之後的實際差距。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story
 ---
 
-# Models｜選擇模型
+# 選擇模型
 
-<p class="lesson-lead">Model 會影響 Codex 思考與回應的方式，但不會取代清楚的任務描述。這次先沿用 App 的預設值，等看到 Marketing Dashboard 的結果後，再理解什麼情況值得調整。</p>
+<p class="lesson-lead">Model 會影響 Codex 的處理方式、速度與 Credits 用量。這一頁比較不同模型、reasoning effort 與 Credits 費率。</p>
 
-## 選擇模型與 Reasoning
+## 模型與推理強度
 
 <div class="model-choice-grid">
-  <section><span>MODEL</span><h3>選擇能力與速度</h3><p>模型決定適合處理的工作類型。複雜工作偏向 Sol，日常工作選 Terra，清楚且大量的工作選 Luna。</p></section>
-  <section><span>REASONING EFFORT</span><h3>決定這次要想多深</h3><p>提高 reasoning effort 後，模型會花更多時間規劃與分析，通常也會使用更多 tokens。先用預設，再依結果往上調。</p></section>
+  <section><span>MODEL</span><h3>選擇能力與速度</h3><p>Sol 適合需要較多判斷的工作，Terra 適合一般跨檔案與工具操作，Luna 適合目標清楚、容易驗證的批次任務。</p></section>
+  <section><span>REASONING EFFORT</span><h3>調整分析深度</h3><p>提高 reasoning effort 通常會增加分析時間與 Token 用量。可先沿用預設值，再依結果調整。</p></section>
 </div>
 
-官方目前的預設 Power 使用 **5.6 Sol + Medium reasoning**。需要更深分析時往 Smarter 調整；希望更快或降低使用量時往 Faster 調整。第一次上手不用先改額外設定。
+官方目前的 Power 預設為 **5.6 Sol + Medium reasoning**。Smarter 會提高分析深度，Faster 則偏向速度與較低用量。第一次操作可先沿用預設值。
+
+Reasoning effort 目前有 Light、Medium、High、Extra High、Max、Ultra 六級。提高 reasoning 不會改變每個 Token 的費率，但通常會增加計入 output 的 reasoning token，因此 Credits 用量通常也會增加。
 
 ::: tip Marketing Dashboard Demo 先沿用預設值
-這次會讀取 Excel、整理指標、規劃 Dashboard，再檢查篩選器與數字。先用畫面上的預設 Model 與 reasoning 就好；若分析方向正確但深度不足，再提高 reasoning。課堂上不用逐一比較所有模型。
+Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分析報告並檢查結果。操作時先沿用預設 Model 與 reasoning；如果分析不夠深入，再提高 reasoning。
 :::
 
 ## 官方推薦模型
@@ -75,31 +77,59 @@ pageClass: quickstart-story
   </article>
 </div>
 
-<p class="source-note">模型圖片、能力與速度排序依 OpenAI 官方 Models 頁面。支援平台與可用選項可能隨帳號、Workspace 與產品更新。</p>
+<p class="source-note">模型圖片、能力與速度排序依 OpenAI 官方 Models 頁面。完整清單另有 gpt-6-astra，以及 ChatGPT Pro 可用的 gpt-5.3-codex-spark。支援平台與選項可能隨帳號、Workspace 與產品更新。</p>
 
-## 哪一個模型適合這次工作
+## 模型費率比較
 
-| 工作情境 | 建議模型 | Reasoning 起點 | 選擇原因 |
+依下表的輸入費率，Sol 為 100 Credits／百萬 Token，Luna 為 5 Credits／百萬 Token，相差 **20 倍**。
+
+| 模型 | 輸入 | 命中快取的輸入 | 輸出 |
 | --- | --- | --- | --- |
-| 複雜、開放式或高價值工作 | **Sol** | Medium | 需要更多分析、判斷與完成度 |
-| 一般文件、跨檔案閱讀、日常程式修改 | **Terra** | Medium | 在能力、速度與使用量之間取得平衡 |
-| 明確、可重複、大量且容易驗證 | **Luna** | Light／Medium | 速度快，適合擷取、分類與轉換 |
-| 困難且需要單一模型深入思考 | 合適模型 | Max | 深度比速度與使用量重要 |
+| `gpt-5.6-sol` | 100 | 10 | 500 |
+| `gpt-5.6-terra` | 50 | 5 | 300 |
+| `gpt-5.6-luna` | 5 | 0.5 | 30 |
 
-## Reasoning effort 比較
+<p class="model-credit-note">單位：Credits／百萬 Token。<b>命中快取的輸入費率是一般輸入的 1／10</b>，輸出費率依 Model 而異。</p>
 
-| 設定 | 適合的工作 | 注意事項 |
+選擇模型時，可以比較三項差異：
+
+<ul class="task-checklist">
+  <li><b>模型會改變單價</b><span>Sol 的輸入單價是 Luna 的 20 倍，輸出單價約為 16.7 倍。提高 reasoning 可能增加 output token，但不會改變每個 Token 的費率。</span></li>
+  <li><b>輸出單價較高</b><span>Reasoning token 也計入 output。精簡回覆可以減少輸出用量。</span></li>
+  <li><b>命中快取較便宜</b><span>命中快取的輸入費率是一般輸入的 1／10；新增內容與輸出仍會計入用量。</span></li>
+</ul>
+
+## 怎麼選模型
+
+<div class="model-pick" aria-label="模型選擇的實務建議">
+  <section class="model-pick__card model-pick__card--daily">
+    <span class="model-pick__tag">目標清楚的日常任務</span>
+    <h3><code>gpt-5.6-luna</code> ＋ Max</h3>
+    <p>Luna 的單價較低，可在需要時提高 reasoning。適合擷取、分類、轉換、批次修正，以及依既有規則產出等容易驗證的工作。</p>
+  </section>
+  <section class="model-pick__card model-pick__card--hard">
+    <span class="model-pick__tag">需要較多判斷的任務</span>
+    <h3><code>gpt-5.6-sol</code> ＋ High／Extra High</h3>
+    <p>需要整合多個來源、做架構取捨或處理開放式問題時，可使用 Sol。提高 reasoning 通常會增加處理時間與 output token。</p>
+  </section>
+</div>
+
+<p class="model-pick__note">Terra 的能力與費率介於 Luna 和 Sol 之間，適合大量跨檔案閱讀、工具操作，以及需要一定判斷的工作。</p>
+
+## 調整推理強度
+
+| 設定 | 適合的工作 | 對 Credits 的影響 |
 | --- | --- | --- |
-| Light／較低 | 範圍小、做法清楚、結果容易檢查 | 回應較快，投入較少推理 |
-| Medium | 需要一些規劃、跨檔案閱讀或日常工具操作 | 官方預設的速度與深度平衡點 |
-| High／Extra High | 多步驟、多來源、重要取捨或複雜分析 | 通常需要更久、使用更多 tokens |
-| Max | 單一模型處理最困難的問題 | 只在深度比速度或使用量重要時使用 |
-
-先從足以完成工作的 reasoning effort 開始。方向正確但分析太淺時，再提高設定；工作類型明顯不合適時，才換模型。這次的判斷標準是：Dashboard 是否讀對資料、指標是否清楚、成果是否容易驗收。
+| Light | 範圍小、做法清楚、結果容易檢查 | 思考用的 output 最少 |
+| Medium | 需要一些規劃、跨檔案閱讀或日常工具操作 | 官方預設的平衡點 |
+| High／Extra High | 多步驟、多來源、重要取捨或複雜分析 | output 明顯增加，Sol 上特別有感 |
+| Max／Ultra | 需要最深入分析的問題 | 處理時間較長，用量也較高 |
 
 ## 參考資料
 
 - [Models｜ChatGPT Learn](https://learn.chatgpt.com/docs/models?surface=app)
-- [Prompting](https://learn.chatgpt.com/docs/prompting)
+- [ChatGPT rate card｜OpenAI Help Center](https://help.openai.com/en/articles/11481834)
+- [Prompt caching｜OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching)
+- [Credits｜用量與成本](/quick-start/token-efficiency)
 
-<p class="source-note">本頁依 2026-07-19 OpenAI Models 頁面整理。模型名稱、能力、支援平台與 reasoning 選項會隨官方更新、帳號方案與 Workspace 設定變動。</p>
+<p class="source-note">模型能力與 reasoning 選項依 OpenAI Models 頁面（2026-09 查閱）。GPT-5.6 Sol 使用促銷費率，Credits 請以 Codex rate card 的即時數字為準。模型與選項可能隨帳號方案及 Workspace 設定變動。</p>

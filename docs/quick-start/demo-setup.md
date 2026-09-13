@@ -1,5 +1,5 @@
 ---
-title: Demo 案例建立｜準備 Marketing Excel
+title: 準備 Demo 資料
 description: 下載 Marketing Excel、了解資料結構，並準備 codex-demo 工作資料夾。
 outline: [2, 3]
 aside: false
@@ -10,7 +10,7 @@ pageClass: quickstart-story quickstart-editorial quickstart-demo-setup
 const marketingExcelUrl = 'https://github.com/cathayins/codex-course-demo-cases/raw/refs/heads/main/data-analyst/Marketing_Campaign_Data.xlsx'
 </script>
 
-# Workshop Demo Case 介紹
+# 準備 Demo 資料
 
 <p class="lesson-lead">開始第一個任務前，先準備這次會一路使用的 Marketing Excel。這一頁先處理資料來源與資料結構；下一頁再把檔案交給 Codex，開始建立第一個 Project。</p>
 

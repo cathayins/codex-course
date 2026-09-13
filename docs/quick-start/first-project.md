@@ -1,5 +1,5 @@
 ---
-title: First Project｜開啟工作區與第一個訊息
+title: 開啟工作區
 description: 在 Codex 開啟資料夾、認識存取權限，並送出第一個訊息。
 outline: [2, 3]
 aside: false
@@ -10,7 +10,7 @@ pageClass: quickstart-story quickstart-editorial first-project-page
 import PermissionOnion from '../.vitepress/theme/PermissionOnion.vue'
 </script>
 
-# First Project
+# 開啟工作區
 
 <p class="lesson-lead">在 Codex 開啟工作資料夾，確認權限，再用一句話請它列出目前的檔案。</p>
 

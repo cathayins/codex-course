@@ -1,12 +1,12 @@
 ---
-title: What Is Codex
+title: 認識 Codex
 description: 認識 Codex 的工作方式，以及它和 ChatGPT 瀏覽器對話在工作環境上的差別。
 outline: [2, 3]
 aside: false
 pageClass: quickstart-story quickstart-editorial chatgpt-vs-codex
 ---
 
-# What Is Codex
+# 認識 Codex
 
 <p class="lesson-lead">Codex 是 OpenAI 開發的 Agent 系統。你交代一個目標，它會自己拆解步驟、使用需要的工具，把事情做完，並把成果留在你指定的地方。這一頁先從你熟悉的 ChatGPT 對話出發，說清楚兩者到底差在哪裡。</p>
 

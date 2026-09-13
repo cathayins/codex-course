@@ -1,5 +1,5 @@
 ---
-title: Prompting｜指定檔案與交代任務
+title: 指定檔案並建立 Dashboard
 description: 用 @ 指定 Marketing Excel，建立趨勢圖、調整結果，再製作互動式 Dashboard。
 outline: [2, 3]
 aside: false
@@ -13,7 +13,7 @@ import FileMentionDemo from '../.vitepress/theme/FileMentionDemo.vue'
 const dashboardUrl = withBase('/demo-assets/marketing_dashboard.html')
 </script>
 
-# Prompting｜指定檔案與交代任務
+# 指定檔案並建立 Dashboard
 
 <p class="lesson-lead">從 Marketing Excel 做一張趨勢圖，查看結果並補充修改需求，再把分析內容做成 Dashboard。</p>
 

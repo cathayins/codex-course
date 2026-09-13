@@ -1,12 +1,12 @@
 ---
-title: Slash Commands｜規劃分析報告
+title: 規劃分析報告
 description: 用 Plan 先釐清分析問題與報告架構，確認後再產出報告，並認識 Compact。
 outline: [2, 3]
 aside: false
 pageClass: quickstart-story quickstart-editorial task-lesson slash-commands-page
 ---
 
-# Slash Commands｜規劃分析報告
+# 規劃分析報告
 
 <p class="lesson-lead">Dashboard 做好了，但它只回答「數字長什麼樣」。這一頁要往前一步：用原始 Excel 與這份 Dashboard，產出一份給行銷主管看的分析報告 — 而且先不急著寫，先把分析問題與報告架構講清楚。</p>
 
