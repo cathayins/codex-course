@@ -1,12 +1,12 @@
 ---
-title: 控制 Credits 用量
+title: 如何節省 Credits 用量
 description: 了解 Credits 如何計算，以及哪些做法可以減少不必要的 Token 用量。
 outline: [2, 3]
 aside: true
 pageClass: quickstart-story credit-savings-page
 ---
 
-# 控制 Credits 用量
+# 如何節省 Credits 用量
 
 <p class="lesson-lead">Codex 會依實際使用的 input、cached input 與 output Token 計算 Credits。Model、任務大小與輸出長度都會影響用量。</p>
 
@@ -28,41 +28,57 @@ pageClass: quickstart-story credit-savings-page
 
 <LessonBlock
   id="cache-pricing"
-  title="快取費率怎麼算"
-  description="Codex 依 input、cached input 與 output Token 計算 Credits，不另外收取 cache write 費用。"
+  title="盡量讓快取命中"
+  description="重複讀取的內容只要 1／10 費率。實測顯示多數用量都花在重讀前文，因此讓快取命中是最直接的省法。"
 >
 
-以一般 input 費率作為 100%：
+每個 Model 的費率數字不同，但三種 Token 之間的比例在各個 Model 上是一致的。以該 Model 的一般 input 費率當作 1 倍：
 
-<div class="cache-chart" role="img" aria-label="Codex Credits 包含一般 input、cached input 與 output；cached input 是一般 input 費率的 10%">
-  <div class="cache-chart__row">
-    <span class="cache-chart__label">Input<small>新加入的內容</small></span>
-    <span class="cache-chart__track"><i class="is-base" style="width: 80%"></i></span>
-    <b>100%</b>
+<div class="rate-ratio" role="img" aria-label="同一個 Model 內，cached input 是一般 input 的 0.1 倍，output 是 5 到 6 倍">
+  <div class="rate-ratio__row">
+    <span class="rate-ratio__label">Cached input<em>可重用的前段內容</em></span>
+    <span class="rate-ratio__track"><i class="is-low" style="width: 1.7%"></i></span>
+    <b class="is-low">0.1<u>×</u></b>
   </div>
-  <div class="cache-chart__row">
-    <span class="cache-chart__label">Cached input<small>可重用的前段內容</small></span>
-    <span class="cache-chart__track"><i class="is-good" style="width: 8%"></i></span>
-    <b class="is-good">10%</b>
+  <div class="rate-ratio__row is-base">
+    <span class="rate-ratio__label">Input<em>這一輪新加入的內容</em></span>
+    <span class="rate-ratio__track"><i class="is-mid" style="width: 16.7%"></i></span>
+    <b>1<u>×</u></b>
   </div>
-  <div class="cache-chart__row">
-    <span class="cache-chart__label">Output<small>模型產生的內容</small></span>
-    <span class="cache-chart__track"><i class="is-warn" style="width: 100%"></i></span>
-    <b>依 Model</b>
+  <div class="rate-ratio__row">
+    <span class="rate-ratio__label">Output<em>模型產生的內容</em></span>
+    <span class="rate-ratio__track"><i class="is-high" style="width: 100%"></i></span>
+    <b class="is-high">5–6<u>×</u></b>
   </div>
+  <p class="rate-ratio__axis"><span>0</span><span>基準 1×</span><span>6×</span></p>
 </div>
 
-### 哪些變動會影響快取
+兩個可以直接拿來用的結論：**能重用的前段內容幾乎不花錢**，而 **output 是最貴的一段** — 所以控制回覆長度、避免重複產生同樣的內容，比減少讀進去的資料更有效。
 
-快取需要相同的前段內容。以下變動可能降低重用比例：
+### 為什麼值得花力氣讓它命中
+
+實測 4 個 Session 的統計中，**重複讀取的 cached input 佔總輸入的 79～94%** — 也就是說每一輪裡，絕大部分都是「前面已經讀過、這次再讀一次」的內容。這些內容命中快取時只要 1／10 費率；一旦快取失效，就得用全價重算一次。
+
+快取的存活時間（TTL）是 **30 分鐘**，而且**每次命中就重新計時** — 持續工作時它會一直是熱的，停下來超過 30 分鐘才會冷掉。
+
+### 四個讓快取保持命中的做法
 
 <ul class="task-checklist">
-  <li><b>切換 Model</b><span>不同 Model 的快取行為可能不同。</span></li>
-  <li><b>修改指令或工具</b><span>前段指令、工具內容或順序改變時，可能無法沿用原快取。</span></li>
-  <li><b>Compact</b><span>壓縮會改變前段內容，之後可能需要建立新快取。</span></li>
+  <li><b>開場就選定模型與強度</b><span>每個 Model 各有一份快取，中途切換等於從零開始；改 reasoning effort 也會讓命中率明顯下降。決定好再開始，比做到一半調整省。</span></li>
+  <li><b>一次把一件事做完</b><span>連續操作時快取會一直重新計時。中途離開超過 30 分鐘，回來的第一輪就是全額重算。</span></li>
+  <li><b>做完一段再 Compact</b><span>壓縮會改寫前段內容，之後第一輪必定未命中。等一個任務告一段落再壓縮，不要在進行到一半時壓。</span></li>
+  <li><b>工作中途別動設定檔</b><span>新增或移除 MCP 伺服器、改變工具順序、修改 AGENTS.md，都會改變前段內容。這些調整留到任務之間再做。</span></li>
 </ul>
 
-同一項工作可以留在同一個 Session；目標改變時再開新 Session。
+::: warning 不要靠「定時送訊息」保溫
+每送一次訊息本身就是一筆快取讀取，長時間保溫的累計費用會超過重建一次快取的成本。閒置超過約 36 分鐘之後，直接讓它冷掉、下次重算反而比較划算。
+
+與其研究保溫時機，不如集中時間一次做完 — 最省的快取，是根本不需要保溫的快取。
+:::
+
+同一項工作留在同一個 Session；目標改變時再開新 Session。
+
+<p class="source-note">cached input 佔比、TTL 行為與保溫成本試算，引用自戴維廷〈搶救 Token 大作戰〉（2026-09-11）實測簡報；快取機制與 1／10 費率依 OpenAI Prompt Caching 文件。</p>
 </LessonBlock>
 
 <LessonBlock
@@ -157,39 +173,6 @@ open-slide 的 Visual editor 可以直接修改文字、字型與顏色並寫回
   <figcaption>open-slide 的 Inspector：點任一元素就能在右側改文字、字級、對齊與顏色，全域配色在 Design tokens 一次調整。圖片來源：<a href="https://open-slide.dev" target="_blank" rel="noreferrer">open-slide.dev</a>（MIT License）</figcaption>
 </figure>
 
-</LessonBlock>
-
-<LessonBlock
-  id="reduce-usage"
-  title="減少不必要的用量"
-  description="除了選對模型與框架，日常操作也會影響用量。以下幾點的共同原則是：不要讓同樣的內容被重複處理。"
->
-
-### 開始之前先決定
-
-<ul class="task-checklist">
-  <li><b>先定模型與推理強度</b><span>兩者中途變更都會使快取失效。開場就選定，比做到一半再調整省。</span></li>
-  <li><b>一次處理完一件事</b><span>持續工作時快取會一直有效；中斷越久，下一輪重新計算的量越大。</span></li>
-  <li><b>Compact 放在自然斷點</b><span>壓縮後第一輪必定未命中快取，因此適合放在任務之間，而不是任務中途。</span></li>
-</ul>
-
-### 控制進入對話的內容
-
-<ul class="task-checklist">
-  <li><b>只提供需要的內容</b><span>移除和目前任務無關的檔案與 Context。</span></li>
-  <li><b>長輸出先截尾</b><span>測試與建置的 log 可以接 <code>2&gt;&amp;1 | tail -30</code>，只把結尾帶進對話；需要細節時再用 grep 取出對應片段。</span></li>
-  <li><b>跨多檔的探索交給子代理</b><span>由子代理讀完再回報結論，原始內容不會進入主對話。查單一檔案則直接讀取即可。</span></li>
-</ul>
-
-### 修改的時候
-
-<ul class="task-checklist">
-  <li><b>先檢查再修改</b><span>確認目前結果，再提出具體的修改要求。</span></li>
-  <li><b>一次只改一個問題</b><span>指出具體欄位或行為，讓下一輪的修改範圍保持清楚。</span></li>
-  <li><b>同一目標沿用同一個 Session</b><span>目標改變時再開新 Session。</span></li>
-</ul>
-
-<p class="source-note">快取失效條件與長輸出截尾、子代理回報等做法，參考戴維廷〈搶救 Token 大作戰〉（2026-09-11）實測簡報整理。實測 4 個 Session 中，重複讀取的 cached input 佔總輸入的 79～94%。</p>
 </LessonBlock>
 
 ## 參考資料

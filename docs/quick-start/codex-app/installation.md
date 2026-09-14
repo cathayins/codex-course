@@ -41,10 +41,20 @@ pageClass: quickstart-story quickstart-editorial codex-app-installation-page
   <p>Codex 的本機資料通常位於上方路徑。這個資料夾會保存設定、登入快取與任務紀錄等資料；Log 的位置可能依版本或 <code>log_dir</code> 設定不同。一般使用時不需要手動修改，之後處理設定或除錯問題時可能會用到。</p>
 </LessonBlock>
 
+<LessonBlock
+  id="windows-sandbox-troubleshooting"
+  title="Windows 沙箱設定卡住怎麼辦？"
+  description="若安裝後停在「完成 Windows 設定」，依序重新測試、清除登入快取；仍無法完成，再蒐集 Log 回報協助排查。"
+>
+  <WindowsSandboxGuide />
+</LessonBlock>
+
 ## 參考資料
 
 - [ChatGPT desktop app](https://learn.chatgpt.com/docs/app)
 - [ChatGPT desktop app for Windows](https://learn.chatgpt.com/docs/windows/windows-app)
+- [Windows sandbox](https://learn.chatgpt.com/docs/windows/windows-sandbox)
+- [Codex authentication](https://learn.chatgpt.com/docs/auth)
 - [Codex Config basics](https://learn.chatgpt.com/docs/config-file/config-basic)
 
-<p class="source-note">Codex App 與 Windows 使用者目錄的說明依 2026-09-11 OpenAI 官方文件核對；國泰產險內部的下載與安裝方式以公司提供的最新流程為準。</p>
+<p class="source-note">Codex App、Windows 使用者目錄、登入快取與沙箱 Log 位置依 2026-09-14 OpenAI 官方文件核對；國泰產險內部的下載、安裝與 Trainer／業管回報流程仍以公司提供的最新方式為準。Windows 設定畫面與流程圖為本課重製示意，並非使用者提供截圖或實際產品畫面。</p>

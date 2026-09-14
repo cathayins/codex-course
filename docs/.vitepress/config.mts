@@ -41,10 +41,10 @@ export default defineConfig({
               { text: '準備 Demo 資料', link: '/quick-start/demo-setup' },
               { text: '開啟工作區', link: '/quick-start/first-project' },
               { text: '選擇模型', link: '/quick-start/models' },
-              { text: '指定檔案並建立 Dashboard', link: '/quick-start/prompting' },
+              { text: '做出 Dashboard', link: '/quick-start/prompting' },
               { text: '規劃分析報告', link: '/quick-start/using-slash' },
-              { text: '調整分析方向', link: '/quick-start/follow-up' },
-              { text: '控制 Credits 用量', link: '/quick-start/token-efficiency' }
+              { text: '中途調整方向', link: '/quick-start/follow-up' },
+              { text: '節省 Credits 用量', link: '/quick-start/token-efficiency' }
             ]
           }
         ]
@@ -81,10 +81,10 @@ export default defineConfig({
                 { text: '準備 Demo 資料', link: '/quick-start/demo-setup' },
                 { text: '開啟工作區', link: '/quick-start/first-project' },
                 { text: '選擇模型', link: '/quick-start/models' },
-                { text: '指定檔案並建立 Dashboard', link: '/quick-start/prompting' },
+                { text: '做出 Dashboard', link: '/quick-start/prompting' },
                 { text: '規劃分析報告', link: '/quick-start/using-slash' },
-                { text: '調整分析方向', link: '/quick-start/follow-up' },
-                { text: '控制 Credits 用量', link: '/quick-start/token-efficiency' }
+                { text: '中途調整方向', link: '/quick-start/follow-up' },
+                { text: '節省 Credits 用量', link: '/quick-start/token-efficiency' }
               ]
             }
           ]

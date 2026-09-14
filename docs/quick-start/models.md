@@ -25,9 +25,29 @@ Reasoning effort 目前有 Light、Medium、High、Extra High、Max、Ultra 六�
 Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分析報告並檢查結果。操作時先沿用預設 Model 與 reasoning；如果分析不夠深入，再提高 reasoning。
 :::
 
-## 官方推薦模型
+## 目前主流模型
 
-<div class="recommended-models" aria-label="OpenAI 官方推薦模型比較">
+<div class="model-flagship" aria-label="GPT-6 Astra">
+  <div class="model-flagship__visual">
+    <img src="/images/quick-start/gpt-6-astra.webp" width="450" height="450" alt="旋臂狀的星系，代表 GPT-6 Astra" loading="eager" fetchpriority="high" decoding="async">
+    <strong>GPT-6 Astra</strong>
+    <span class="model-flagship__gen">新世代</span>
+  </div>
+  <div class="model-flagship__body">
+    <p class="model-flagship__lead">目前能力最高的模型，適合跨程式、應用與研究的複雜工作。需要一個模型從頭處理到尾時，完成度最高。</p>
+    <code>gpt-6-astra</code>
+    <dl class="model-flagship__facts">
+      <div><dt>Capability</dt><dd aria-label="能力最高">✦ ✦ ✦ ✦ ✦ ✦</dd></div>
+      <div><dt>Speed</dt><dd aria-label="速度二格">ϟ ϟ</dd></div>
+      <div><dt>Credits</dt><dd class="is-costly">Sol 的 2.5 倍</dd></div>
+    </dl>
+    <p class="model-flagship__warn"><b>非常消耗 Credits。</b>費率是 Sol 的 2.5 倍、Luna 的 50 倍；同樣的訂閱額度，用 Astra 大約只能完成 Sol 四成的工作量。留給真正需要最高完成度的任務。</p>
+  </div>
+</div>
+
+### GPT-5.6 系列
+
+<div class="recommended-models" aria-label="GPT-5.6 系列模型比較">
   <article class="recommended-model">
     <div class="recommended-model__visual">
       <img src="/images/quick-start/gpt-5.6-sol.webp" width="696" height="360" alt="太陽與星空，代表 5.6 Sol" loading="eager" fetchpriority="high" decoding="async">
@@ -83,13 +103,14 @@ Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分�
 
 依下表的輸入費率，Sol 為 100 Credits／百萬 Token，Luna 為 5 Credits／百萬 Token，相差 **20 倍**。
 
-| 模型 | 輸入 | 命中快取的輸入 | 輸出 |
+| 模型 | Input<br><small>Credits／1M Token</small> | Cached input<br><small>Credits／1M Token</small> | Output<br><small>Credits／1M Token</small> |
 | --- | --- | --- | --- |
+| `gpt-6-astra` | **250** | 25 | **1,250** |
 | `gpt-5.6-sol` | 100 | 10 | 500 |
 | `gpt-5.6-terra` | 50 | 5 | 300 |
 | `gpt-5.6-luna` | 5 | 0.5 | 30 |
 
-<p class="model-credit-note">單位：Credits／百萬 Token。<b>命中快取的輸入費率是一般輸入的 1／10</b>，輸出費率依 Model 而異。</p>
+<p class="model-credit-note">三個欄位都是 <b>Credits／百萬 Token</b>。兩個固定關係：<b>命中快取的 input 是一般 input 的 1／10</b>，<b>output 是 input 的 5～6 倍</b>。最貴與最便宜之間差 50 倍。</p>
 
 選擇模型時，可以比較三項差異：
 

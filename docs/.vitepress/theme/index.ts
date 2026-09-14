@@ -9,6 +9,7 @@ import SlashCommandDemo from './SlashCommandDemo.vue'
 import CodexEnvironmentDemo from './CodexEnvironmentDemo.vue'
 import CodexRuntimeDemo from './CodexRuntimeDemo.vue'
 import FollowUpChoiceDemo from './FollowUpChoiceDemo.vue'
+import WindowsSandboxGuide from './WindowsSandboxGuide.vue'
 import './custom.css'
 
 export default {
@@ -24,5 +25,6 @@ export default {
     app.component('CodexEnvironmentDemo', CodexEnvironmentDemo)
     app.component('CodexRuntimeDemo', CodexRuntimeDemo)
     app.component('FollowUpChoiceDemo', FollowUpChoiceDemo)
+    app.component('WindowsSandboxGuide', WindowsSandboxGuide)
   }
 }

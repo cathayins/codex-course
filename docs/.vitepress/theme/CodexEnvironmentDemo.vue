@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import {
-  ArrowDownTrayIcon,
-  ChartBarSquareIcon,
-  CheckIcon,
-  CommandLineIcon,
-  ComputerDesktopIcon,
-  DocumentChartBarIcon,
-  FolderOpenIcon,
-  GlobeAltIcon,
-  PlayIcon,
-  WrenchScrewdriverIcon
+  ArrowDownTrayIcon, ArrowPathIcon, ArrowUpRightIcon, ArrowsUpDownIcon, CommandLineIcon, PencilSquareIcon,
+  ChatBubbleLeftEllipsisIcon, CheckIcon, ComputerDesktopIcon, CpuChipIcon,
+  DocumentChartBarIcon, FolderOpenIcon, GlobeAltIcon, PauseIcon, PlayIcon,
+  UserIcon, WindowIcon
 } from '@heroicons/vue/24/outline'
 
 type FlowMode = 'chatgpt' | 'codex'
@@ -26,378 +20,379 @@ type Flow = {
   personNote: string
   steps: string[]
   result: string
+  verdict: string
 }
 
-const STEP_MS = 1950
+// Leave enough time to read each step before the next handoff.
+const STEP_SECONDS = 2.4
 
 const flows: Record<FlowMode, Flow> = {
   chatgpt: {
     name: 'ChatGPT',
     role: '瀏覽器裡的顧問',
-    eyebrow: 'AI 與工作環境分開',
-    title: '檔案交給網站，完成後再下載回來',
-    summary: '你把檔案上傳到網站，AI 在那裡處理；下載回來之後的執行與整理，仍然要自己接手。',
+    eyebrow: 'Chrome 裡的對話，和本機工作區是兩個環境',
+    title: '你在 Chrome 傳檔、收回覆，再到本機把工作做完',
+    summary: '以一般瀏覽器對話為例：ChatGPT 在 Chrome 裡提供建議或可下載的檔案，但不會直接操作你電腦上的專案。上傳、下載、開檔編修、執行與存檔，都由你負責。',
     icon: '/images/quick-start/chatgpt-icon.webp',
-    personNote: '負責上傳與下載',
-    steps: ['上傳檔案', '網站中處理', '下載成果', '自己放回專案'],
-    result: '成果停在下載資料夾，接下來要自己開啟、執行與整理。'
+    personNote: '上傳、下載，並接手後續操作',
+    steps: ['你操作 Chrome 上傳', 'ChatGPT 產生回覆', '你操作 Chrome 下載', '你操作本機完成'],
+    result: 'AI 的回覆已備妥；本機的編修、執行與存檔，還等你完成。',
+    verdict: '等你接手操作'
   },
   codex: {
     name: 'Codex',
-    role: '工作環境裡的同事',
-    eyebrow: 'AI 進入指定工作範圍',
-    title: '告訴它資料夾，工作直接在專案裡完成',
-    summary: 'Codex 依照你授權的範圍直接讀取檔案、執行工具，再把成果留在原本的資料夾裡。',
+    role: '你電腦裡的同事',
+    eyebrow: 'Codex 收到回覆後，繼續在你的電腦動手',
+    title: '交代目標，Codex 直接改檔案、執行並留下成果',
+    summary: '在你授權的工作環境裡，Codex 能讀取與修改檔案、執行程式、檢查結果，再把成果留在專案中。你交代目標，最後檢查成果，不必逐步代它操作。',
     icon: '/images/quick-start/codex-icon.webp',
-    personNote: '說明目標與資料位置',
-    steps: ['指定資料夾', '直接讀檔', '執行本機工具', '成果留在原地'],
-    result: '來源檔案、執行工具與產出的成果，全部都在同一個工作環境裡。'
+    personNote: '交代目標，最後檢查成果',
+    steps: ['你交代目標', 'AI 模型協助規劃', 'Codex 修改本機檔案', 'Codex 在本機執行'],
+    result: '檔案已更新，程式已執行，報表已存入專案。接下來由你檢查成果。',
+    verdict: '等你檢查成果'
   }
 }
 
 const selected = ref<FlowMode>('chatgpt')
 const activeStep = ref(-1)
-const hasPlayed = ref(false)
-const runId = ref(0)
-let timers: Array<ReturnType<typeof setTimeout>> = []
-
+const arrivedStep = ref(-1)
+const playing = ref(false)
+const paused = ref(false)
+const finished = ref(false)
+const localAction = ref(-1)
+const root = ref<HTMLElement | null>(null)
+const scene = ref<HTMLElement | null>(null)
 const flow = computed(() => flows[selected.value])
-const status = computed(() => {
-  if (!hasPlayed.value) return '點選上方按鈕播放'
-  if (activeStep.value >= flow.value.steps.length - 1) return '流程完成'
-  return flow.value.steps[Math.max(activeStep.value, 0)]
-})
+const status = computed(() => finished.value ? (selected.value === 'chatgpt' ? '回覆完成，等你接手' : '執行完成，等你檢查')
+  : paused.value ? '已暫停' : playing.value ? flow.value.steps[activeStep.value] ?? '準備開始' : '準備播放')
 
-function clearTimers() {
-  timers.forEach((timer) => clearTimeout(timer))
-  timers = []
+type Gsap = typeof import('gsap')['gsap']
+let gsapPromise: Promise<Gsap | null> | null = null
+let context: ReturnType<Gsap['context']> | null = null
+let timeline: ReturnType<Gsap['timeline']> | null = null
+let request = 0
+let motionQuery: MediaQueryList | null = null
+let resizeObserver: ResizeObserver | null = null
+
+function loadGsap() {
+  return gsapPromise ??= import('gsap').then(mod => mod.gsap).catch(() => null)
 }
 
-function hasReached(index: number) {
-  return activeStep.value >= index
+function clearAnimation() {
+  context?.revert()
+  context = null
+  timeline = null
 }
 
-function isActive(index: number) {
-  return activeStep.value === index
+function complete() {
+  localAction.value = selected.value === 'codex' ? 3 : -1
+  activeStep.value = 3
+  arrivedStep.value = 3
+  playing.value = false
+  paused.value = false
+  finished.value = true
 }
 
-function play(mode: FlowMode) {
-  clearTimers()
+// A changed layout or motion preference must not leave a token between panels.
+function settle() {
+  if (!playing.value) return
+  request += 1
+  clearAnimation()
+  complete()
+}
+
+function togglePause() {
+  if (!timeline) return
+  paused.value = !paused.value
+  timeline.paused(paused.value)
+}
+
+async function play(mode = selected.value) {
+  const currentRequest = ++request
+  clearAnimation()
   selected.value = mode
+  localAction.value = -1
   activeStep.value = -1
-  hasPlayed.value = true
-  runId.value += 1
-
-  const reduceMotion = typeof window !== 'undefined'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  if (reduceMotion) {
-    activeStep.value = flows[mode].steps.length - 1
+  arrivedStep.value = -1
+  playing.value = true
+  paused.value = false
+  finished.value = false
+  await nextTick()
+  const gsap = await loadGsap()
+  if (currentRequest !== request || !scene.value || !root.value) return
+  if (!gsap || motionQuery?.matches) {
+    complete()
     return
   }
 
-  flows[mode].steps.forEach((_, index) => {
-    timers.push(setTimeout(() => {
-      activeStep.value = index
-    }, 140 + index * STEP_MS))
-  })
+  const stage = scene.value
+  const node = (name: string) => stage.querySelector<HTMLElement>(`[data-node="${name}"]`)!
+  const bounds = stage.getBoundingClientRect()
+  // Read every anchor before writing transforms. Cards keep the same dimensions during playback.
+  const anchors = Object.fromEntries(Array.from(stage.querySelectorAll<HTMLElement>('[data-node]')).map(el => {
+    const rect = el.getBoundingClientRect()
+    return [el.dataset.node!, { x: rect.left + rect.width / 2 - bounds.left, y: rect.top + rect.height / 2 - bounds.top }]
+  }))
+
+  context = gsap.context(() => {
+    const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' }, onComplete: complete })
+    timeline = tl
+    const start = 0.2
+    flow.value.steps.forEach((_, index) => {
+      const at = start + index * STEP_SECONDS
+      tl.addLabel(`step-${index}`, at)
+      tl.call(() => { activeStep.value = index }, [], at)
+      const bar = root.value!.querySelectorAll('.step-meter i')[index]
+      tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: index === 3 ? STEP_SECONDS * 2 : STEP_SECONDS, ease: 'none' }, at)
+      tl.call(() => { arrivedStep.value = index }, [], at + 1.85)
+    })
+
+    function transfer(tokenName: string, from: string, to: string, at: number, duration = 1.45) {
+      const token = stage.querySelector<HTMLElement>(`[data-token="${tokenName}"]`)!
+      const a = anchors[from]
+      const b = anchors[to]
+      const travel = gsap.timeline()
+      travel.set(token, { x: a.x, y: a.y, xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 0.96 })
+        .to(token, { autoAlpha: 1, scale: 1, duration: 0.2 }, 0)
+        .to(token, { x: b.x, y: b.y, duration, ease: 'power2.inOut' }, 0.08)
+        .to(token, { autoAlpha: 0, scale: 0.96, duration: 0.22 }, duration - 0.08)
+      tl.add(travel, at)
+    }
+
+    function illuminate(name: string, at: number) {
+      tl.fromTo(node(name), { opacity: 0.6 }, { opacity: 1, duration: 0.65, immediateRender: false }, at)
+    }
+
+    if (mode === 'chatgpt') {
+      transfer('browser-upload', 'source', 'browser', start + 0.12, 0.72)
+      transfer('upload', 'browser', 'remote', start + 1.08, 0.88)
+      illuminate('remote', start + STEP_SECONDS)
+      transfer('browser-download', 'remote', 'browser', start + STEP_SECONDS * 2 + 0.08, 0.82)
+      transfer('download', 'browser', 'download', start + STEP_SECONDS * 2 + 1.08, 0.72)
+      transfer('handoff', 'download', 'manual', start + STEP_SECONDS * 3 + 0.15, 1.2)
+      illuminate('manual', start + STEP_SECONDS * 3 + 1.4)
+    } else {
+      illuminate('instruction', start)
+      illuminate('agent', start + 0.45)
+      transfer('send', 'agent', 'remote', start + STEP_SECONDS + 0.05, 0.95)
+      transfer('reply', 'remote', 'agent', start + STEP_SECONDS + 1.25, 0.95)
+      transfer('write', 'agent', 'folder', start + STEP_SECONDS * 2 + 0.15, 1.2)
+      tl.call(() => { localAction.value = 0 }, [], start + STEP_SECONDS * 2)
+      tl.call(() => { localAction.value = 1 }, [], start + STEP_SECONDS * 2 + 1.65)
+      illuminate('execution', start + STEP_SECONDS * 3)
+      tl.call(() => { localAction.value = 2 }, [], start + STEP_SECONDS * 3)
+      tl.call(() => { localAction.value = 3 }, [], start + STEP_SECONDS * 3 + 2.6)
+    }
+    tl.fromTo('.remote-lines i', { scaleX: 0.15, opacity: 0.35 }, {
+      scaleX: 1, opacity: 1, duration: 0.8, stagger: 0.22, ease: 'power2.out', immediateRender: false
+    }, start + STEP_SECONDS)
+    tl.play()
+  }, root.value)
 }
 
-onBeforeUnmount(clearTimers)
+onMounted(() => {
+  motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  motionQuery.addEventListener('change', settle)
+  if (!motionQuery.matches) void loadGsap()
+  let width = scene.value?.getBoundingClientRect().width
+  resizeObserver = new ResizeObserver(entries => {
+    const nextWidth = entries[0].contentRect.width
+    if (width !== undefined && Math.abs(nextWidth - width) > 1) settle()
+    width = nextWidth
+  })
+  if (scene.value) resizeObserver.observe(scene.value)
+})
+
+onBeforeUnmount(() => {
+  request += 1
+  clearAnimation()
+  motionQuery?.removeEventListener('change', settle)
+  resizeObserver?.disconnect()
+})
 </script>
 
 <template>
-  <div class="environment-demo">
+  <div ref="root" class="environment-demo" :class="`mode-${selected}`">
     <div class="environment-demo__heading">
-      <div>
-        <h3>同樣一個任務，工作實際發生在哪裡？</h3>
-        <p>點選其中一個角色，看檔案在你、AI 與電腦之間怎麼移動。</p>
-      </div>
-      <span><PlayIcon aria-hidden="true" /> 點選播放</span>
+      <h3>AI 回覆之後，誰把工作做完？</h3>
+      <p>同樣是「整理資料並產出報表」，看看接下來由誰操作。</p>
     </div>
 
     <div class="environment-demo__selector" role="group" aria-label="選擇要播放的工作流程">
-      <button
-        v-for="(item, mode) in flows"
-        :key="mode"
-        type="button"
-        :class="{ 'is-selected': selected === mode }"
-        :aria-pressed="selected === mode"
-        @click="play(mode)"
-      >
-        <img :src="withBase(item.icon)" alt="" width="256" height="256" aria-hidden="true">
-        <span>
-          <strong>{{ item.name }}</strong>
-          <small>{{ item.role }}</small>
-        </span>
-        <PlayIcon aria-hidden="true" />
+      <button v-for="(item, mode) in flows" :key="mode" type="button"
+        :class="{ 'is-selected': selected === mode }" :aria-pressed="selected === mode" @click="play(mode)">
+        <img :src="withBase(item.icon)" alt="" width="32" height="32" aria-hidden="true">
+        <span><strong>{{ item.name }}</strong><small>{{ item.role }}</small></span>
+        <ArrowUpRightIcon aria-hidden="true" />
       </button>
     </div>
 
-    <section
-      :key="`${selected}-${runId}`"
-      class="environment-demo__stage"
-      :class="`is-${selected}`"
-      :aria-label="`${flow.name} 工作流程`"
-    >
+    <section class="environment-demo__stage" :aria-label="`${flow.name} 工作流程`">
       <header class="environment-demo__stage-header">
-        <div>
-          <span>{{ flow.eyebrow }}</span>
-          <h3>{{ flow.title }}</h3>
-          <p>{{ flow.summary }}</p>
-        </div>
-        <em aria-live="polite">{{ status }}</em>
+        <span class="stage-eyebrow">{{ flow.eyebrow }}</span>
+        <h3>{{ flow.title }}</h3>
+        <p>{{ flow.summary }}</p>
       </header>
 
-      <div class="environment-scene" :class="selected === 'chatgpt' ? 'chatgpt-scene' : 'codex-scene'">
-        <svg class="scene-grain" aria-hidden="true" focusable="false">
-          <defs>
-            <pattern id="cxdDots" width="22" height="22" patternUnits="userSpaceOnUse">
-              <circle cx="1.4" cy="1.4" r="1.4" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#cxdDots)" />
-        </svg>
+      <div class="responsibility-map" aria-label="工作責任接力">
+        <div :class="{ 'is-active': activeStep === 0 }">
+          <span class="actor-mark actor-mark--user"><UserIcon aria-hidden="true" /></span>
+          <span><small>第一棒</small><strong>你交代需求</strong></span>
+        </div>
+        <i aria-hidden="true"></i>
+        <div :class="{ 'is-active': activeStep === 1 }">
+          <span class="actor-mark"><CpuChipIcon aria-hidden="true" /></span>
+          <span><small>AI 處理</small><strong>{{ selected === 'chatgpt' ? 'ChatGPT 回覆' : '模型協助規劃' }}</strong></span>
+        </div>
+        <i aria-hidden="true"></i>
+        <div class="responsibility-map__finish" :class="{ 'is-active': activeStep >= 2, 'is-finished': finished }">
+          <span class="actor-mark" :class="selected === 'chatgpt' ? 'actor-mark--user' : 'actor-mark--codex'">
+            <UserIcon v-if="selected === 'chatgpt'" aria-hidden="true" />
+            <img v-else :src="withBase(flows.codex.icon)" alt="" width="22" height="22" aria-hidden="true">
+          </span>
+          <span><small>把工作做完</small><strong>{{ selected === 'chatgpt' ? '你操作本機' : 'Codex 操作本機' }}</strong></span>
+        </div>
+      </div>
 
-        <div class="scene-person" :class="{ 'is-speaking': isActive(0) }">
-          <svg class="persona" viewBox="0 0 96 116" aria-hidden="true" focusable="false">
-            <defs>
-              <linearGradient id="cxdPersonaSkin" x1=".28" y1="0" x2=".76" y2="1">
-                <stop offset="0" stop-color="#f6e2cd" />
-                <stop offset="1" stop-color="#e2c3a6" />
-              </linearGradient>
-              <linearGradient id="cxdPersonaHair" x1=".2" y1="0" x2=".85" y2="1">
-                <stop offset="0" stop-color="#4d4a52" />
-                <stop offset="1" stop-color="#221f28" />
-              </linearGradient>
-              <linearGradient id="cxdPersonaShirt" x1=".15" y1="0" x2=".85" y2="1">
-                <stop offset="0" stop-color="#5d87b7" />
-                <stop offset=".55" stop-color="#3f6690" />
-                <stop offset="1" stop-color="#2c4a6a" />
-              </linearGradient>
-              <linearGradient id="cxdPersonaForm" x1="0" y1="0" x2="1" y2="0">
-                <stop offset=".38" stop-color="#07182a" stop-opacity="0" />
-                <stop offset="1" stop-color="#07182a" stop-opacity=".2" />
-              </linearGradient>
-              <filter id="cxdPersonaBlur" x="-60%" y="-160%" width="220%" height="420%">
-                <feGaussianBlur stdDeviation="2.8" />
-              </filter>
-            </defs>
-            <ellipse class="persona__shadow" cx="48" cy="104.5" rx="29" ry="6" filter="url(#cxdPersonaBlur)" />
-            <g class="persona__figure">
-              <path d="M42 44h12v15.5a6 6 0 0 1-12 0z" fill="url(#cxdPersonaSkin)" />
-              <ellipse class="persona__jawshade" cx="48" cy="47" rx="6" ry="4.4" />
-              <path
-                class="persona__torso"
-                d="M13 104c0-23.5 10.3-35.6 24.2-38.9 3.5-.8 7.1-1.3 10.8-1.3s7.3.5 10.8 1.3C72.7 68.4 83 80.5 83 104z"
-                fill="url(#cxdPersonaShirt)"
-              />
-              <path
-                class="persona__form"
-                d="M13 104c0-23.5 10.3-35.6 24.2-38.9 3.5-.8 7.1-1.3 10.8-1.3s7.3.5 10.8 1.3C72.7 68.4 83 80.5 83 104z"
-              />
-              <path class="persona__neckline" d="M39.2 64.2c2.5 4.6 5.4 6.9 8.8 6.9s6.3-2.3 8.8-6.9" />
-              <ellipse cx="30.6" cy="39.5" rx="3.1" ry="4.1" fill="url(#cxdPersonaSkin)" />
-              <ellipse cx="65.4" cy="39.5" rx="3.1" ry="4.1" fill="url(#cxdPersonaSkin)" />
-              <ellipse cx="48" cy="34.5" rx="17.4" ry="19" fill="url(#cxdPersonaSkin)" />
-              <ellipse class="persona__eye" cx="41.4" cy="37" rx="1.9" ry="2.4" />
-              <ellipse class="persona__eye" cx="54.6" cy="37" rx="1.9" ry="2.4" />
-              <path class="persona__smile" d="M45.2 44.4c1.6 1.7 4 1.7 5.6 0" />
-              <path
-                class="persona__hair"
-                d="M30.3 41.6C28.4 21.6 36.8 13 48 13s19.6 8.6 17.7 28.6c-.9-6.6-2.1-11.2-3.7-13.9-4.9 3.2-11.2 4.6-17.6 3.6-2.9-.5-5.3-1.6-7.2-3.2-2.6 2.6-4.7 7.2-6.9 13.5z"
-                fill="url(#cxdPersonaHair)"
-              />
-              <path class="persona__hairlight" d="M35.5 24.2c2.6-4.6 7-7.3 12.9-7.7-4.8 1.6-8.3 4.5-10.6 8.7z" />
-            </g>
-          </svg>
-          <strong>你</strong>
-          <small>{{ flow.personNote }}</small>
+      <div ref="scene" class="environment-scene" :class="{ 'is-playing': playing && !paused }">
+        <div class="scene-local">
+          <div class="scene-person" data-node="instruction" :class="{ 'is-active': activeStep === 0 }">
+            <span class="person-symbol"><UserIcon aria-hidden="true" /></span>
+            <span><strong>你</strong><small>{{ flow.personNote }}</small></span>
+            <span class="scene-person__line" aria-hidden="true"></span>
+          </div>
+          <div class="scene-panel scene-device">
+            <div class="panel-label"><ComputerDesktopIcon aria-hidden="true" /><span>你的電腦</span><small>本機</small></div>
+            <template v-if="selected === 'chatgpt'">
+              <div class="panel-body chatgpt-local-stack">
+                <div data-node="browser" class="chrome-window" :class="{ 'is-active': activeStep >= 0 && activeStep <= 2 }">
+                  <div class="chrome-window__bar">
+                    <span class="chrome-mark" aria-hidden="true"></span>
+                    <strong>Chrome</strong>
+                    <span class="operator-pill" :class="{ 'is-active': activeStep === 0 || activeStep === 2 }">你操作</span>
+                  </div>
+                  <div class="chrome-window__tab">
+                    <img :src="withBase(flows.chatgpt.icon)" alt="" width="24" height="24" aria-hidden="true">
+                    <span><strong>ChatGPT 對話</strong><small>{{ activeStep === 1 ? '正在產生回覆…' : arrivedStep >= 1 ? '回覆已備妥' : '等待你上傳檔案' }}</small></span>
+                  </div>
+                </div>
+
+                <div class="browser-local-boundary" :class="{ 'is-active': activeStep === 0 || activeStep === 2 }">
+                  <ArrowsUpDownIcon aria-hidden="true" />
+                  <span><strong>Chrome ↔ 本機</strong><small>檔案要由你上傳、下載</small></span>
+                  <span class="operator-pill" :class="{ 'is-active': activeStep === 0 || activeStep === 2 }">你傳遞</span>
+                </div>
+
+                <div class="local-workspace">
+                  <div class="local-workspace__label"><FolderOpenIcon aria-hidden="true" /><strong>本機專案</strong><small>Chrome 無法直接修改</small></div>
+                  <div class="local-file-grid">
+                    <div data-node="source" class="file-row source-row" :class="{ 'is-active': activeStep === 0 }">
+                      <DocumentChartBarIcon aria-hidden="true" />
+                      <span><strong>原始檔案</strong><small>{{ arrivedStep >= 0 ? '只上傳副本' : '等待上傳' }}</small></span>
+                    </div>
+                    <div data-node="download" class="file-row file-row--pending" :class="{ 'is-arrived': arrivedStep >= 2, 'is-active': activeStep === 2 }">
+                      <ArrowDownTrayIcon aria-hidden="true" /><span><strong>下載成果</strong><small>{{ arrivedStep >= 2 ? '已回到本機' : '等待下載' }}</small></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div data-node="manual" class="manual-work" :class="{ 'is-handoff': activeStep >= 3 }">
+                  <div class="operator-label"><UserIcon aria-hidden="true" /><strong>接下來，由你操作</strong><span>3 件待辦</span></div>
+                  <ul class="manual-tasks">
+                    <li><PencilSquareIcon aria-hidden="true" /><span>開啟檔案、編修內容</span><small>你來改</small></li>
+                    <li><CommandLineIcon aria-hidden="true" /><span>執行程式、檢查錯誤</span><small>你來跑</small></li>
+                    <li><FolderOpenIcon aria-hidden="true" /><span>儲存成果、放回專案</span><small>你來存</small></li>
+                  </ul>
+                  <p>瀏覽器裡的回覆，不會自行完成這些本機操作。</p>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="panel-body">
+                <div data-node="agent" class="file-row agent-row" :class="{ 'is-arrived': activeStep >= 0 }">
+                  <img :src="withBase(flows.codex.icon)" alt="" width="30" height="30" aria-hidden="true">
+                  <span><strong>本機操作者：Codex</strong><small>讀取檔案 → 編修 → 執行 → 存檔</small></span>
+                </div>
+                <div data-node="folder" class="workspace-folder" :class="{ 'is-arrived': localAction >= 1 }">
+                  <strong><FolderOpenIcon aria-hidden="true" /> 你的專案 <small>{{ localAction >= 1 ? '已儲存修改' : '等待編修' }}</small></strong>
+                  <span><DocumentChartBarIcon aria-hidden="true" /> 來源檔案 <b>{{ localAction >= 1 ? '已更新' : localAction === 0 ? '編修中…' : '待整理' }}</b></span>
+                  <span :class="{ 'report-ready': localAction >= 3 }"><DocumentChartBarIcon aria-hidden="true" /> report.xlsx <b>{{ localAction >= 3 ? '已產生' : '等待執行' }}</b></span>
+                </div>
+                <div data-node="execution" class="local-execution" :class="{ 'is-running': localAction === 2, 'is-done': localAction >= 3 }">
+                  <div class="operator-label"><CommandLineIcon aria-hidden="true" /><strong>本機執行</strong><span>由 Codex 操作</span></div>
+                  <code><span>$</span> python report.py</code>
+                  <p><CheckIcon v-if="localAction >= 3" aria-hidden="true" /><span v-else class="execution-dot"></span>{{ localAction >= 3 ? '執行成功 · 報表已存入專案' : localAction === 2 ? '正在執行，檢查輸出結果…' : '等待 Codex 執行報表程式' }}</p>
+                </div>
+                <small class="workspace-note">你不必逐步操作，最後檢查成果即可。</small>
+              </div>
+            </template>
+          </div>
         </div>
 
-        <template v-if="selected === 'chatgpt'">
-          <div class="scene-device scene-device--compact">
-            <div class="scene-device__label"><ComputerDesktopIcon aria-hidden="true" /> 你的電腦</div>
-            <div class="scene-file scene-file--excel" :class="{ 'is-muted': hasReached(0) }">
-              <DocumentChartBarIcon aria-hidden="true" />
-              <span>你的檔案</span>
-            </div>
-            <div class="scene-download" :class="{ 'is-visible': hasReached(2), 'is-active': isActive(2) }">
-              <ArrowDownTrayIcon aria-hidden="true" />
-              <span>下載成果</span>
-            </div>
-            <div class="scene-project" :class="{ 'is-visible': hasReached(3), 'is-active': isActive(3) }">
-              <FolderOpenIcon aria-hidden="true" />
-              <span>自己放回專案</span>
-            </div>
-          </div>
+        <div class="scene-network" aria-hidden="true">
+          <span class="network-line"></span>
+          <span class="network-symbol"><GlobeAltIcon /></span>
+          <small>網路</small>
+          <span class="network-caption">{{ selected === 'chatgpt' ? '上傳／下載' : '需求／回覆' }}</span>
+        </div>
 
-          <div class="scene-separator" aria-hidden="true">
-            <i class="scene-separator__line"></i>
-            <span class="scene-separator__chip"><GlobeAltIcon /> 網路</span>
-          </div>
-
-          <div class="scene-cloud" :class="{ 'is-working': isActive(1) }">
-            <svg class="cloud" viewBox="0 0 340 200" aria-hidden="true" focusable="false">
-              <defs>
-                <linearGradient id="cxdCloudMain" x1=".18" y1="0" x2=".72" y2="1">
-                  <stop offset="0" stop-color="#ffffff" />
-                  <stop offset=".52" stop-color="#f4f9fe" />
-                  <stop offset="1" stop-color="#dfebf7" />
-                </linearGradient>
-                <linearGradient id="cxdCloudBack" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#edf4fa" />
-                  <stop offset="1" stop-color="#d8e6f2" />
-                </linearGradient>
-                <filter id="cxdCloudLift" x="-30%" y="-30%" width="160%" height="180%">
-                  <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#274f76" flood-opacity=".16" />
-                </filter>
-              </defs>
-              <path
-                class="cloud__back"
-                d="M188 168c-2-22 12-38 33-40 6-25 28-43 53-43s46 18 52 43c5 10 6 26 4 40z"
-                fill="url(#cxdCloudBack)"
-              />
-              <g filter="url(#cxdCloudLift)">
-                <path
-                  class="cloud__main"
-                  d="M26 168c-3-27 13-47 37-51 0-38 30-64 66-64 30 0 55 18 65 43 9-9 21-14 34-14 29 0 52 21 54 48 21 4 35 19 35 38z"
-                  fill="url(#cxdCloudMain)"
-                />
-              </g>
-              <path
-                class="cloud__rim"
-                d="M68 113c1-33 29-55 61-55 25 0 47 13 59 34"
-                fill="none"
-              />
-            </svg>
-
-            <div class="scene-cloud__content">
-              <span>瀏覽器與雲端服務</span>
-              <img :src="withBase(flows.chatgpt.icon)" alt="" width="256" height="256" aria-hidden="true">
-              <strong>ChatGPT</strong>
-              <small>AI 留在網站對話中</small>
-              <i class="cloud-thinking" aria-hidden="true"><b></b><b></b><b></b></i>
-            </div>
-          </div>
-
-          <div class="flight-layer" aria-hidden="true">
-            <div class="flight flight--upload" :class="{ 'is-live': isActive(0) }">
-              <span class="flight__unit flight__unit--ghost" style="--lag: .13s"></span>
-              <span class="flight__unit flight__unit--ghost" style="--lag: .065s"></span>
-              <span class="flight__unit">
-                <span class="flight__card flight__card--excel">
-                  <svg class="file-glyph" viewBox="0 0 30 36" focusable="false">
-                    <path class="file-glyph__page" d="M6 1.5h11.5L27 11v22.5a2.5 2.5 0 0 1-2.5 2.5H6a2.5 2.5 0 0 1-2.5-2.5V4A2.5 2.5 0 0 1 6 1.5z" />
-                    <path class="file-glyph__fold" d="M17.5 1.5 27 11h-7a2.5 2.5 0 0 1-2.5-2.5z" />
-                    <rect class="file-glyph__bar" x="8" y="17" width="5" height="12" rx="1.2" />
-                    <rect class="file-glyph__bar" x="15" y="13" width="5" height="16" rx="1.2" />
-                  </svg>
-                  <b>你的檔案</b>
-                </span>
+        <div class="scene-remote">
+          <div class="remote-caption"><span></span> {{ selected === 'chatgpt' ? '瀏覽器與雲端服務' : '網路的另一端' }}</div>
+          <div data-node="remote" class="scene-panel remote-panel" :class="{ 'is-working': playing && !paused && activeStep === 1 }">
+            <div class="panel-label"><GlobeAltIcon aria-hidden="true" /><span>遠端服務</span><small>雲端</small></div>
+            <div class="remote-body">
+              <span class="remote-symbol">
+                <img v-if="selected === 'chatgpt'" :src="withBase(flows.chatgpt.icon)" alt="" width="44" height="44" aria-hidden="true">
+                <CpuChipIcon v-else aria-hidden="true" />
               </span>
-            </div>
-
-            <div class="flight flight--download" :class="{ 'is-live': isActive(2) }">
-              <span class="flight__unit flight__unit--ghost" style="--lag: .13s"></span>
-              <span class="flight__unit flight__unit--ghost" style="--lag: .065s"></span>
-              <span class="flight__unit">
-                <span class="flight__card flight__card--result">
-                  <svg class="file-glyph" viewBox="0 0 30 36" focusable="false">
-                    <path class="file-glyph__page" d="M6 1.5h11.5L27 11v22.5a2.5 2.5 0 0 1-2.5 2.5H6a2.5 2.5 0 0 1-2.5-2.5V4A2.5 2.5 0 0 1 6 1.5z" />
-                    <path class="file-glyph__fold" d="M17.5 1.5 27 11h-7a2.5 2.5 0 0 1-2.5-2.5z" />
-                    <path class="file-glyph__spark" d="M8 27l4.5-6 4 3.5 5.5-8" fill="none" />
-                  </svg>
-                  <b>成果檔案</b>
-                </span>
-              </span>
+              <strong>{{ selected === 'chatgpt' ? 'ChatGPT' : '遠端 AI 模型' }}</strong>
+              <small>{{ selected === 'chatgpt' ? '提供建議與可下載的檔案' : '協助規劃下一步操作' }}</small>
+              <div class="remote-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span class="remote-state"><i :class="{ 'is-active': activeStep === 1 && playing && !paused }"></i>{{ arrivedStep >= 1 ? '處理完成' : activeStep === 1 ? '處理中' : '等待需求' }}</span>
             </div>
           </div>
-        </template>
+        </div>
 
-        <template v-else>
-          <div class="scene-instruction" :class="{ 'is-visible': hasReached(0), 'is-active': isActive(0) }">
-            <span>「檔案在這個資料夾，<br>幫我整理成一份報表」</span>
-          </div>
+        <div class="flight-layer" aria-hidden="true">
+          <template v-if="selected === 'chatgpt'">
+            <span data-token="browser-upload" class="flight-token"><UserIcon /> 你拖進 Chrome</span>
+            <span data-token="upload" class="flight-token"><DocumentChartBarIcon /> 你的檔案</span>
+            <span data-token="browser-download" class="flight-token"><DocumentChartBarIcon /> 回覆與成果</span>
+            <span data-token="download" class="flight-token"><DocumentChartBarIcon /> 成果檔案</span>
+            <span data-token="handoff" class="flight-token"><UserIcon /> 輪到你接手</span>
+          </template>
+          <template v-else>
+            <span data-token="send" class="flight-token"><ChatBubbleLeftEllipsisIcon /> 你的需求</span>
+            <span data-token="reply" class="flight-token"><ChatBubbleLeftEllipsisIcon /> 模型回覆</span>
+            <span data-token="write" class="flight-token"><PencilSquareIcon /> Codex 修改並儲存</span>
+          </template>
+        </div>
+      </div>
 
-          <div class="scene-device scene-device--workspace">
-            <div class="scene-device__label"><ComputerDesktopIcon aria-hidden="true" /> 你的電腦與資料夾</div>
-            <div class="workspace-grid">
-              <div class="scene-project scene-project--source" :class="{ 'is-active': isActive(1) }">
-                <FolderOpenIcon aria-hidden="true" />
-                <span>你的資料夾</span>
-                <small>來源檔案在這裡</small>
-              </div>
-
-              <div class="scene-codex" :class="{ 'is-working': hasReached(1) && activeStep < 3 }">
-                <img :src="withBase(flows.codex.icon)" alt="" width="256" height="256" aria-hidden="true">
-                <strong>Codex</strong>
-                <small>在你授權的範圍內工作</small>
-                <i class="cloud-thinking" aria-hidden="true"><b></b><b></b><b></b></i>
-              </div>
-
-              <div class="scene-tools" :class="{ 'is-visible': hasReached(2), 'is-active': isActive(2) }">
-                <span><CommandLineIcon aria-hidden="true" /> Terminal</span>
-                <span><WrenchScrewdriverIcon aria-hidden="true" /> Python</span>
-              </div>
-
-              <div class="scene-dashboard" :class="{ 'is-visible': hasReached(3), 'is-active': isActive(3) }">
-                <ChartBarSquareIcon aria-hidden="true" />
-                <span>成果</span>
-                <small>直接留在資料夾</small>
-              </div>
-            </div>
-
-            <div class="flight-layer flight-layer--inside" aria-hidden="true">
-              <div class="flight flight--read" :class="{ 'is-live': isActive(1) }">
-                <span class="flight__unit flight__unit--ghost" style="--lag: .12s"></span>
-                <span class="flight__unit flight__unit--ghost" style="--lag: .06s"></span>
-                <span class="flight__unit">
-                  <span class="flight__card flight__card--excel flight__card--mini">
-                    <svg class="file-glyph" viewBox="0 0 30 36" focusable="false">
-                      <path class="file-glyph__page" d="M6 1.5h11.5L27 11v22.5a2.5 2.5 0 0 1-2.5 2.5H6a2.5 2.5 0 0 1-2.5-2.5V4A2.5 2.5 0 0 1 6 1.5z" />
-                      <path class="file-glyph__fold" d="M17.5 1.5 27 11h-7a2.5 2.5 0 0 1-2.5-2.5z" />
-                      <rect class="file-glyph__bar" x="8" y="17" width="5" height="12" rx="1.2" />
-                      <rect class="file-glyph__bar" x="15" y="13" width="5" height="16" rx="1.2" />
-                    </svg>
-                    <b>來源檔</b>
-                  </span>
-                </span>
-              </div>
-
-              <div class="flight flight--emit" :class="{ 'is-live': hasReached(3) }">
-                <span class="flight__unit flight__unit--ghost" style="--lag: .12s"></span>
-                <span class="flight__unit flight__unit--ghost" style="--lag: .06s"></span>
-                <span class="flight__unit">
-                  <span class="flight__card flight__card--result flight__card--mini">
-                    <svg class="file-glyph" viewBox="0 0 30 36" focusable="false">
-                      <path class="file-glyph__page" d="M6 1.5h11.5L27 11v22.5a2.5 2.5 0 0 1-2.5 2.5H6a2.5 2.5 0 0 1-2.5-2.5V4A2.5 2.5 0 0 1 6 1.5z" />
-                      <path class="file-glyph__fold" d="M17.5 1.5 27 11h-7a2.5 2.5 0 0 1-2.5-2.5z" />
-                      <path class="file-glyph__spark" d="M8 27l4.5-6 4 3.5 5.5-8" fill="none" />
-                    </svg>
-                    <b>成果</b>
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </template>
+      <div class="playback-bar">
+        <span class="playback-status" role="status"><i :class="{ 'is-active': playing && !paused }"></i>{{ status }}</span>
+        <div>
+          <button v-if="playing" type="button" :aria-label="paused ? '繼續動畫' : '暫停動畫'" @click="togglePause">
+            <PlayIcon v-if="paused" aria-hidden="true" /><PauseIcon v-else aria-hidden="true" />{{ paused ? '繼續' : '暫停' }}
+          </button>
+          <button type="button" @click="play()"><ArrowPathIcon v-if="playing || finished" aria-hidden="true" /><PlayIcon v-else aria-hidden="true" />{{ playing || finished ? '重新播放' : '播放流程' }}</button>
+        </div>
       </div>
 
       <ol class="environment-demo__progress" aria-label="目前流程進度">
-        <li
-          v-for="(step, index) in flow.steps"
-          :key="step"
-          :class="{ 'is-current': isActive(index), 'is-complete': activeStep > index }"
-        >
-          <span><CheckIcon v-if="activeStep > index" aria-hidden="true" /><template v-else>{{ index + 1 }}</template></span>
+        <li v-for="(step, index) in flow.steps" :key="`${selected}-${index}`"
+          :class="{ 'is-current': activeStep === index, 'is-complete': activeStep > index || finished }"
+          :aria-current="activeStep === index && !finished ? 'step' : undefined">
+          <span class="step-meter" aria-hidden="true"><i :class="{ 'is-filled': finished }"></i></span>
+          <span class="step-number"><CheckIcon v-if="activeStep > index || finished" aria-hidden="true" /><template v-else>0{{ index + 1 }}</template></span>
           <small>{{ step }}</small>
         </li>
       </ol>
 
-      <footer :class="{ 'is-visible': activeStep >= flow.steps.length - 1 }">
-        <strong>{{ selected === 'chatgpt' ? '需要交接' : '同一個環境完成' }}</strong>
-        <p>{{ flow.result }}</p>
+      <footer :class="{ 'is-visible': finished }">
+        <UserIcon v-if="selected === 'chatgpt'" aria-hidden="true" /><CheckIcon v-else aria-hidden="true" />
+        <strong>{{ finished ? flow.verdict : '你的角色' }}</strong>
+        <p>{{ finished ? flow.result : selected === 'chatgpt' ? '把 AI 的回覆帶回專案，親自編修、執行與存檔。' : '交代目標與資料位置，讓 Codex 操作，再檢查它交付的成果。' }}</p>
       </footer>
     </section>
   </div>
@@ -405,1222 +400,236 @@ onBeforeUnmount(clearTimers)
 
 <style scoped>
 .environment-demo {
+  --ink: #292c2b;
+  --muted: #737975;
+  --line: #e1e5e1;
+  --accent: #367864;
+  --accent-soft: #edf5ef;
   width: 100%;
   max-width: 940px;
   margin-top: 28px;
+  color: var(--ink);
   container: envdemo / inline-size;
 }
-
-.environment-demo__heading,
-.environment-demo__stage-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.environment-demo__heading {
-  margin-bottom: 16px;
-}
-
-.environment-demo__heading h3,
-.environment-demo__heading p,
-.environment-demo__stage-header h3,
-.environment-demo__stage-header p {
-  margin: 0;
-}
-
-.environment-demo__heading h3 {
-  color: #242423;
-  font-size: 19px;
-  line-height: 1.45;
-}
-
-.environment-demo__heading p {
-  margin-top: 6px;
-  color: #74736f;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.environment-demo__heading > span {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 11px;
-  border: 1px solid #deddd8;
-  border-radius: 999px;
-  color: #6e6d69;
-  font-size: 12.5px;
-  font-weight: 700;
-}
-
-.environment-demo__heading > span svg {
-  width: 16px;
-}
-
-.environment-demo__selector {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
+.environment-demo svg { flex-shrink: 0; width: 20px; height: 20px; stroke-width: 1.5 }
+.environment-demo__heading h3 { margin: 0; font-size: 19px; letter-spacing: -.025em }
+.environment-demo__heading p { margin: 6px 0 20px; color: var(--muted); font-size: 14px }
+.environment-demo__selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px }
 .environment-demo__selector button {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: 44px minmax(0, 1fr) 24px;
-  align-items: center;
-  gap: 13px;
-  padding: 13px 15px;
-  border: 1px solid #deddd8;
-  border-radius: 14px;
-  color: #2a2927;
-  background: #fff;
-  cursor: pointer;
-  text-align: left;
-  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-}
-
-.environment-demo__selector button:hover {
-  border-color: #aaa9a4;
-  box-shadow: 0 8px 18px rgb(30 36 42 / 8%);
-  transform: translateY(-1px);
-}
-
-.environment-demo__selector button:focus-visible {
-  outline: 3px solid rgb(22 119 210 / 24%);
-  outline-offset: 2px;
-}
-
-.environment-demo__selector button.is-selected {
-  border-color: #1677d2;
-  background: #f7fbff;
-  box-shadow: inset 0 0 0 1px rgb(22 119 210 / 18%);
-}
-
-.environment-demo__selector img {
-  width: 44px;
-  height: 44px;
-  margin: 0;
-  object-fit: contain;
-}
-
-.environment-demo__selector span,
-.environment-demo__selector strong,
-.environment-demo__selector small {
-  display: block;
-}
-
-.environment-demo__selector strong {
-  font-size: 17px;
-  line-height: 1.35;
-}
-
-.environment-demo__selector small {
-  margin-top: 3px;
-  color: #74736f;
-  font-size: 12.5px;
-  line-height: 1.45;
-}
-
-.environment-demo__selector button > svg {
-  width: 20px;
-  color: #1677d2;
-}
-
-.environment-demo__stage {
-  overflow: hidden;
-  padding: clamp(22px, 3.5vw, 32px);
-  border: 1px solid #e1e0dc;
-  border-radius: 22px;
-  background: #f7f7f5;
-}
-
-.environment-demo__stage-header {
-  margin-bottom: 24px;
-}
-
-.environment-demo__stage-header > div {
-  max-width: 650px;
-}
-
-.environment-demo__stage-header span {
-  display: block;
-  margin-bottom: 8px;
-  color: #1677d2;
-  font-size: 12.5px;
-  font-weight: 800;
-  letter-spacing: .06em;
-}
-
-.environment-demo__stage-header h3 {
-  color: #232321;
-  font-size: clamp(20px, 2.5vw, 27px);
-  line-height: 1.3;
-  letter-spacing: -.02em;
-}
-
-.environment-demo__stage-header p {
-  margin-top: 9px;
-  color: #686762;
-  font-size: 14.5px;
-  line-height: 1.65;
-}
-
-.environment-demo__stage-header em {
-  flex: 0 0 auto;
-  padding: 7px 10px;
-  border-radius: 999px;
-  color: #65645f;
-  background: #e9e8e4;
-  font-size: 12px;
-  font-style: normal;
-  white-space: nowrap;
-}
-
-/* ---------- scene shell ---------- */
-
-.environment-scene {
-  position: relative;
-  display: grid;
-  align-items: center;
-  min-height: 420px;
-  padding: 32px;
-  overflow: hidden;
-  border: 1px solid #deddd8;
-  border-radius: 18px;
-  background:
-    radial-gradient(120% 88% at 78% 16%, #f4f9fe 0%, rgb(244 249 254 / 0%) 58%),
-    #fff;
-}
-
-.scene-grain {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  color: #26384a;
-  opacity: .05;
-  pointer-events: none;
-}
-
-.scene-grain circle {
-  fill: currentColor;
-}
-
-.chatgpt-scene {
-  grid-template-columns: minmax(224px, .86fr) 86px minmax(248px, 1fr);
-  grid-template-rows: auto auto;
-  gap: 16px 20px;
-}
-
-.codex-scene {
-  grid-template-columns: 132px minmax(150px, .54fr) minmax(396px, 1fr);
-  gap: 20px;
-}
-
-/* ---------- persona ---------- */
-
-.scene-person {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  justify-items: center;
-  text-align: center;
-}
-
-.chatgpt-scene .scene-person {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: end;
-}
-
-.persona {
-  width: clamp(92px, 10.4vw, 116px);
-  height: auto;
-  overflow: visible;
-}
-
-.persona__shadow {
-  fill: #26384a;
-  opacity: .22;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: persona-shadow 3.9s ease-in-out infinite alternate;
-}
-
-.persona__figure {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: persona-idle 3.9s ease-in-out infinite alternate;
-}
-
-.persona__jawshade {
-  fill: #c79b7e;
-  opacity: .5;
-}
-
-.persona__form {
-  fill: url(#cxdPersonaForm);
-}
-
-.persona__neckline {
-  fill: none;
-  stroke: rgb(255 255 255 / 40%);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-}
-
-.persona__eye {
-  fill: #3b3a44;
-}
-
-.persona__smile {
-  fill: none;
-  stroke: #b97f63;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  opacity: .85;
-}
-
-.persona__hairlight {
-  fill: #fff;
-  opacity: .14;
-}
-
-.scene-person.is-speaking .persona__figure {
-  animation: persona-lean .9s ease-in-out infinite alternate;
-}
-
-.scene-person strong {
-  margin-top: 10px;
-  color: #222220;
-  font-size: 17px;
-}
-
-.scene-person small {
-  max-width: 150px;
-  margin-top: 4px;
-  color: #7a7974;
-  font-size: 12.5px;
-  line-height: 1.4;
-}
-
-@keyframes persona-idle {
-  from { transform: translateY(0) }
-  to { transform: translateY(-2.6px) }
-}
-
-@keyframes persona-lean {
-  from { transform: translateY(-1px) rotate(-1.4deg) }
-  to { transform: translateY(-3.4px) rotate(1.4deg) }
-}
-
-@keyframes persona-shadow {
-  from { opacity: .12; transform: scale(1) }
-  to { opacity: .08; transform: scale(.92) }
-}
-
-/* ---------- device ---------- */
-
-.scene-device {
-  position: relative;
-  z-index: 2;
-  min-width: 0;
-  border: 2px solid #273a4b;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #fbfdfe 0%, #f1f6f9 100%);
-  box-shadow: 0 14px 30px rgb(38 56 73 / 11%);
-}
-
-.scene-device__label {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 12px 15px;
-  border-bottom: 1px solid #d9e0e5;
-  color: #354b60;
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.scene-device__label svg {
-  width: 19px;
-}
-
-.scene-device--compact {
-  grid-column: 1;
-  grid-row: 2;
-  align-self: start;
-  min-height: 206px;
-  padding: 0 16px 16px;
-}
-
-.scene-device--compact .scene-device__label {
-  margin: 0 -16px 14px;
-}
-
-.scene-file,
-.scene-download,
-.scene-project,
-.scene-tools,
-.scene-dashboard {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-  color: #31465a;
-  background: #fff;
-}
-
-.scene-file,
-.scene-download,
-.scene-device--compact .scene-project {
-  margin-top: 9px;
-  padding: 11px 12px;
-  border: 1px solid #dce3e8;
-  border-radius: 10px;
-  font-size: 12.5px;
-  font-weight: 700;
-}
-
-.scene-file svg,
-.scene-download svg,
-.scene-project svg,
-.scene-tools svg,
-.scene-dashboard svg {
-  flex: 0 0 auto;
-  width: 22px;
-}
-
-.scene-file--excel {
-  color: #217a52;
-  transition: opacity .3s ease;
-}
-
-.scene-file--excel.is-muted {
-  opacity: .42;
-}
-
-.scene-download,
-.scene-device--compact .scene-project,
-.scene-tools,
-.scene-dashboard {
-  opacity: .32;
-  transform: translateY(5px);
-  transition: opacity .35s ease, transform .35s ease, border-color .35s ease, background-color .35s ease;
-}
-
-.scene-download.is-visible,
-.scene-device--compact .scene-project.is-visible,
-.scene-tools.is-visible,
-.scene-dashboard.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.scene-download.is-active,
-.scene-device--compact .scene-project.is-active,
-.scene-tools.is-active,
-.scene-dashboard.is-active {
-  border-color: #1677d2;
-  background: #eef7ff;
-  animation: tile-land .5s cubic-bezier(.22, 1.4, .4, 1) 1;
-}
-
-@keyframes tile-land {
-  0% { transform: scale(.94) }
-  55% { transform: scale(1.035) }
-  100% { transform: scale(1) }
-}
-
-/* ---------- network boundary ---------- */
-
-.scene-separator {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: stretch;
-  place-items: center;
-}
-
-.scene-separator__line {
-  position: absolute;
-  top: 2%;
-  bottom: 2%;
-  left: 50%;
-  border-left: 1px dashed #b9c6d2;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
-}
-
-.scene-separator__chip {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 10px 8px;
-  border: 1px solid #dde5ec;
-  border-radius: 999px;
-  color: #7c8b99;
-  background: #fff;
-  box-shadow: 0 4px 12px rgb(38 66 94 / 8%);
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.scene-separator__chip svg {
-  width: 19px;
-}
-
-/* ---------- cloud ---------- */
-
-.scene-cloud {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  min-height: 296px;
-  place-items: center;
-}
-
-.scene-cloud::before {
-  position: absolute;
-  z-index: 0;
-  width: 58%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  opacity: 0;
-  background: radial-gradient(circle, rgb(22 119 210 / 24%) 0%, rgb(22 119 210 / 0%) 68%);
-  content: '';
-  transition: opacity .4s ease;
-}
-
-.scene-cloud.is-working::before {
-  opacity: 1;
-  animation: glow-breathe 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes glow-breathe {
-  from { transform: scale(.88) }
-  to { transform: scale(1.1) }
-}
-
-.cloud {
-  position: absolute;
-  z-index: 1;
-  width: min(112%, 396px);
-  height: auto;
-  overflow: visible;
-  animation: cloud-drift 9.5s ease-in-out infinite alternate;
-}
-
-.cloud__back {
-  opacity: .8;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: cloud-drift-back 11s ease-in-out infinite alternate;
-}
-
-.cloud__rim {
-  stroke: #fff;
-  stroke-width: 3.4;
-  stroke-linecap: round;
-  opacity: .92;
-}
-
-@keyframes cloud-drift {
-  from { transform: translate3d(-5px, 3px, 0) }
-  to { transform: translate3d(5px, -3px, 0) }
-}
-
-@keyframes cloud-drift-back {
-  from { transform: translateX(5px) }
-  to { transform: translateX(-5px) }
-}
-
-.scene-cloud__content {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  justify-items: center;
-  margin-top: 15%;
-  text-align: center;
-}
-
-.scene-cloud__content > span {
-  color: #65788a;
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: .05em;
-}
-
-.scene-cloud__content img,
-.scene-codex img {
-  width: 56px;
-  height: 56px;
-  margin: 10px 0 7px;
-  object-fit: contain;
-  filter: drop-shadow(0 5px 12px rgb(29 59 88 / 16%));
-}
-
-.scene-cloud__content strong,
-.scene-codex strong {
-  color: #222220;
-  font-size: 17px;
-}
-
-.scene-cloud__content small,
-.scene-codex small {
-  margin-top: 5px;
-  color: #6d7c89;
-  font-size: 12px;
-}
-
-.cloud-thinking {
-  display: flex;
-  gap: 5px;
-  height: 0;
-  margin-top: 0;
-  opacity: 0;
-  transition: opacity .25s ease, height .25s ease, margin-top .25s ease;
-}
-
-.is-working .cloud-thinking {
-  height: 6px;
-  margin-top: 11px;
-  opacity: 1;
-}
-
-.cloud-thinking b {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #1677d2;
-}
-
-.is-working .cloud-thinking b {
-  animation: think-bounce 1s ease-in-out infinite;
-}
-
-.cloud-thinking b:nth-child(2) { animation-delay: .14s }
-.cloud-thinking b:nth-child(3) { animation-delay: .28s }
-
-@keyframes think-bounce {
-  0%, 60%, 100% { opacity: .3; transform: translateY(0) }
-  30% { opacity: 1; transform: translateY(-4px) }
-}
-
-/* ---------- file flight ---------- */
-
-.flight-layer {
-  position: absolute;
-  z-index: 5;
-  inset: 0;
-  pointer-events: none;
-}
-
-.flight {
-  --dur: 1.95s;
-
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity .32s ease;
-}
-
-.flight.is-live {
-  opacity: 1;
-}
-
-.flight__unit {
-  position: absolute;
-  animation-duration: var(--dur), var(--dur);
-  animation-fill-mode: both, both;
-  animation-iteration-count: 1, 1;
-  animation-play-state: paused;
-  animation-timing-function: ease-out, ease-in-out;
-  transform: translate(-50%, -50%);
-}
-
-.flight__unit--ghost {
-  width: 30px;
-  height: 34px;
-  border-radius: 8px;
-  background: rgb(22 119 210 / 10%);
-  animation-delay: var(--lag), var(--lag);
-}
-
-.flight__unit--ghost:first-child {
-  background: rgb(22 119 210 / 5%);
-  transform: translate(-50%, -50%) scale(.8);
-}
-
-.flight.is-live .flight__unit,
-.flight.is-live .flight__card {
-  animation-play-state: running;
-}
-
-.flight__card {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 13px 9px 10px;
-  border: 1px solid #cddeeb;
-  border-radius: 12px;
-  color: #1a5b98;
-  background: linear-gradient(180deg, #fff 0%, #f4f9fd 100%);
-  box-shadow: 0 10px 22px rgb(22 66 110 / 18%), 0 2px 5px rgb(22 66 110 / 10%);
-  font-size: 12px;
-  font-weight: 800;
-  white-space: nowrap;
-  animation: fly-pop var(--dur) ease-out both;
-  animation-play-state: paused;
-}
-
-.flight__card--mini {
-  padding: 7px 11px 7px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-}
-
-.flight__card b {
-  font-weight: 800;
-}
-
-.file-glyph {
-  flex: 0 0 auto;
-  width: 22px;
-  height: 26px;
-}
-
-.flight__card--mini .file-glyph {
-  width: 18px;
-  height: 22px;
-}
-
-.file-glyph__page {
-  fill: #fff;
-  stroke: #9fb8cc;
-  stroke-width: 1.5;
-}
-
-.file-glyph__fold {
-  fill: #dfe9f2;
-}
-
-.flight__card--excel {
-  border-color: #bfe0cd;
-  color: #16724c;
-}
-
-.flight__card--excel .file-glyph__page { stroke: #86bfa2 }
-.flight__card--excel .file-glyph__fold { fill: #d7efe2 }
-.flight__card--excel .file-glyph__bar { fill: #2f9568 }
-
-.flight__card--result .file-glyph__spark {
-  stroke: #1677d2;
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-@keyframes fly-pop {
-  0% { transform: rotate(-11deg) scale(.62) }
-  12% { transform: rotate(-6deg) scale(1.04) }
-  44% { transform: rotate(4deg) scale(1) }
-  56%, 100% { transform: rotate(0deg) scale(1) }
-}
-
-.flight--upload .flight__unit { animation-name: fly-up-x, fly-up-y }
-.flight--download .flight__unit { animation-name: fly-dn-x, fly-dn-y }
-.flight--read .flight__unit { animation-name: fly-rd-x, fly-rd-y }
-.flight--emit .flight__unit { animation-name: fly-em-x, fly-em-y }
-
-.flight--emit.is-live {
-  animation: fly-exit .5s ease-in calc(var(--dur) + .5s) both;
-}
-
-@keyframes fly-exit {
-  from { opacity: 1 }
-  to { opacity: 0 }
-}
-
-@keyframes fly-up-x { 0% { left: 25% } 56%, 100% { left: 71% } }
-@keyframes fly-up-y {
-  0% { top: 62% }
-  27% { top: 15% }
-  56%, 100% { top: 35% }
-}
-
-@keyframes fly-dn-x { 0% { left: 70% } 56%, 100% { left: 27% } }
-@keyframes fly-dn-y {
-  0% { top: 40% }
-  27% { top: 86% }
-  56%, 100% { top: 71% }
-}
-
-@keyframes fly-rd-x { 0% { left: 27% } 56%, 100% { left: 73% } }
-@keyframes fly-rd-y {
-  0% { top: 40% }
-  27% { top: 21% }
-  56%, 100% { top: 39% }
-}
-
-@keyframes fly-em-x {
-  0% { left: 74% }
-  28% { left: 87% }
-  56%, 100% { left: 72% }
-}
-@keyframes fly-em-y { 0% { top: 42% } 56%, 100% { top: 73% } }
-
-/* ---------- codex workspace ---------- */
-
-.scene-instruction {
-  position: relative;
-  z-index: 2;
-  grid-column: 2;
-  opacity: .25;
-  transform: translateX(-10px);
-  transition: opacity .38s ease, transform .38s ease;
-}
-
-.scene-instruction.is-visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.scene-instruction.is-active {
-  animation: instruction-nudge .9s ease-in-out infinite alternate;
-}
-
-.scene-instruction span {
-  position: relative;
-  display: block;
-  padding: 14px 16px;
-  border: 1px solid #d7e3ee;
-  border-radius: 15px;
-  color: #3d5266;
-  background: #fff;
-  box-shadow: 0 8px 18px rgb(38 66 94 / 10%);
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.55;
-}
-
-.scene-instruction span::before,
-.scene-instruction span::after {
-  position: absolute;
-  top: 24px;
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  border-left: 0;
-  content: '';
-}
-
-.scene-instruction span::before {
-  left: -9px;
-  border-right-color: #d7e3ee;
-}
-
-.scene-instruction span::after {
-  left: -8px;
-  border-right-color: #fff;
-}
-
-@keyframes instruction-nudge {
-  from { transform: translateX(-3px) }
-  to { transform: translateX(3px) }
-}
-
-.scene-device--workspace {
-  grid-column: 3;
-  min-height: 320px;
-  padding: 0 18px 18px;
-}
-
-.scene-device--workspace .scene-device__label {
-  margin: 0 -16px 16px;
-}
-
-.workspace-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.workspace-grid > div {
-  position: relative;
-  min-height: 108px;
-  padding: 14px;
-  overflow: hidden;
-  border: 1px solid #dce3e8;
-  border-radius: 11px;
-}
-
-.scene-project--source,
-.scene-dashboard {
-  display: grid;
-  grid-template-columns: 23px minmax(0, 1fr);
-  align-content: center;
-}
-
-.scene-project--source span,
-.scene-dashboard span {
-  font-size: 13.5px;
-  font-weight: 800;
-}
-
-.scene-project--source small,
-.scene-dashboard small {
-  grid-column: 2;
-  color: #777671;
-  font-size: 12px;
-}
-
-.scene-project--source.is-active {
-  border-color: #2f9568;
-  background: #f0fbf6;
-}
-
-.scene-codex {
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  color: #354b60;
-  background: #fff;
-  text-align: center;
-}
-
-.scene-codex img {
-  margin: 0 0 6px;
-}
-
-.scene-codex.is-working {
-  border-color: #1677d2;
-  background: #f6fbff;
-}
-
-.scene-codex.is-working::after {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, rgb(22 119 210 / 0%) 34%, rgb(22 119 210 / 13%) 50%, rgb(22 119 210 / 0%) 66%);
-  background-size: 260% 100%;
-  content: '';
-  animation: codex-scan 1.8s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes codex-scan {
-  from { background-position: 160% 0 }
-  to { background-position: -60% 0 }
-}
-
-.scene-tools {
-  display: grid;
-  align-content: center;
-  gap: 7px;
-}
-
-.scene-tools span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  font-weight: 700;
-}
-
-.scene-tools svg {
-  width: 19px;
-}
-
-/* ---------- progress + footer ---------- */
-
-.environment-demo__progress {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.environment-demo__progress li {
-  position: relative;
-  display: grid;
-  min-width: 0;
-  justify-items: center;
-  gap: 7px;
-  margin: 0;
-  color: #96958f;
-  text-align: center;
-}
-
-.environment-demo__progress li::before {
-  position: absolute;
-  z-index: 0;
-  top: 15px;
-  right: 50%;
-  left: -50%;
-  height: 1px;
-  background: #d8d7d2;
-  content: '';
-}
-
-.environment-demo__progress li:first-child::before {
-  display: none;
-}
-
-.environment-demo__progress li > span {
-  z-index: 1;
-  display: grid;
-  width: 31px;
-  height: 31px;
-  place-items: center;
-  border: 1px solid #d7d6d1;
-  border-radius: 50%;
-  background: #f7f7f5;
-  font-size: 12px;
-  font-weight: 800;
-  transition: background-color .25s ease, border-color .25s ease, color .25s ease;
-}
-
-.environment-demo__progress li > span svg {
-  width: 16px;
-}
-
-.environment-demo__progress li.is-current,
-.environment-demo__progress li.is-complete {
-  color: #1677d2;
-}
-
-.environment-demo__progress li.is-current > span,
-.environment-demo__progress li.is-complete > span {
-  border-color: #1677d2;
-  color: #fff;
-  background: #1677d2;
-}
-
-.environment-demo__progress li.is-current > span {
-  box-shadow: 0 0 0 5px rgb(22 119 210 / 14%);
-}
-
-.environment-demo__progress small {
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.environment-demo__stage > footer {
-  display: flex;
-  align-items: baseline;
   gap: 12px;
-  margin-top: 17px;
-  padding: 13px 15px;
-  border-radius: 11px;
-  opacity: .4;
-  background: #e9e8e4;
-  transition: opacity .3s ease, background-color .3s ease;
+  min-width: 0;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  transition: border-color .2s, background-color .2s;
+}
+.environment-demo button { cursor: pointer }
+.environment-demo button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px }
+.environment-demo__selector button:hover { border-color: #9fab9f; background: #fafbf9 }
+.environment-demo__selector button.is-selected { border-color: #899e90; background: #f1f5ef }
+.environment-demo__selector img { width: 32px; height: 32px; margin: 0; object-fit: contain }
+.environment-demo__selector button > span { flex: 1; min-width: 0 }
+.environment-demo__selector strong { display: block; font-size: 16px; font-weight: 600 }
+.environment-demo__selector small { display: block; color: var(--muted); font-size: 12px; line-height: 1.6 }
+.environment-demo__selector button > svg { width: 17px; color: #879189 }
+.environment-demo__stage { overflow: hidden; padding: 28px; border: 1px solid var(--line); border-radius: 18px; background: #fafbf9 }
+.stage-eyebrow { color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .05em }
+.environment-demo__stage-header h3 { max-width: 680px; margin: 10px 0; font-size: clamp(20px, 2.1vw, 26px); font-weight: 600; line-height: 1.45; letter-spacing: -.035em }
+.environment-demo__stage-header p { max-width: 700px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8 }
+.environment-scene { position: relative; display: grid; grid-template-columns: minmax(0, 1.35fr) 72px minmax(0, 1fr); align-items: end; padding: 30px 0 24px }
+.scene-local, .scene-remote { min-width: 0 }
+.scene-person { display: flex; align-items: center; gap: 10px; height: 56px; margin-bottom: 16px }
+.person-symbol { display: grid; flex-shrink: 0; width: 36px; height: 36px; place-items: center; border: 1px solid #dce2da; border-radius: 50%; background: #f0f3ed; color: #52664e }
+.scene-person strong { display: block; font-size: 13px; font-weight: 600 }
+.scene-person small { display: block; color: var(--muted); font-size: 11px }
+.scene-person__line { flex: 1; height: 1px; margin-left: 8px; background: var(--line) }
+.scene-panel { height: 440px; overflow: hidden; border: 1px solid #dce1db; border-radius: 12px; background: #fff; box-shadow: 0 3px 5px rgb(30 40 30 / 2%), 0 12px 26px -18px rgb(30 40 30 / 14%) }
+.panel-label { display: flex; align-items: center; gap: 8px; height: 45px; padding: 0 16px; border-bottom: 1px solid #edf0eb; color: #59625a; font-size: 12px }
+.panel-label svg { width: 17px; height: 17px }
+.panel-label > small { margin-left: auto; color: #879085; font-size: 10px; letter-spacing: .08em }
+.panel-body { padding: 17px 14px }
+.file-row { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 10px; border: 1px solid #e6eae3; border-radius: 8px; background: #fcfdfb; transition: border-color .4s, background-color .4s }
+.file-row > span:not(.file-symbol) { flex: 1; min-width: 0 }
+.file-row strong { display: block; font-size: 12px; font-weight: 500; line-height: 1.5 }
+.file-row small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; line-height: 1.5 }
+.file-row > svg { width: 20px; color: #8a9388 }
+.file-row > .row-check { width: 14px; color: var(--accent) }
+.file-row--pending { min-height: 55px; margin-top: 8px; border-color: transparent; background: #f6f7f4; color: #717a70 }
+.file-row.is-arrived, .workspace-folder.is-arrived { border-color: #b4ccb8; background: #f3f8f0; color: #315e42 }
+.agent-row img { width: 30px; height: 30px; margin: 0; object-fit: contain }
+.workspace-folder { margin-top: 12px; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid #e1e7dc; border-radius: 8px; transition: border-color .4s, background-color .4s }
+.workspace-folder > strong, .workspace-folder > span { display: flex; align-items: center; gap: 8px; font-size: 11px; line-height: 1.6; font-weight: 400 }
+.workspace-folder > strong { margin-bottom: 2px; font-weight: 500 }
+.workspace-folder svg { width: 15px; height: 15px; color: #7e8c76 }
+.workspace-folder > span:last-child { color: #899283 }
+.workspace-folder b, .workspace-folder > strong small { margin-left: auto; font-size: 10px; font-weight: 400 }
+.workspace-folder > .report-ready:last-child, .workspace-folder .report-ready svg { color: #367864 }
+.workspace-note { display: block; margin-top: 9px; color: #7f887a; font-size: 10px; text-align: center }
+.scene-network { position: relative; align-self: end; display: flex; height: 440px; align-items: center; justify-content: center; flex-direction: column; color: #84917f }
+.network-line { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #dce3d7 }
+.network-symbol { position: relative; display: grid; place-items: center; width: 32px; height: 32px; margin-top: 36px; border: 1px solid #e0e6dc; border-radius: 50%; background: #fafbf9 }
+.network-symbol svg { width: 16px; height: 16px }
+.scene-network > small { margin-top: 8px; font-size: 10px }
+.network-caption { margin-top: 2px; font-size: 9px }
+.remote-caption { display: flex; align-items: center; justify-content: flex-end; gap: 7px; height: 56px; margin-bottom: 16px; font-size: 11px; color: #7d8878 }
+.remote-caption > span { width: 5px; height: 5px; border-radius: 50%; background: #b4c0ab }
+.remote-panel { background: linear-gradient(150deg, #fff, #f6f8f3); transition: border-color .4s }
+.remote-panel.is-working { border-color: #98b09a }
+.remote-body { display: flex; min-height: 390px; justify-content: center; align-items: center; flex-direction: column; padding: 25px 16px 15px }
+.remote-symbol { display: grid; place-items: center; width: 62px; height: 62px; border: 1px solid #e0e5db; border-radius: 16px; background: #fff; box-shadow: 0 4px 10px rgb(50 70 40 / 3%) }
+.remote-symbol img { width: 40px; height: 40px; margin: 0; object-fit: contain }
+.remote-symbol svg { width: 32px; height: 32px; color: #65765a }
+.remote-body > strong { margin-top: 12px; font-size: 17px; font-weight: 500; letter-spacing: -.03em }
+.remote-body > small { margin-top: 4px; color: var(--muted); font-size: 11px }
+.remote-lines { display: grid; justify-items: start; gap: 6px; width: 94px; margin: 18px 0 14px }
+.remote-lines i { width: 100%; height: 3px; border-radius: 2px; background: #ccd8c3; transform-origin: left }
+.remote-lines i:nth-child(2) { width: 78% }
+.remote-lines i:nth-child(3) { width: 52% }
+.remote-state { display: flex; align-items: center; gap: 6px; color: #818c7c; font-size: 10px }
+.remote-state i, .playback-status i { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #a8b2a1 }
+.remote-state i.is-active, .playback-status i.is-active { background: var(--accent) }
+.flight-layer { position: absolute; z-index: 4; inset: 0; pointer-events: none }
+.flight-token { position: absolute; top: 0; left: 0; display: flex; align-items: center; gap: 7px; padding: 9px 12px; border: 1px solid #a9bda6; border-radius: 8px; background: #fff; color: #3e684d; box-shadow: 0 6px 20px rgb(42 65 34 / 12%); font-size: 11px; white-space: nowrap; opacity: 0; visibility: hidden }
+.flight-token svg { width: 18px; height: 18px }
+.is-playing .flight-token { will-change: transform, opacity }
+.playback-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line) }
+.playback-status { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px }
+.playback-bar > div { display: flex; gap: 6px }
+.playback-bar button { display: flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 5px; color: #5d6e54; font-size: 11px }
+.playback-bar button:hover { background: #edf2e8 }
+.playback-bar button svg { width: 13px; height: 13px }
+.environment-demo__progress { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0 0; padding: 0; list-style: none }
+.environment-demo__progress li { display: grid; grid-template-columns: 20px 1fr; gap: 10px 6px; align-items: center; margin: 0; color: #828b7e }
+.step-meter { grid-column: 1 / -1; height: 2px; overflow: hidden; background: #e1e7da }
+.step-meter i { display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: var(--accent) }
+.step-meter i.is-filled { transform: scaleX(1) !important }
+.step-number { font-size: 10px; font-variant-numeric: tabular-nums }
+.step-number svg { width: 13px; height: 13px }
+.environment-demo__progress small { font-size: 11px; line-height: 1.5 }
+.environment-demo__progress .is-current, .environment-demo__progress .is-complete { color: var(--accent) }
+.environment-demo__stage footer { display: flex; gap: 12px; align-items: baseline; margin-top: 24px; padding: 14px 0 0; border-top: 1px solid var(--line) }
+.environment-demo__stage footer strong { flex-shrink: 0; color: #77816f; font-size: 12px; font-weight: 500 }
+.environment-demo__stage footer p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7 }
+.environment-demo__stage footer.is-visible strong { color: var(--accent) }
+/* Responsibility relay — who holds the work at each stage. */
+.responsibility-map { display: grid; grid-template-columns: 1fr 18px 1fr 18px 1fr; align-items: center; gap: 0 4px; margin-top: 22px; padding: 14px; border: 1px solid #e6eae3; border-radius: 11px; background: #fafbf9 }
+.responsibility-map > div { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 8px 10px; border-radius: 9px; opacity: .5; transition: opacity .4s, background-color .4s }
+.responsibility-map > div.is-active { opacity: 1; background: #fff; box-shadow: 0 1px 2px rgb(30 40 30 / 4%), 0 8px 18px -14px rgb(30 40 30 / 18%) }
+.responsibility-map > i { display: block; height: 1px; background: #d9e0d6 }
+.responsibility-map span { min-width: 0 }
+.responsibility-map small { display: block; color: #8b948c; font-size: 11px; letter-spacing: .02em }
+.responsibility-map strong { display: block; margin-top: 2px; color: #34403a; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.responsibility-map__finish.is-finished { background: #f3f8f0; box-shadow: inset 0 0 0 1px #cfe0c9 }
+.actor-mark { display: grid; flex: 0 0 auto; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: #edf1ea; color: #59625a }
+.actor-mark svg { width: 16px }
+.actor-mark img { width: 22px; height: 22px; margin: 0 }
+.actor-mark--user { color: #7b6647; background: #f6ecdd }
+.actor-mark--codex { background: #e8f0ff }
+
+/* ChatGPT side: the browser is a separate box from the local project. */
+.chatgpt-local-stack { display: flex; flex-direction: column; gap: 10px }
+.chrome-window { border: 1px solid #e2e5e0; border-radius: 9px; overflow: hidden; background: #fff; transition: border-color .4s, box-shadow .4s }
+.chrome-window.is-active { border-color: #cdd8ca; box-shadow: 0 8px 18px -14px rgb(30 40 30 / 22%) }
+.chrome-window__bar { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid #eef1ec; background: #f7f8f6 }
+.chrome-window__bar strong { color: #59625a; font-size: 11.5px; font-weight: 600 }
+.chrome-mark { position: relative; flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(from -60deg, #ea4335 0 120deg, #fbbc04 120deg 240deg, #34a853 240deg 360deg) }
+.chrome-mark::after { position: absolute; inset: 27%; border-radius: 50%; background: #4285f4; box-shadow: 0 0 0 1.5px #fff; content: '' }
+.chrome-window__tab { display: flex; align-items: center; gap: 9px; padding: 10px }
+.chrome-window__tab img { margin: 0 }
+.chrome-window__tab strong { display: block; color: #34403a; font-size: 12.5px }
+.chrome-window__tab small { display: block; margin-top: 2px; color: #8b948c; font-size: 11px }
+.operator-pill { margin-left: auto; padding: 2px 8px; border-radius: 999px; color: #9aa39b; background: #eef1ec; font-size: 10.5px; font-weight: 600; white-space: nowrap; transition: color .4s, background-color .4s }
+.operator-pill.is-active { color: #7b6647; background: #f6ecdd }
+
+/* The gap Chrome cannot cross by itself. */
+.browser-local-boundary { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: 1px dashed #ded7cb; border-radius: 9px; background: #fdfbf7; transition: border-color .4s, background-color .4s }
+.browser-local-boundary.is-active { border-color: #d2bf9f; background: #faf2e7 }
+.browser-local-boundary svg { flex: 0 0 auto; width: 17px; color: #a48a5f }
+.browser-local-boundary strong { display: block; color: #34403a; font-size: 12px }
+.browser-local-boundary small { display: block; margin-top: 1px; color: #8b948c; font-size: 11px }
+
+.local-workspace { padding: 10px; border: 1px solid #e6eae3; border-radius: 9px; background: #fafbf9 }
+.local-workspace__label { display: flex; align-items: center; gap: 7px; margin-bottom: 8px }
+.local-workspace__label svg { width: 15px; color: #7f8a80 }
+.local-workspace__label strong { color: #34403a; font-size: 12px }
+.local-workspace__label small { margin-left: auto; color: #9aa39b; font-size: 10.5px }
+.local-file-grid { display: grid; gap: 8px }
+.report-ready b { color: #367864 }
+
+@container envdemo (max-width: 690px) {
+  .environment-demo__stage { padding: 22px 18px }
+  .environment-scene { grid-template-columns: minmax(0, 1.35fr) 46px minmax(0, 1fr) }
+  .panel-label { padding-inline: 12px }
+  .panel-body { padding: 17px 10px }
+  .file-row { gap: 7px; padding-inline: 8px }
+  .environment-demo__progress { gap: 8px }
+}
+@container envdemo (max-width: 620px) {
+  .environment-demo__selector button { gap: 8px; padding: 12px 10px }
+  .environment-demo__selector button > svg { display: none }
+  .environment-demo__selector img { width: 25px; height: 25px }
+  .environment-demo__selector strong { font-size: 14px }
+  .environment-demo__selector small { font-size: 10px }
+  .environment-demo__stage { padding: 20px 16px }
+  .environment-demo__stage-header h3 { font-size: 21px }
+  .environment-demo__stage-header p { font-size: 13px }
+  .environment-scene { grid-template-columns: minmax(0, 1fr); padding-top: 20px; padding-bottom: 20px }
+  .scene-person { height: 40px; margin-bottom: 14px }
+  .scene-panel { height: auto }
+  .scene-device { min-height: 305px }
+  .scene-network { height: 72px; align-self: auto; flex-direction: row; gap: 8px }
+  .network-line { top: 0; bottom: 0; left: 50%; right: auto; width: 1px; height: auto }
+  .network-symbol { margin: 0 }
+  .scene-network > small, .network-caption { position: relative; padding-block: 3px; margin: 0; background: #fafbf9 }
+  .remote-caption { justify-content: center; height: auto; margin: 0 0 12px }
+  .remote-body { display: grid; min-height: 0; grid-template-columns: 54px 1fr; column-gap: 16px; padding: 20px }
+  .remote-symbol { grid-row: 1 / 4; width: 54px; height: 54px; border-radius: 13px }
+  .remote-body > strong { margin: 0; font-size: 16px }
+  .remote-body > small { margin-top: 3px }
+  .remote-lines { display: none }
+  .remote-state { margin-top: 8px }
+  .environment-demo__progress { gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 16px }
+  .environment-demo__stage footer { flex-direction: column; gap: 5px; margin-top: 20px }
 }
 
-.environment-demo__stage > footer.is-visible {
-  opacity: 1;
-  background: #e9f4fd;
-}
-
-.environment-demo__stage > footer strong,
-.environment-demo__stage > footer p {
-  margin: 0;
-}
-
-.environment-demo__stage > footer strong {
-  flex: 0 0 auto;
-  color: #1267b5;
-  font-size: 13px;
-}
-
-.environment-demo__stage > footer p {
-  color: #40566a;
-  font-size: 13.5px;
-  line-height: 1.55;
-}
-
-/* ---------- responsive ---------- */
-
-@container envdemo (max-width: 740px) {
-  .chatgpt-scene {
-    grid-template-columns: minmax(196px, .92fr) 66px minmax(208px, 1fr);
-    gap: 14px 12px;
-    padding: 24px 18px;
-  }
-
-  .codex-scene {
-    grid-template-columns: 104px minmax(128px, .5fr) minmax(330px, 1fr);
-    gap: 14px;
-    padding: 24px 18px;
-  }
-
-  .scene-cloud { min-height: 260px }
-}
-
-@container envdemo (max-width: 600px) {
-  .environment-demo__heading,
-  .environment-demo__stage-header {
-    display: grid;
-  }
-
-  .environment-demo__heading > span,
-  .environment-demo__stage-header em {
-    justify-self: start;
-  }
-
-  .environment-scene {
-    min-height: 0;
-  }
-
-  .chatgpt-scene,
-  .codex-scene {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .chatgpt-scene .scene-person,
-  .scene-device--compact,
-  .scene-separator,
-  .scene-cloud,
-  .scene-instruction,
-  .scene-device--workspace {
-    grid-column: 1;
-    grid-row: auto;
-    align-self: auto;
-  }
-
-  .scene-device--compact {
-    width: 100%;
-  }
-
-  .scene-separator {
-    min-height: 56px;
-  }
-
-  .scene-separator__line {
-    top: 50%;
-    right: 2%;
-    bottom: auto;
-    left: 2%;
-    border-top: 1px dashed #b9c6d2;
-    border-left: 0;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
-  }
-
-  .scene-separator__chip {
-    flex-direction: row;
-    gap: 5px;
-    padding: 6px 12px;
-  }
-
-  .scene-cloud {
-    min-height: 228px;
-  }
-
-  .scene-cloud__content {
-    margin-top: 12%;
-  }
-
-  .scene-instruction {
-    justify-self: center;
-    max-width: 280px;
-  }
-
-  .scene-instruction span::before,
-  .scene-instruction span::after {
-    top: -9px;
-    left: 28px;
-    border: 8px solid transparent;
-    border-top: 0;
-  }
-
-  .scene-instruction span::before { border-bottom-color: #d7e3ee }
-  .scene-instruction span::after { top: -8px; border-bottom-color: #fff }
-
-  .flight--upload .flight__unit { animation-name: fly-up-x-s, fly-up-y-s }
-  .flight--download .flight__unit { animation-name: fly-dn-x-s, fly-dn-y-s }
-
-  @keyframes fly-up-x-s {
-    0% { left: 32% }
-    50% { left: 76% }
-    100% { left: 52% }
-  }
-  @keyframes fly-up-y-s { from { top: 31% } to { top: 76% } }
-
-  @keyframes fly-dn-x-s {
-    0% { left: 58% }
-    50% { left: 20% }
-    100% { left: 33% }
-  }
-  @keyframes fly-dn-y-s { from { top: 76% } to { top: 41% } }
-}
-
-@container envdemo (max-width: 470px) {
-  .environment-demo__selector {
-    grid-template-columns: 1fr;
-  }
-
-  .environment-demo__stage {
-    padding: 18px 14px;
-    border-radius: 17px;
-  }
-
-  .environment-scene {
-    padding: 20px 14px;
-  }
-
-  .workspace-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .flight--read .flight__unit { animation-name: fly-rd-x-s, fly-rd-y-s }
-  .flight--emit .flight__unit { animation-name: fly-em-x-s, fly-em-y-s }
-
-  @keyframes fly-rd-x-s {
-    0% { left: 30% }
-    50% { left: 66% }
-    100% { left: 38% }
-  }
-  @keyframes fly-rd-y-s { from { top: 22% } to { top: 44% } }
-
-  @keyframes fly-em-x-s {
-    0% { left: 38% }
-    50% { left: 74% }
-    100% { left: 42% }
-  }
-  @keyframes fly-em-y-s { from { top: 46% } to { top: 88% } }
-
-  .environment-demo__progress small {
-    font-size: 10px;
-  }
-
-  .environment-demo__stage > footer {
-    display: grid;
-    gap: 4px;
-  }
+.mode-chatgpt { --accent: #956536; --accent-soft: #faf2e7 }
+.mode-chatgpt .environment-demo__selector button.is-selected { border-color: #c5aa88; background: #faf5ee }
+.mode-chatgpt .person-symbol { color: #956536; background: #faf2e7; border-color: #e6d8c4 }
+.source-row { min-height: 50px; background: transparent; border-color: transparent; padding-top: 0; padding-bottom: 4px }
+.manual-work { margin-top: 16px; padding: 12px; border: 1px solid #e6ddd1; border-radius: 9px; background: #fcf8f2; transition: border-color .4s, background-color .4s }
+.manual-work.is-handoff { border-color: #b98f5d; background: #faf0e1 }
+.operator-label { display: flex; align-items: center; gap: 7px; font-size: 11px }
+.operator-label > svg { width: 16px; height: 16px }
+.operator-label strong { font-weight: 500 }
+.operator-label > span { margin-left: auto; font-size: 10px; white-space: nowrap }
+.manual-work .operator-label { color: #86582b }
+.manual-tasks { display: grid; gap: 0; margin: 10px 0 0; padding: 0; list-style: none }
+.manual-tasks li { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 0; border-top: 1px solid #eadfce; color: #795d3c; font-size: 11px }
+.manual-tasks li svg { width: 16px; height: 16px }
+.manual-tasks li small { margin-left: auto; font-size: 10px; white-space: nowrap }
+.manual-work p { margin: 8px 0 0; color: #967957; font-size: 10px; line-height: 1.6 }
+.local-execution { margin-top: 12px; padding: 12px; border: 1px solid #dfe6db; border-radius: 9px; background: #f6f8f3 }
+.local-execution .operator-label { color: #63765d }
+.local-execution code { display: block; padding: 0; margin: 13px 0 9px; background: transparent; color: #53684c; font-size: 12px }
+.local-execution code > span { color: #96a48e; margin-right: 5px }
+.local-execution p { display: flex; align-items: center; gap: 6px; min-height: 18px; margin: 0; font-size: 10px; color: #7c8a73 }
+.local-execution p svg { width: 14px; height: 14px }
+.local-execution.is-running { border-color: #9db693 }
+.local-execution.is-done { border-color: #b4ccb8; background: #edf6e9 }
+.local-execution.is-done p { color: #367864 }
+.execution-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor }
+.environment-demo__stage footer > svg { width: 17px; height: 17px; align-self: center; color: var(--accent) }
+.mode-chatgpt .environment-demo__stage footer.is-visible { padding: 14px; border: 1px solid #e6d8c4; border-radius: 8px; background: #faf2e7 }
+.mode-codex .environment-demo__stage footer.is-visible { padding: 14px; border: 1px solid #d9e5d1; border-radius: 8px; background: #f0f6eb }
+@container envdemo (max-width: 620px) {
+  .environment-demo__stage footer > svg { display: none }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .environment-demo *,
-  .environment-demo *::before,
-  .environment-demo *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
+  .environment-demo *, .environment-demo *::before, .environment-demo *::after { transition: none !important }
 }
 </style>
