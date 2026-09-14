@@ -2,10 +2,11 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import {
-  ArrowDownTrayIcon, ArrowPathIcon, ArrowUpRightIcon, ArrowsUpDownIcon, CommandLineIcon, PencilSquareIcon,
+  ArrowDownTrayIcon, ArrowPathIcon, ArrowUpRightIcon, ArrowUpTrayIcon, ArrowsUpDownIcon,
+  CommandLineIcon, PencilSquareIcon,
   ChatBubbleLeftEllipsisIcon, CheckIcon, ComputerDesktopIcon, CpuChipIcon,
-  DocumentChartBarIcon, FolderOpenIcon, GlobeAltIcon, PauseIcon, PlayIcon,
-  UserIcon, WindowIcon
+  DocumentChartBarIcon, FolderOpenIcon, GlobeAltIcon, NoSymbolIcon, PauseIcon, PlayIcon,
+  UserIcon
 } from '@heroicons/vue/24/outline'
 
 type FlowMode = 'chatgpt' | 'codex'
@@ -29,25 +30,25 @@ const STEP_SECONDS = 2.4
 const flows: Record<FlowMode, Flow> = {
   chatgpt: {
     name: 'ChatGPT',
-    role: '瀏覽器裡的顧問',
+    role: '你下載、編修、執行',
     eyebrow: 'Chrome 裡的對話，和本機工作區是兩個環境',
-    title: '你在 Chrome 傳檔、收回覆，再到本機把工作做完',
+    title: 'ChatGPT 給你回覆，你把工作做完',
     summary: '以一般瀏覽器對話為例：ChatGPT 在 Chrome 裡提供建議或可下載的檔案，但不會直接操作你電腦上的專案。上傳、下載、開檔編修、執行與存檔，都由你負責。',
     icon: '/images/quick-start/chatgpt-icon.webp',
     personNote: '上傳、下載，並接手後續操作',
-    steps: ['你操作 Chrome 上傳', 'ChatGPT 產生回覆', '你操作 Chrome 下載', '你操作本機完成'],
+    steps: ['你把檔案搬進 Chrome', 'ChatGPT 產生回覆', '你把成果搬回本機', '你自己編修與執行'],
     result: 'AI 的回覆已備妥；本機的編修、執行與存檔，還等你完成。',
     verdict: '等你接手操作'
   },
   codex: {
     name: 'Codex',
-    role: '你電腦裡的同事',
+    role: '它直接操作，你驗收',
     eyebrow: 'Codex 收到回覆後，繼續在你的電腦動手',
-    title: '交代目標，Codex 直接改檔案、執行並留下成果',
+    title: 'Codex 直接動手，你檢查成果',
     summary: '在你授權的工作環境裡，Codex 能讀取與修改檔案、執行程式、檢查結果，再把成果留在專案中。你交代目標，最後檢查成果，不必逐步代它操作。',
     icon: '/images/quick-start/codex-icon.webp',
     personNote: '交代目標，最後檢查成果',
-    steps: ['你交代目標', 'AI 模型協助規劃', 'Codex 修改本機檔案', 'Codex 在本機執行'],
+    steps: ['你交代目標', 'AI 模型協助規劃', 'Codex 直接改本機檔案', 'Codex 在本機執行'],
     result: '檔案已更新，程式已執行，報表已存入專案。接下來由你檢查成果。',
     verdict: '等你檢查成果'
   }
@@ -60,6 +61,9 @@ const playing = ref(false)
 const paused = ref(false)
 const finished = ref(false)
 const localAction = ref(-1)
+// ChatGPT mode: what you still have to do by hand, and whether a file is crossing the browser wall.
+const manualStep = ref(-1)
+const crossing = ref(false)
 const root = ref<HTMLElement | null>(null)
 const scene = ref<HTMLElement | null>(null)
 const flow = computed(() => flows[selected.value])
@@ -85,6 +89,8 @@ function clearAnimation() {
 }
 
 function complete() {
+  crossing.value = false
+  manualStep.value = selected.value === 'chatgpt' ? 3 : -1
   localAction.value = selected.value === 'codex' ? 3 : -1
   activeStep.value = 3
   arrivedStep.value = 3
@@ -111,6 +117,8 @@ async function play(mode = selected.value) {
   const currentRequest = ++request
   clearAnimation()
   selected.value = mode
+  manualStep.value = -1
+  crossing.value = false
   localAction.value = -1
   activeStep.value = -1
   arrivedStep.value = -1
@@ -164,15 +172,23 @@ async function play(mode = selected.value) {
     }
 
     if (mode === 'chatgpt') {
-      transfer('browser-upload', 'source', 'browser', start + 0.12, 0.72)
-      transfer('upload', 'browser', 'remote', start + 1.08, 0.88)
+      // Two legs each way: you carry the file across the browser wall, the network only moves it after that.
+      const cross = (from: number, to: number) => {
+        tl.call(() => { crossing.value = true }, [], from)
+        tl.call(() => { crossing.value = false }, [], to)
+      }
+      transfer('lift', 'source', 'browser', start + 0.2, 0.85)
+      cross(start + 0.2, start + 1.1)
+      transfer('upload', 'browser', 'remote', start + 1.2, 0.85)
       illuminate('remote', start + STEP_SECONDS)
-      transfer('browser-download', 'remote', 'browser', start + STEP_SECONDS * 2 + 0.08, 0.82)
-      transfer('download', 'browser', 'download', start + STEP_SECONDS * 2 + 1.08, 0.72)
-      transfer('handoff', 'download', 'manual', start + STEP_SECONDS * 3 + 0.15, 1.2)
-      illuminate('manual', start + STEP_SECONDS * 3 + 1.4)
+      transfer('browser-download', 'remote', 'browser', start + STEP_SECONDS * 2 + 0.05, 0.8)
+      transfer('drop', 'browser', 'download', start + STEP_SECONDS * 2 + 1.0, 0.85)
+      cross(start + STEP_SECONDS * 2 + 1.0, start + STEP_SECONDS * 2 + 1.9)
+      illuminate('manual', start + STEP_SECONDS * 3)
+      ;[0.2, 1.3, 2.5, 3.7].forEach((offset, index) => {
+        tl.call(() => { manualStep.value = index }, [], start + STEP_SECONDS * 3 + offset)
+      })
     } else {
-      illuminate('instruction', start)
       illuminate('agent', start + 0.45)
       transfer('send', 'agent', 'remote', start + STEP_SECONDS + 0.05, 0.95)
       transfer('reply', 'remote', 'agent', start + STEP_SECONDS + 1.25, 0.95)
@@ -229,40 +245,27 @@ onBeforeUnmount(() => {
 
     <section class="environment-demo__stage" :aria-label="`${flow.name} 工作流程`">
       <header class="environment-demo__stage-header">
-        <span class="stage-eyebrow">{{ flow.eyebrow }}</span>
         <h3>{{ flow.title }}</h3>
-        <p>{{ flow.summary }}</p>
       </header>
 
-      <div class="responsibility-map" aria-label="工作責任接力">
-        <div :class="{ 'is-active': activeStep === 0 }">
-          <span class="actor-mark actor-mark--user"><UserIcon aria-hidden="true" /></span>
-          <span><small>第一棒</small><strong>你交代需求</strong></span>
-        </div>
-        <i aria-hidden="true"></i>
-        <div :class="{ 'is-active': activeStep === 1 }">
-          <span class="actor-mark"><CpuChipIcon aria-hidden="true" /></span>
-          <span><small>AI 處理</small><strong>{{ selected === 'chatgpt' ? 'ChatGPT 回覆' : '模型協助規劃' }}</strong></span>
-        </div>
-        <i aria-hidden="true"></i>
-        <div class="responsibility-map__finish" :class="{ 'is-active': activeStep >= 2, 'is-finished': finished }">
-          <span class="actor-mark" :class="selected === 'chatgpt' ? 'actor-mark--user' : 'actor-mark--codex'">
-            <UserIcon v-if="selected === 'chatgpt'" aria-hidden="true" />
-            <img v-else :src="withBase(flows.codex.icon)" alt="" width="22" height="22" aria-hidden="true">
-          </span>
-          <span><small>把工作做完</small><strong>{{ selected === 'chatgpt' ? '你操作本機' : 'Codex 操作本機' }}</strong></span>
-        </div>
-      </div>
-
       <div ref="scene" class="environment-scene" :class="{ 'is-playing': playing && !paused }">
+        <div class="scene-human" :class="{ 'is-active': selected === 'chatgpt' ? activeStep !== 1 : activeStep === 0 || finished }">
+          <span class="human-summary__icon"><UserIcon aria-hidden="true" /></span>
+          <strong>你</strong>
+          <ul v-if="selected === 'chatgpt'" aria-label="你需要做的事情">
+            <li :class="{ 'is-active': activeStep === 0 }">搬進 Chrome</li>
+            <li :class="{ 'is-active': activeStep === 2 }">搬回本機</li>
+            <li :class="{ 'is-active': activeStep === 3 }">編修、執行<small>存檔</small></li>
+          </ul>
+          <ul v-else aria-label="你需要做的事情">
+            <li :class="{ 'is-active': activeStep === 0 }">交代目標</li>
+            <li :class="{ 'is-active': finished }">驗收成果</li>
+          </ul>
+          <span class="human-connection" aria-hidden="true">→</span>
+        </div>
         <div class="scene-local">
-          <div class="scene-person" data-node="instruction" :class="{ 'is-active': activeStep === 0 }">
-            <span class="person-symbol"><UserIcon aria-hidden="true" /></span>
-            <span><strong>你</strong><small>{{ flow.personNote }}</small></span>
-            <span class="scene-person__line" aria-hidden="true"></span>
-          </div>
           <div class="scene-panel scene-device">
-            <div class="panel-label"><ComputerDesktopIcon aria-hidden="true" /><span>你的電腦</span><small>本機</small></div>
+            <div class="panel-label"><ComputerDesktopIcon aria-hidden="true" /><span>你的電腦</span><small v-if="selected === 'codex'">本機環境</small></div>
             <template v-if="selected === 'chatgpt'">
               <div class="panel-body chatgpt-local-stack">
                 <div data-node="browser" class="chrome-window" :class="{ 'is-active': activeStep >= 0 && activeStep <= 2 }">
@@ -277,33 +280,32 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
 
-                <div class="browser-local-boundary" :class="{ 'is-active': activeStep === 0 || activeStep === 2 }">
-                  <ArrowsUpDownIcon aria-hidden="true" />
-                  <span><strong>Chrome ↔ 本機</strong><small>檔案要由你上傳、下載</small></span>
-                  <span class="operator-pill" :class="{ 'is-active': activeStep === 0 || activeStep === 2 }">你傳遞</span>
+                <div class="browser-local-boundary" :class="{ 'is-active': crossing }">
+                  <NoSymbolIcon aria-hidden="true" />
+                  <span><strong>ChatGPT 只到瀏覽器為止</strong><small>下面的本機檔案它看不到、也改不了；這條線每次都要你自己跨</small></span>
                 </div>
 
-                <div class="local-workspace">
-                  <div class="local-workspace__label"><FolderOpenIcon aria-hidden="true" /><strong>本機專案</strong><small>Chrome 無法直接修改</small></div>
+                <div data-node="manual" class="local-workspace" :class="{ 'is-active': activeStep === 3 }">
+                  <div class="local-workspace__label"><ComputerDesktopIcon aria-hidden="true" /><strong>本機檔案</strong><small>ChatGPT 看不到</small></div>
                   <div class="local-file-grid">
                     <div data-node="source" class="file-row source-row" :class="{ 'is-active': activeStep === 0 }">
                       <DocumentChartBarIcon aria-hidden="true" />
-                      <span><strong>原始檔案</strong><small>{{ arrivedStep >= 0 ? '只上傳副本' : '等待上傳' }}</small></span>
+                      <span><strong>原始檔案</strong></span>
                     </div>
                     <div data-node="download" class="file-row file-row--pending" :class="{ 'is-arrived': arrivedStep >= 2, 'is-active': activeStep === 2 }">
-                      <ArrowDownTrayIcon aria-hidden="true" /><span><strong>下載成果</strong><small>{{ arrivedStep >= 2 ? '已回到本機' : '等待下載' }}</small></span>
+                      <DocumentChartBarIcon aria-hidden="true" /><span><strong>成果檔案</strong><small>{{ arrivedStep >= 2 ? '已回到本機' : '尚未產生' }}</small></span>
                     </div>
                   </div>
                 </div>
 
-                <div data-node="manual" class="manual-work" :class="{ 'is-handoff': activeStep >= 3 }">
-                  <div class="operator-label"><UserIcon aria-hidden="true" /><strong>接下來，由你操作</strong><span>3 件待辦</span></div>
+                <div class="manual-work" :class="{ 'is-handoff': activeStep === 3 }">
+                  <div class="operator-label"><UserIcon aria-hidden="true" /><strong>剩下的你自己做</strong><span>ChatGPT 幫不上</span></div>
                   <ul class="manual-tasks">
-                    <li><PencilSquareIcon aria-hidden="true" /><span>開啟檔案、編修內容</span><small>你來改</small></li>
-                    <li><CommandLineIcon aria-hidden="true" /><span>執行程式、檢查錯誤</span><small>你來跑</small></li>
-                    <li><FolderOpenIcon aria-hidden="true" /><span>儲存成果、放回專案</span><small>你來存</small></li>
+                    <li :class="{ 'is-done': manualStep >= 0 }"><FolderOpenIcon aria-hidden="true" />開啟檔案</li>
+                    <li :class="{ 'is-done': manualStep >= 1 }"><PencilSquareIcon aria-hidden="true" />照著修改</li>
+                    <li :class="{ 'is-done': manualStep >= 2 }"><CommandLineIcon aria-hidden="true" />自己執行</li>
+                    <li :class="{ 'is-done': manualStep >= 3 }"><CheckIcon aria-hidden="true" />另存結果</li>
                   </ul>
-                  <p>瀏覽器裡的回覆，不會自行完成這些本機操作。</p>
                 </div>
               </div>
             </template>
@@ -311,7 +313,13 @@ onBeforeUnmount(() => {
               <div class="panel-body">
                 <div data-node="agent" class="file-row agent-row" :class="{ 'is-arrived': activeStep >= 0 }">
                   <img :src="withBase(flows.codex.icon)" alt="" width="30" height="30" aria-hidden="true">
-                  <span><strong>本機操作者：Codex</strong><small>讀取檔案 → 編修 → 執行 → 存檔</small></span>
+                  <span><strong>Codex 執行</strong><small>直接編修、執行、存檔</small></span>
+                  <span class="operator-pill operator-pill--codex" :class="{ 'is-active': localAction >= 0 }">它操作</span>
+                </div>
+
+                <div class="local-direct-link" :class="{ 'is-active': localAction >= 0 }">
+                  <ArrowsUpDownIcon aria-hidden="true" />
+                  <span><strong>沒有瀏覽器擋在中間</strong><small>Codex 就在本機，和你看的是同一批檔案，可以直接讀寫</small></span>
                 </div>
                 <div data-node="folder" class="workspace-folder" :class="{ 'is-arrived': localAction >= 1 }">
                   <strong><FolderOpenIcon aria-hidden="true" /> 你的專案 <small>{{ localAction >= 1 ? '已儲存修改' : '等待編修' }}</small></strong>
@@ -323,7 +331,6 @@ onBeforeUnmount(() => {
                   <code><span>$</span> python report.py</code>
                   <p><CheckIcon v-if="localAction >= 3" aria-hidden="true" /><span v-else class="execution-dot"></span>{{ localAction >= 3 ? '執行成功 · 報表已存入專案' : localAction === 2 ? '正在執行，檢查輸出結果…' : '等待 Codex 執行報表程式' }}</p>
                 </div>
-                <small class="workspace-note">你不必逐步操作，最後檢查成果即可。</small>
               </div>
             </template>
           </div>
@@ -333,11 +340,9 @@ onBeforeUnmount(() => {
           <span class="network-line"></span>
           <span class="network-symbol"><GlobeAltIcon /></span>
           <small>網路</small>
-          <span class="network-caption">{{ selected === 'chatgpt' ? '上傳／下載' : '需求／回覆' }}</span>
         </div>
 
         <div class="scene-remote">
-          <div class="remote-caption"><span></span> {{ selected === 'chatgpt' ? '瀏覽器與雲端服務' : '網路的另一端' }}</div>
           <div data-node="remote" class="scene-panel remote-panel" :class="{ 'is-working': playing && !paused && activeStep === 1 }">
             <div class="panel-label"><GlobeAltIcon aria-hidden="true" /><span>遠端服務</span><small>雲端</small></div>
             <div class="remote-body">
@@ -348,18 +353,17 @@ onBeforeUnmount(() => {
               <strong>{{ selected === 'chatgpt' ? 'ChatGPT' : '遠端 AI 模型' }}</strong>
               <small>{{ selected === 'chatgpt' ? '提供建議與可下載的檔案' : '協助規劃下一步操作' }}</small>
               <div class="remote-lines" aria-hidden="true"><i></i><i></i><i></i></div>
-              <span class="remote-state"><i :class="{ 'is-active': activeStep === 1 && playing && !paused }"></i>{{ arrivedStep >= 1 ? '處理完成' : activeStep === 1 ? '處理中' : '等待需求' }}</span>
+              <span class="remote-state" :class="{ 'is-thinking': activeStep === 1 && playing && !paused }"><i :class="{ 'is-active': activeStep === 1 && playing && !paused }"></i>{{ activeStep === 1 ? (paused ? '思考已暫停' : '思考中…') : arrivedStep >= 1 ? '回覆完成' : '等待需求' }}</span>
             </div>
           </div>
         </div>
 
         <div class="flight-layer" aria-hidden="true">
           <template v-if="selected === 'chatgpt'">
-            <span data-token="browser-upload" class="flight-token"><UserIcon /> 你拖進 Chrome</span>
+            <span data-token="lift" class="flight-token flight-token--hand"><ArrowUpTrayIcon /> 你上傳檔案</span>
             <span data-token="upload" class="flight-token"><DocumentChartBarIcon /> 你的檔案</span>
             <span data-token="browser-download" class="flight-token"><DocumentChartBarIcon /> 回覆與成果</span>
-            <span data-token="download" class="flight-token"><DocumentChartBarIcon /> 成果檔案</span>
-            <span data-token="handoff" class="flight-token"><UserIcon /> 輪到你接手</span>
+            <span data-token="drop" class="flight-token flight-token--hand"><ArrowDownTrayIcon /> 你另存到本機</span>
           </template>
           <template v-else>
             <span data-token="send" class="flight-token"><ChatBubbleLeftEllipsisIcon /> 你的需求</span>
@@ -391,8 +395,8 @@ onBeforeUnmount(() => {
 
       <footer :class="{ 'is-visible': finished }">
         <UserIcon v-if="selected === 'chatgpt'" aria-hidden="true" /><CheckIcon v-else aria-hidden="true" />
-        <strong>{{ finished ? flow.verdict : '你的角色' }}</strong>
-        <p>{{ finished ? flow.result : selected === 'chatgpt' ? '把 AI 的回覆帶回專案，親自編修、執行與存檔。' : '交代目標與資料位置，讓 Codex 操作，再檢查它交付的成果。' }}</p>
+        <strong>{{ selected === 'chatgpt' ? '你動手完成' : '你驗收成果' }}</strong>
+        <p>{{ selected === 'chatgpt' ? 'AI 停在 Chrome 裡，檔案進出與本機的每一步都要你動手。' : 'Codex 就在本機，檔案進出與執行都由它完成，你只負責驗收。' }}</p>
       </footer>
     </section>
   </div>
@@ -531,7 +535,7 @@ onBeforeUnmount(() => {
 .actor-mark--codex { background: #e8f0ff }
 
 /* ChatGPT side: the browser is a separate box from the local project. */
-.chatgpt-local-stack { display: flex; flex-direction: column; gap: 10px }
+.chatgpt-local-stack { display: flex; flex-direction: column; gap: 0; line-height: 1.5 }
 .chrome-window { border: 1px solid #e2e5e0; border-radius: 9px; overflow: hidden; background: #fff; transition: border-color .4s, box-shadow .4s }
 .chrome-window.is-active { border-color: #cdd8ca; box-shadow: 0 8px 18px -14px rgb(30 40 30 / 22%) }
 .chrome-window__bar { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid #eef1ec; background: #f7f8f6 }
@@ -552,7 +556,7 @@ onBeforeUnmount(() => {
 .browser-local-boundary strong { display: block; color: #34403a; font-size: 12px }
 .browser-local-boundary small { display: block; margin-top: 1px; color: #8b948c; font-size: 11px }
 
-.local-workspace { padding: 10px; border: 1px solid #e6eae3; border-radius: 9px; background: #fafbf9 }
+.local-workspace { padding: 0; border: 0; background: transparent }
 .local-workspace__label { display: flex; align-items: center; gap: 7px; margin-bottom: 8px }
 .local-workspace__label svg { width: 15px; color: #7f8a80 }
 .local-workspace__label strong { color: #34403a; font-size: 12px }
@@ -602,7 +606,7 @@ onBeforeUnmount(() => {
 .source-row { min-height: 50px; background: transparent; border-color: transparent; padding-top: 0; padding-bottom: 4px }
 .manual-work { margin-top: 16px; padding: 12px; border: 1px solid #e6ddd1; border-radius: 9px; background: #fcf8f2; transition: border-color .4s, background-color .4s }
 .manual-work.is-handoff { border-color: #b98f5d; background: #faf0e1 }
-.operator-label { display: flex; align-items: center; gap: 7px; font-size: 11px }
+.operator-label { display: flex; align-items: center; gap: 7px; font-size: 11px; line-height: 1.5 }
 .operator-label > svg { width: 16px; height: 16px }
 .operator-label strong { font-weight: 500 }
 .operator-label > span { margin-left: auto; font-size: 10px; white-space: nowrap }
@@ -629,7 +633,122 @@ onBeforeUnmount(() => {
   .environment-demo__stage footer > svg { display: none }
 }
 
+/* Keep the comparison compact; emphasize the local operator and browser boundary. */
+.environment-demo__heading p { margin-bottom: 12px }
+.environment-demo__selector { margin-bottom: 10px }
+.environment-demo__selector button { padding: 11px 14px }
+.environment-demo__selector small { color: #46523f; font-weight: 600 }
+.mode-chatgpt .environment-demo__selector button:first-child small { color: #86582b }
+.environment-demo__stage { padding: 18px 20px }
+.environment-demo__stage-header h3 { margin: 0; font-size: 20px }
+.environment-scene { padding: 14px 0; grid-template-columns: 104px minmax(0, 1.5fr) 42px minmax(0, .85fr); column-gap: 0 }
+.scene-human { position: relative; align-self: center; display: flex; align-items: center; flex-direction: column; padding-right: 18px; line-height: 1.5 }
+.scene-human > strong { margin-top: 7px; font-size: 13px }
+.chatgpt-local-stack .local-workspace { margin-top: 14px; padding: 12px 9px; border: 1px solid var(--line); border-radius: 7px; background: #fafbf9; transition: border-color .3s }
+.chatgpt-local-stack .local-workspace.is-active { border-color: var(--accent) }
+.remote-state.is-thinking { color: var(--accent); font-weight: 600 }
+.remote-state.is-thinking i { animation: thinking-pulse .8s ease-in-out infinite alternate }
+@keyframes thinking-pulse { from { opacity: .3; transform: scale(.8) } to { opacity: 1; transform: scale(1.4) } }
+.scene-human ul { display: grid; gap: 4px; margin: 10px 0 0; padding: 0; list-style: none; text-align: center }
+.scene-human li { margin: 0; padding: 3px 5px; border-radius: 4px; color: var(--muted); font-size: 11px; white-space: nowrap; transition: color .3s, background-color .3s }
+.scene-human li.is-active { color: var(--accent); background: var(--accent-soft); font-weight: 600 }
+.scene-human li small { display: block; font-size: inherit }
+.human-connection { position: absolute; right: 3px; top: 22px; color: var(--accent); font-size: 17px }
+.scene-panel, .scene-network { height: 380px }
+.panel-label { height: 36px; padding-inline: 12px }
+.panel-body { padding: 5px 12px }
+.human-summary__icon { display: grid; place-items: center; flex-shrink: 0; width: 52px; height: 52px; border-radius: 50%; color: var(--accent); background: var(--accent-soft); transition: background-color .3s, color .3s }
+.human-summary__icon svg { width: 32px; height: 32px }
+.scene-human.is-active .human-summary__icon { color: #fff; background: var(--accent) }
+.remote-body { min-height: 340px; padding: 12px }
+.remote-lines { margin: 10px 0 }
+.chrome-window { overflow: hidden; border: 1px solid #d7dee5; border-radius: 7px; background: #f8fafc; transition: border-color .3s }
+.chrome-window.is-active { border-color: #839ab3 }
+.chrome-window__bar { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border-bottom: 1px solid #e1e6ed; font-size: 11px }
+.chrome-mark { width: 13px; height: 13px; border-radius: 50% }
+.operator-pill { margin-left: auto; padding: 2px 6px; border-radius: 4px; background: #f3e8d8; color: #815526; font-size: 10px; font-weight: 600; white-space: nowrap }
+.operator-pill.is-active { background: #956536; color: #fff }
+.chrome-window__tab { display: flex; align-items: center; gap: 8px; padding: 7px 9px }
+.chrome-window__tab img { width: 23px; height: 23px; margin: 0; object-fit: contain }
+.chrome-window__tab strong, .chrome-window__tab small { display: block; font-size: 11px; line-height: 1.5 }
+.chrome-window__tab small { font-size: 10px; color: var(--muted) }
+.browser-local-boundary { display: flex; align-items: center; gap: 7px; margin: 6px 0; padding: 5px 7px; border-block: 1px dashed #dac9b1; color: #956536; background: #fbf5ec }
+.browser-local-boundary > svg { width: 16px; height: 16px }
+.browser-local-boundary strong { display: none }
+.browser-local-boundary small { font-size: 10px }
+.browser-local-boundary.is-active { background: #f5e7d1 }
+.local-workspace__label { display: flex; align-items: center; gap: 5px; font-size: 11px; margin-bottom: 5px }
+.local-workspace__label svg { width: 14px; height: 14px }
+.local-workspace__label small { margin-left: auto; font-size: 10px; color: #8b775d }
+.local-file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px }
+.local-file-grid .file-row { min-height: 42px; margin: 0; padding: 5px 7px; border: 1px solid #e5e4de }
+.local-file-grid .file-row strong { font-size: 10px }
+.local-file-grid .file-row svg { width: 16px }
+.manual-work { margin-top: 8px; padding: 8px 10px }
+.manual-work .operator-label strong { font-weight: 700 }
+.manual-work.is-handoff { box-shadow: inset 3px 0 #956536 }
+.manual-tasks { display: flex; justify-content: space-between; gap: 6px; margin-top: 5px }
+.manual-tasks li { border: 0; padding: 3px 0; gap: 5px }
+.agent-row { min-height: 48px; padding: 7px 10px; border-color: #bdd2b8; background: #edf6e9 }
+.agent-row strong { color: #367864; font-weight: 700 }
+.workspace-folder { margin-top: 10px; padding: 8px 10px; gap: 5px }
+.local-execution { margin-top: 10px; padding: 9px 10px }
+.local-execution code { margin: 7px 0 5px }
+.local-execution.is-running, .workspace-folder.is-arrived { box-shadow: inset 3px 0 #367864 }
+.playback-bar { padding-top: 8px }
+.environment-demo__progress { margin-top: 10px; gap: 10px }
+.environment-demo__progress li { gap: 6px 4px }
+.environment-demo__progress small { font-size: 10px }
+.environment-demo__stage footer { margin-top: 12px; padding-top: 10px }
+.mode-chatgpt .environment-demo__stage footer.is-visible, .mode-codex .environment-demo__stage footer.is-visible { padding: 9px 10px }
+
+/* The browser wall, and what it costs you — the point of the ChatGPT side. */
+.browser-local-boundary strong { display: block; color: #86582b; font-size: 10.5px; font-weight: 700 }
+.browser-local-boundary small { color: #9c8a70; line-height: 1.45 }
+.browser-local-boundary.is-active { border-block-color: #b98f5d; background: #f6e6cd }
+.manual-tasks li { opacity: .4; font-size: 10.5px; transition: opacity .35s, color .35s }
+.manual-tasks li.is-done { opacity: 1; color: #86582b; font-weight: 600 }
+.manual-tasks li svg { width: 13px; height: 13px }
+.flight-token--hand { border-color: #c9a877; color: #7b5a2c; background: #fdf7ee }
+/* Codex side: same slot as the wall, but nothing is in the way. */
+.local-direct-link { display: flex; align-items: center; gap: 7px; margin: 6px 0; padding: 5px 7px; border-block: 1px solid #d6e2d1; color: #3d6b53; background: #f3f8f1; transition: background-color .3s }
+.local-direct-link.is-active { background: #e9f3e6 }
+.local-direct-link > svg { flex: 0 0 auto; width: 16px; height: 16px; color: #5f7a58 }
+.local-direct-link strong { display: block; color: #367864; font-size: 10.5px; font-weight: 700 }
+.local-direct-link small { display: block; color: #7e8a79; font-size: 10px; line-height: 1.45 }
+.operator-pill--codex { background: #dfeada; color: #3f6236 }
+.operator-pill--codex.is-active { background: #367864; color: #fff }
+@container envdemo (max-width: 620px) {
+  .environment-scene { grid-template-columns: 72px minmax(0, 1fr) }
+  .scene-human { grid-column: 1; grid-row: 1 / 4; align-self: start; padding-right: 12px; margin-top: 38px }
+  .human-summary__icon { width: 38px; height: 38px }
+  .human-summary__icon svg { width: 26px; height: 26px }
+  .human-connection { right: 0; top: 12px; font-size: 13px }
+  .scene-human li { padding-inline: 0; font-size: 10px }
+  .scene-local { grid-column: 2; grid-row: 1 }
+  .scene-network { grid-column: 2; grid-row: 2 }
+  .scene-remote { grid-column: 2; grid-row: 3 }
+  .environment-demo__stage { padding: 14px }
+  .environment-demo__stage-header h3 { font-size: 18px }
+  .environment-demo__selector button { padding: 9px }
+  .scene-panel, .mode-chatgpt .scene-panel { height: auto }
+  .scene-device { min-height: 0 }
+  .scene-network, .mode-chatgpt .scene-network { height: 34px }
+  .scene-network > small, .network-caption { display: none }
+  .network-symbol { width: 25px; height: 25px }
+  .remote-panel .panel-label { display: none }
+  .remote-body, .mode-chatgpt .remote-body { min-height: 0; padding: 10px 12px; column-gap: 10px; grid-template-columns: 36px 1fr }
+  .remote-symbol { width: 36px; height: 36px; border-radius: 9px }
+  .remote-symbol img, .remote-symbol svg { width: 25px; height: 25px }
+  .remote-body > strong { font-size: 13px }
+  .remote-body > small { font-size: 10px }
+  .remote-state { margin-top: 3px }
+  .environment-demo__progress { row-gap: 10px }
+  .environment-demo__stage footer { gap: 2px }
+  .environment-demo__stage footer p { font-size: 11px }
+}
 @media (prefers-reduced-motion: reduce) {
+  .remote-state.is-thinking i { animation: none }
   .environment-demo *, .environment-demo *::before, .environment-demo *::after { transition: none !important }
 }
 </style>

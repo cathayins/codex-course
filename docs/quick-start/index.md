@@ -31,15 +31,15 @@ pageClass: quickstart-story quickstart-editorial chatgpt-vs-codex
 <LessonBlock
   id="programming-environment"
   title="寫得出程式碼，不等於跑得起來"
-  description="拿到一份 .py 檔只是第一步。電腦要先裝好執行環境、補齊套件、排掉錯誤，程式才會真的跑出結果 — 而這段路，決定了你會不會卡住。"
+  description="拿到 .py 只是開始。環境、套件和錯誤都處理好，程式才跑得出來。"
   tone="sand"
 >
-  <p>這是很多人第一次用 AI 寫程式時最挫折的地方：對話框裡的程式碼看起來完整又漂亮，複製下來卻跑不動。缺 Python、缺套件、路徑不對、版本不合 — 每一個都要自己查、自己試。</p>
-  <p>下面用同一個需求，看兩邊走到「真的產生出結果」各自需要做什麼。</p>
+  <p>對話裡的程式碼看起來完整，下載後卻不一定跑得起來。Python、套件、路徑或版本出了問題，都得自己查、自己試。</p>
+  <p>用同一個需求，看看 ChatGPT 和 Codex 各自怎麼把程式跑起來。</p>
 
   <CodexRuntimeDemo />
 
-  <p class="runtime-takeaway">差別不在程式寫得好不好，而在<strong>有沒有權限實際執行與驗證</strong>。能夠自己跑一次、看到錯誤、修好再跑，才有辦法把責任揹到最後。</p>
+  <p class="runtime-takeaway">差別在能不能直接執行與驗證。跑一次、看錯誤、修好再跑，程式才算真的完成。</p>
 </LessonBlock>
 
 <LessonBlock

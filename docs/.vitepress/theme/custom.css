@@ -7798,7 +7798,7 @@ html:not(.dark) .vp-doc .vp-code span {
 .model-flagship__visual {
   position: relative;
   overflow: hidden;
-  min-height: 240px;
+  min-height: 196px;
   background: #050505;
 }
 
@@ -7845,20 +7845,20 @@ html:not(.dark) .vp-doc .vp-code span {
 }
 
 .model-flagship__body {
-  padding: 30px 32px;
+  padding: 24px 26px;
 }
 
 .vp-doc .model-flagship__lead {
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   color: #d3d9e6;
-  font-size: 16.5px;
-  line-height: 1.85;
+  font-size: 15.5px;
+  line-height: 1.8;
 }
 
 .vp-doc .model-flagship__body > code {
   display: inline-block;
-  margin-bottom: 20px;
-  padding: 5px 12px;
+  margin-bottom: 16px;
+  padding: 4px 11px;
   border-radius: 8px;
   color: #cfe0f5;
   background: rgb(255 255 255 / 9%);
@@ -7869,8 +7869,8 @@ html:not(.dark) .vp-doc .vp-code span {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  margin: 0 0 20px;
-  padding: 16px 0 0;
+  margin: 0 0 16px;
+  padding: 14px 0 0;
   border-top: 1px solid rgb(255 255 255 / 12%);
 }
 
@@ -7899,13 +7899,13 @@ html:not(.dark) .vp-doc .vp-code span {
 
 .vp-doc .model-flagship__warn {
   margin: 0;
-  padding: 15px 17px;
+  padding: 12px 15px;
   border: 1px solid rgb(255 160 96 / 34%);
   border-radius: 12px;
   color: #f0d9c6;
   background: rgb(255 150 80 / 10%);
-  font-size: 14.5px;
-  line-height: 1.8;
+  font-size: 13.8px;
+  line-height: 1.75;
 }
 
 .model-flagship__warn b { color: #ffc79c }
@@ -7922,7 +7922,7 @@ html:not(.dark) .vp-doc .vp-code span {
 .recommended-models {
   display: grid;
   gap: 18px;
-  margin: 28px 0 24px;
+  margin: 24px 0 18px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -7969,20 +7969,20 @@ html:not(.dark) .vp-doc .vp-code span {
 }
 
 .recommended-model__body {
-  padding: 22px;
+  padding: 18px 18px 6px;
 }
 
 .recommended-model__body > p {
-  min-height: 126px;
-  margin: 0 0 16px;
+  min-height: 68px;
+  margin: 0 0 14px;
   color: var(--vp-c-text-2);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.7;
 }
 
 .recommended-model__body > code {
   display: inline-block;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   font-size: 12px;
 }
 
@@ -7996,7 +7996,7 @@ html:not(.dark) .vp-doc .vp-code span {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 0;
+  padding: 9px 0;
   border-bottom: 1px solid var(--vp-c-divider);
 }
 
@@ -16025,6 +16025,196 @@ html:not(.dark) .vp-doc .vp-code span {
   color: #57636f;
   font-size: 16px;
   line-height: 1.8;
+}
+
+/* Which models each product exposes — pulled out of the per-model cards. */
+.model-platforms {
+  display: grid;
+  gap: 1px;
+  margin: 0 0 14px;
+  overflow: hidden;
+  border: 1px solid #e3e8ee;
+  border-radius: 12px;
+  background: #e9edf2;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+}
+
+.model-platforms section {
+  padding: 13px 16px;
+  background: #fff;
+}
+
+.model-platforms b {
+  display: block;
+  margin-bottom: 3px;
+  color: #26323d;
+  font-size: 13px;
+  letter-spacing: .01em;
+}
+
+.vp-doc .model-platforms p {
+  margin: 0;
+  color: #6b7681;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.vp-doc .model-platforms code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  color: #4a5560;
+  background: #f1f4f7;
+  font-size: 12.5px;
+}
+
+@media (max-width: 700px) {
+  .model-platforms { grid-template-columns: 1fr }
+}
+
+/* Model rate table: rows colour-coded by model generation. */
+.rate-table {
+  margin: 22px 0 16px;
+  overflow-x: auto;
+  border: 1px solid #e3e8ee;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.vp-doc .rate-table table {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.vp-doc .rate-table tr {
+  border: 0;
+  background: none;
+}
+
+.vp-doc .rate-table th,
+.vp-doc .rate-table td {
+  border: 0;
+  border-bottom: 1px solid #eef1f5;
+  padding: 13px 18px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vp-doc .rate-table thead th {
+  color: #7b8894;
+  background: #f7f9fb;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+.vp-doc .rate-table thead th:first-child { text-align: left }
+
+.vp-doc .rate-table thead th small {
+  display: block;
+  margin-top: 3px;
+  color: #9aa5b1;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.vp-doc .rate-table tbody tr:last-child th,
+.vp-doc .rate-table tbody tr:last-child td { border-bottom: 0 }
+
+.vp-doc .rate-table tbody th {
+  position: relative;
+  padding-left: 21px;
+  background: none;
+  text-align: left;
+  font-weight: 500;
+}
+
+.vp-doc .rate-table tbody th::before {
+  position: absolute;
+  top: 11px;
+  bottom: 11px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #7f9ec0;
+  content: '';
+}
+
+.vp-doc .rate-table tbody th code {
+  padding: 0;
+  color: #26323d;
+  background: none;
+  font-size: 14px;
+}
+
+.vp-doc .rate-table tbody td {
+  color: #3d4954;
+  font-family: var(--vp-font-family-mono);
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rate-table em {
+  display: inline-block;
+  margin-left: 9px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .02em;
+  vertical-align: 1px;
+}
+
+/* GPT-6 Astra: newest generation, highest rate. */
+.vp-doc .rate-table .is-next th,
+.vp-doc .rate-table .is-next td { background: #fdf8f3 }
+.vp-doc .rate-table .is-next th::before { background: #dd8a4a }
+.vp-doc .rate-table .is-next td { color: #a85f22; font-weight: 700 }
+
+.rate-table .is-next em {
+  color: #a85f22;
+  background: #fae3cd;
+}
+
+/* GPT-5.5: same rate as Sol but weaker results, so it is de-emphasised. */
+.vp-doc .rate-table .is-legacy th,
+.vp-doc .rate-table .is-legacy td {
+  color: #969fab;
+  background: #fafbfc;
+}
+
+.vp-doc .rate-table .is-legacy th::before { background: #ccd3db }
+.vp-doc .rate-table .is-legacy th code { color: #79848f }
+
+.rate-table .is-legacy em {
+  color: #77828e;
+  background: #eceff3;
+}
+
+.vp-doc .rate-table__note {
+  margin: 14px 0 0;
+  padding: 13px 17px;
+  border: 1px solid #e6e9ee;
+  border-left: 3px solid #ccd3db;
+  border-radius: 10px;
+  color: #68727c;
+  background: #fafbfc;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+
+.rate-table__note b { color: #3d4954 }
+
+.vp-doc .rate-table__note code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #4a5560;
+  background: #eef1f5;
+  font-size: 13px;
 }
 
 /* Credits mapping + model recommendation on the Models page. */

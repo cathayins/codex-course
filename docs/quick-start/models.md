@@ -34,14 +34,14 @@ Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分�
     <span class="model-flagship__gen">新世代</span>
   </div>
   <div class="model-flagship__body">
-    <p class="model-flagship__lead">目前能力最高的模型，適合跨程式、應用與研究的複雜工作。需要一個模型從頭處理到尾時，完成度最高。</p>
+    <p class="model-flagship__lead">目前能力最高的模型，適合跨程式、應用與研究的複雜工作。</p>
     <code>gpt-6-astra</code>
     <dl class="model-flagship__facts">
       <div><dt>Capability</dt><dd aria-label="能力最高">✦ ✦ ✦ ✦ ✦ ✦</dd></div>
       <div><dt>Speed</dt><dd aria-label="速度二格">ϟ ϟ</dd></div>
       <div><dt>Credits</dt><dd class="is-costly">Sol 的 2.5 倍</dd></div>
     </dl>
-    <p class="model-flagship__warn"><b>非常消耗 Credits。</b>費率是 Sol 的 2.5 倍、Luna 的 50 倍；同樣的訂閱額度，用 Astra 大約只能完成 Sol 四成的工作量。留給真正需要最高完成度的任務。</p>
+    <p class="model-flagship__warn"><b>非常消耗 Credits。</b>費率是 Sol 的 2.5 倍、Luna 的 50 倍，同樣額度只能做約 Sol 四成的工作量。</p>
   </div>
 </div>
 
@@ -54,12 +54,11 @@ Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分�
       <strong>5.6 Sol</strong>
     </div>
     <div class="recommended-model__body">
-      <p>旗艦 GPT-5.6 模型。適合複雜程式修改、computer use、深入研究，以及需要整合多項證據再做判斷的工作。</p>
+      <p>旗艦模型。適合複雜程式修改、深入研究，以及需要整合多項證據再判斷的工作。</p>
       <code>gpt-5.6-sol</code>
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力五顆星">✦ ✦ ✦ ✦ ✦</dd></div>
         <div><dt>Speed</dt><dd aria-label="速度二格">ϟ ϟ</dd></div>
-        <div><dt>Codex App</dt><dd class="is-available">✓</dd></div>
       </dl>
     </div>
   </article>
@@ -70,12 +69,11 @@ Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分�
       <strong>5.6 Terra</strong>
     </div>
     <div class="recommended-model__body">
-      <p>日常工作的均衡選擇。適合跨檔案閱讀、工具操作與一般程式修改；如果任務不需要 Sol 的分析深度，可以先從 Terra 開始。</p>
+      <p>日常工作的均衡選擇。適合跨檔案閱讀、工具操作與一般程式修改。</p>
       <code>gpt-5.6-terra</code>
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力四顆星">✦ ✦ ✦ ✦</dd></div>
         <div><dt>Speed</dt><dd aria-label="速度三格">ϟ ϟ ϟ</dd></div>
-        <div><dt>Codex App</dt><dd class="is-available">✓</dd></div>
       </dl>
     </div>
   </article>
@@ -86,31 +84,79 @@ Marketing Demo 會讀取 Excel、整理指標、製作 Dashboard，再規劃分�
       <strong>5.6 Luna</strong>
     </div>
     <div class="recommended-model__body">
-      <p>快速且較低成本的 GPT-5.6 模型。適合目標清楚、數量多、容易驗證的擷取、分類、轉換與結構化摘要。</p>
+      <p>快速、低成本。適合目標清楚、數量多、容易驗證的擷取、分類與轉換。</p>
       <code>gpt-5.6-luna</code>
       <dl class="recommended-model__facts">
         <div><dt>Capability</dt><dd aria-label="能力三顆星">✦ ✦ ✦</dd></div>
         <div><dt>Speed</dt><dd aria-label="速度四格">ϟ ϟ ϟ ϟ</dd></div>
-        <div><dt>Codex App</dt><dd class="is-available">✓</dd></div>
       </dl>
     </div>
   </article>
 </div>
 
-<p class="source-note">模型圖片、能力與速度排序依 OpenAI 官方 Models 頁面。完整清單另有 gpt-6-astra，以及 ChatGPT Pro 可用的 gpt-5.3-codex-spark。支援平台與選項可能隨帳號、Workspace 與產品更新。</p>
+<div class="model-platforms" aria-label="各產品可以選用的模型">
+  <section>
+    <b>ChatGPT</b>
+    <p>只提供 <code>gpt-5.6-sol</code>，沒有切換空間。</p>
+  </section>
+  <section>
+    <b>Codex ／ Work</b>
+    <p>Sol、Terra、Luna 都能選，可以依任務難度換模型省 Credits。</p>
+  </section>
+</div>
+
+<p class="source-note">模型圖片、能力與速度排序依 OpenAI 官方 Models 頁面。完整清單另有 ChatGPT Pro 可用的 gpt-5.3-codex-spark，以及上一代的 gpt-5.5。支援平台與選項可能隨帳號、Workspace 與產品更新。</p>
 
 ## 模型費率比較
 
 依下表的輸入費率，Sol 為 100 Credits／百萬 Token，Luna 為 5 Credits／百萬 Token，相差 **20 倍**。
 
-| 模型 | Input<br><small>Credits／1M Token</small> | Cached input<br><small>Credits／1M Token</small> | Output<br><small>Credits／1M Token</small> |
-| --- | --- | --- | --- |
-| `gpt-6-astra` | **250** | 25 | **1,250** |
-| `gpt-5.6-sol` | 100 | 10 | 500 |
-| `gpt-5.6-terra` | 50 | 5 | 300 |
-| `gpt-5.6-luna` | 5 | 0.5 | 30 |
+<div class="rate-table" aria-label="模型費率比較，單位為 Credits 每百萬 Token">
+  <table>
+    <thead>
+      <tr>
+        <th>模型</th>
+        <th>Input<small>Credits／1M Token</small></th>
+        <th>Cached input<small>Credits／1M Token</small></th>
+        <th>Output<small>Credits／1M Token</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="is-next">
+        <th scope="row"><code>gpt-6-astra</code><em>新世代</em></th>
+        <td>250</td>
+        <td>25</td>
+        <td>1,250</td>
+      </tr>
+      <tr>
+        <th scope="row"><code>gpt-5.6-sol</code></th>
+        <td>100</td>
+        <td>10</td>
+        <td>500</td>
+      </tr>
+      <tr>
+        <th scope="row"><code>gpt-5.6-terra</code></th>
+        <td>50</td>
+        <td>5</td>
+        <td>300</td>
+      </tr>
+      <tr>
+        <th scope="row"><code>gpt-5.6-luna</code></th>
+        <td>5</td>
+        <td>0.5</td>
+        <td>30</td>
+      </tr>
+      <tr class="is-legacy">
+        <th scope="row"><code>gpt-5.5</code><em>不建議</em></th>
+        <td>100</td>
+        <td>10</td>
+        <td>500</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-<p class="model-credit-note">三個欄位都是 <b>Credits／百萬 Token</b>。兩個固定關係：<b>命中快取的 input 是一般 input 的 1／10</b>，<b>output 是 input 的 5～6 倍</b>。最貴與最便宜之間差 50 倍。</p>
+<p class="rate-table__note"><b>gpt-5.5 已不建議使用。</b>費率與 <code>gpt-5.6-sol</code> 完全相同，但整體表現不如 5.6 系列。花一樣的 Credits，選 Sol 會得到更好的結果，沒有理由再用 5.5。</p>
 
 選擇模型時，可以比較三項差異：
 
