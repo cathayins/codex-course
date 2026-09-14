@@ -136,7 +136,7 @@ ROAS 以加總營收除以加總成本計算，不要平均各列 ROAS；
 請說明開啟方式、檢查結果，以及尚未解決的問題。
 ```
 
-<details class="task-embed" open>
+<details class="task-embed">
   <summary class="task-embed__bar">
     <span class="task-embed__caret" aria-hidden="true"></span>
     <span class="task-embed__tag">Example output</span>
